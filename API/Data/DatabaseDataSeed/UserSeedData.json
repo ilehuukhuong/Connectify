@@ -1,7 +1,7 @@
 [
     {
         "UserName": "Lisa",
-        "Gender": "female",
+        "GenderId": 2,
         "DateOfBirth": "1956-07-22",
         "KnownAs": "Lisa",
         "Created": "2020-06-24",
@@ -20,7 +20,7 @@
     },
     {
         "UserName": "Karen",
-        "Gender": "female",
+        "GenderId": 2,
         "DateOfBirth": "1995-10-12",
         "KnownAs": "Karen",
         "Created": "2019-12-09",
@@ -39,7 +39,7 @@
     },
     {
         "UserName": "Margo",
-        "Gender": "female",
+        "GenderId": 2,
         "DateOfBirth": "1959-01-24",
         "KnownAs": "Margo",
         "Created": "2019-08-10",
@@ -58,7 +58,7 @@
     },
     {
         "UserName": "Lois",
-        "Gender": "female",
+        "GenderId": 2,
         "DateOfBirth": "1988-06-22",
         "KnownAs": "Lois",
         "Created": "2019-04-24",
@@ -77,7 +77,7 @@
     },
     {
         "UserName": "Ruthie",
-        "Gender": "female",
+        "GenderId": 2,
         "DateOfBirth": "1956-01-12",
         "KnownAs": "Ruthie",
         "Created": "2019-04-30",
@@ -96,7 +96,7 @@
     },
     {
         "UserName": "Todd",
-        "Gender": "male",
+        "GenderId": 1,
         "DateOfBirth": "1950-02-07",
         "KnownAs": "Todd",
         "Created": "2019-04-29",
@@ -115,7 +115,7 @@
     },
     {
         "UserName": "Porter",
-        "Gender": "male",
+        "GenderId": 1,
         "DateOfBirth": "1967-04-09",
         "KnownAs": "Porter",
         "Created": "2020-04-05",
@@ -134,7 +134,7 @@
     },
     {
         "UserName": "Mayo",
-        "Gender": "male",
+        "GenderId": 1,
         "DateOfBirth": "1990-03-23",
         "KnownAs": "Mayo",
         "Created": "2020-03-14",
@@ -153,7 +153,7 @@
     },
     {
         "UserName": "Skinner",
-        "Gender": "male",
+        "GenderId": 1,
         "DateOfBirth": "1952-12-01",
         "KnownAs": "Skinner",
         "Created": "2019-01-28",
@@ -172,7 +172,7 @@
     },
     {
         "UserName": "Davis",
-        "Gender": "male",
+        "GenderId": 1,
         "DateOfBirth": "1978-03-20",
         "KnownAs": "Davis",
         "Created": "2020-02-25",

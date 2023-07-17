@@ -13,12 +13,28 @@ namespace API.Data
             await context.SaveChangesAsync();
         }
 
+        public static async Task SeedGender(DataContext context)
+        {
+            if (await context.Genders.AnyAsync()) return;
+
+            var genderData = await File.ReadAllTextAsync("Data/DatabaseDataSeed/GenderSeedData.json");
+            var options = new JsonSerializerOptions{PropertyNameCaseInsensitive = true};
+            var genders = JsonSerializer.Deserialize<List<Gender>>(genderData);
+
+            foreach (var gender in genders)
+            {
+                context.Genders.Add(gender);
+            }
+            
+            await context.SaveChangesAsync();
+        }
+
         public static async Task SeedUsers(UserManager<AppUser> userManager, 
             RoleManager<AppRole> roleManager)
         {
             if (await userManager.Users.AnyAsync()) return;
 
-            var userData = await File.ReadAllTextAsync("Data/UserSeedData.json");
+            var userData = await File.ReadAllTextAsync("Data/DatabaseDataSeed/UserSeedData.json");
 
             var options = new JsonSerializerOptions{PropertyNameCaseInsensitive = true};
 
@@ -47,7 +63,8 @@ namespace API.Data
 
             var admin = new AppUser
             {
-                UserName = "admin"
+                UserName = "admin",
+                GenderId = 1,
             };
 
             await userManager.CreateAsync(admin, "Pa$$w0rd");
