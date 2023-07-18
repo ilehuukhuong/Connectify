@@ -1,5 +1,6 @@
 using API.Entities;
 using API.Interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
@@ -16,9 +17,18 @@ namespace API.Data
             _context.Genders.Add(gender);
         }
 
-        public void DeleteGender(Gender gender)
+        public void UpdateGender(Gender gender)
         {
-            _context.Genders.Remove(gender);
+            _context.Genders.Update(gender);
+        }
+
+        public bool DeleteGender(int id)
+        {
+            if(_context.Users.FirstOrDefault(x => x.GenderId == id) != null ) return false;
+
+            _context.Genders.Remove(_context.Genders.FirstOrDefault(x => x.Id == id));
+
+            return true;
         }
 
         public async Task<Gender> GetGenderById(int id)
@@ -28,12 +38,12 @@ namespace API.Data
 
         public async Task<Gender> GetGenderByName(string name)
         {
-            return await _context.Genders.FirstOrDefaultAsync(x => x.Name == name);
+            return await _context.Genders.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
         }
 
         public async Task<IEnumerable<Gender>> GetGenders()
         {
-            return await _context.Genders.ToListAsync();
+            return await _context.Genders.OrderBy(x=> x.Name).ToListAsync();
         }
     }
 }
