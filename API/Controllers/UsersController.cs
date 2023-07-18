@@ -31,11 +31,6 @@ namespace API.Controllers
             var currentUser = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
             userParams.CurrentUsername = currentUser.UserName;
 
-            if (string.IsNullOrEmpty(userParams.Gender))
-            {
-                userParams.Gender = "Male";
-            }
-
             var users = await _uow.UserRepository.GetMembersAsync(userParams);
 
             Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize, 

@@ -29,11 +29,15 @@ namespace API.Data
         public async Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams)
         {
             var query = _context.Users.AsQueryable();
-            var genderId = _context.Genders.FirstOrDefaultAsync(g => g.Name == userParams.Gender).Result.Id;
 
             query = query.Where(u => u.UserName != userParams.CurrentUsername);
-            query = query.Where(u => u.GenderId == genderId);
 
+            if (userParams.Gender != null)
+            {
+                var genderId = _context.Genders.FirstOrDefaultAsync(g => g.Name.ToLower() == userParams.Gender.ToLower()).Result.Id;
+                query = query.Where(u => u.GenderId == genderId);
+            }
+            
             var minDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MaxAge - 1));
             var maxDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MinAge));
 
@@ -49,7 +53,6 @@ namespace API.Data
                 query.AsNoTracking().ProjectTo<MemberDto>(_mapper.ConfigurationProvider), 
                 userParams.PageNumber, 
                 userParams.PageSize);
-
         }
 
         public async Task<AppUser> GetUserByIdAsync(int id)
