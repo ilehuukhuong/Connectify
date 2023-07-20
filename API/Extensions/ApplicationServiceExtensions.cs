@@ -16,8 +16,10 @@ namespace API.Extensions
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.Configure<ComputervisionSettings>(config.GetSection("ComputervisionSettings"));
             services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
+            services.Configure<OutlookMailSettings>(config.GetSection("OutlookMailSettings"));
             services.AddScoped<INSFWChecker, NSFWChecker>();
             services.AddScoped<IPhotoService, PhotoService>();
+            services.AddScoped<IMailService, MailService>();
             services.AddScoped<LogUserActivity>();
             services.AddSignalR();
             services.AddSingleton<PresenceTracker>();
