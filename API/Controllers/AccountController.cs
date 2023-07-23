@@ -1,3 +1,4 @@
+using System.Web;
 using API.Data.Template;
 using API.DTOs;
 using API.Entities;
@@ -62,11 +63,11 @@ namespace API.Controllers
                 .Include(p => p.Photos)
                 .SingleOrDefaultAsync(x => x.Email == loginDto.Username);
 
-            if (user == null) return Unauthorized("Invalid Username or Email");
+            if (user == null) return BadRequest("Invalid Username or Email");
 
             var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
 
-            if (!result) return Unauthorized("Invalid Password");
+            if (!result) return BadRequest("Invalid Password");
 
             return new UserDto
             {
@@ -98,7 +99,9 @@ namespace API.Controllers
 
             var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-            var resetUrl = $"https://iconnectify.vercel.app/reset-password/{resetToken}";
+            var encodeToken = HttpUtility.UrlEncode(resetToken);
+
+            var resetUrl = $"https://iconnectify.vercel.app/reset-password/{encodeToken}";
 
             var emailContent = ResetPasswordTemplate.ResetPassword(resetUrl, user.FirstName);
             

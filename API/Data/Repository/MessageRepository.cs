@@ -6,7 +6,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Data
+namespace API.Data.Repository
 {
     public class MessageRepository : IMessageRepository
     {
@@ -66,11 +66,11 @@ namespace API.Data
 
             query = messageParams.Container switch
             {
-                "Inbox" => query.Where(u => u.RecipientUsername == messageParams.Username 
+                "Inbox" => query.Where(u => u.RecipientUsername == messageParams.Username
                     && u.RecipientDeleted == false),
-                "Outbox" => query.Where(u => u.SenderUsername == messageParams.Username 
+                "Outbox" => query.Where(u => u.SenderUsername == messageParams.Username
                     && u.SenderDeleted == false),
-                _ => query.Where(u => u.RecipientUsername == messageParams.Username 
+                _ => query.Where(u => u.RecipientUsername == messageParams.Username
                     && u.RecipientDeleted == false && u.DateRead == null)
             };
 
@@ -93,7 +93,7 @@ namespace API.Data
                 .AsQueryable();
 
 
-            var unreadMessages = query.Where(m => m.DateRead == null 
+            var unreadMessages = query.Where(m => m.DateRead == null
                 && m.RecipientUsername == currentUserName).ToList();
 
             if (unreadMessages.Any())

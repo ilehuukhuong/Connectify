@@ -3,7 +3,7 @@ using API.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Data
+namespace API.Data.Repository
 {
     public class GenderRepository : IGenderRepository
     {
@@ -24,7 +24,7 @@ namespace API.Data
 
         public bool DeleteGender(int id)
         {
-            if(_context.Users.FirstOrDefault(x => x.GenderId == id) != null ) return false;
+            if (_context.Users.FirstOrDefault(x => x.GenderId == id) != null) return false;
 
             _context.Genders.Remove(_context.Genders.FirstOrDefault(x => x.Id == id));
 
@@ -43,7 +43,7 @@ namespace API.Data
 
         public async Task<IEnumerable<Gender>> GetGenders()
         {
-            return await _context.Genders.OrderBy(x=> x.Name).ToListAsync();
+            return await _context.Genders.OrderBy(x => x.Name).ToListAsync();
         }
     }
 }
