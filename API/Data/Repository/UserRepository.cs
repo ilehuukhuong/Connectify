@@ -48,9 +48,9 @@ namespace API.Data.Repository
             if (userParams.Distance > 0)
             {
                 query = query.Where(u =>
-                    Math.Acos(Math.Sin(userParams.CurrentLatitude * Math.PI / 180) * Math.Sin(u.Latitude * Math.PI / 180) +
-                              Math.Cos(userParams.CurrentLatitude * Math.PI / 180) * Math.Cos(u.Latitude * Math.PI / 180) *
-                              Math.Cos((u.Longitude - userParams.CurrentLongitude) * Math.PI / 180)) * 6371 <= userParams.Distance);
+                    Math.Acos(Math.Sin(userParams.CurrentLatitude.Value * Math.PI / 180) * Math.Sin(u.Latitude * Math.PI / 180) +
+                              Math.Cos(userParams.CurrentLatitude.Value * Math.PI / 180) * Math.Cos(u.Latitude * Math.PI / 180) *
+                              Math.Cos((u.Longitude - userParams.CurrentLongitude.Value) * Math.PI / 180)) * 6371 <= userParams.Distance);
             }
             
             query = query.Where(u => u.UserName != userParams.CurrentUsername);

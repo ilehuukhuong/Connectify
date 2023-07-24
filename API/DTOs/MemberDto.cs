@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace API.DTOs
 {
     public class MemberDto
@@ -10,10 +12,14 @@ namespace API.DTOs
         public DateTime Created { get; set; }
         public DateTime LastActive { get; set; }
         public string Gender { get; set; }
-        public double Distance { get; set; }
+        public int Distance { get; set; }
         public string Introduction { get; set; }
         public string LookingFor { get; set; }
         public string Interests { get; set; }
         public List<PhotoDto> Photos { get; set; }
+        [JsonIgnore]
+        public double Latitude { get; set; }
+        [JsonIgnore]
+        public double Longitude { get; set; }
     }
 }

@@ -29,15 +29,21 @@ namespace API.Controllers
         public async Task<ActionResult<PagedList<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
         {
             var currentUser = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+
             userParams.CurrentUsername = currentUser.UserName;
 
-            if (userParams.CurrentLatitude == 0.0 || userParams.CurrentLongitude == 0.0)
+            if (userParams.CurrentLatitude == null || userParams.CurrentLongitude == null)
             {
                 userParams.CurrentLatitude = currentUser.Latitude;
                 userParams.CurrentLongitude = currentUser.Longitude;
             }
 
             var users = await _uow.UserRepository.GetMembersAsync(userParams);
+
+            foreach (var user in users)
+            {
+                user.Distance = (int)CoordinateExtensions.CalculateDistance(userParams.CurrentLatitude.Value,userParams.CurrentLongitude.Value, user.Latitude,user.Longitude);
+            }
 
             Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize,
                 users.TotalCount, users.TotalPages));
