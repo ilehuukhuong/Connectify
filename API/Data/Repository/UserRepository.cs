@@ -45,6 +45,14 @@ namespace API.Data.Repository
 
             query = query.Where(u => u.DateOfBirth >= minDob && u.DateOfBirth <= maxDob);
 
+            if (userParams.Distance > 0)
+            {
+                query = query.Where(u =>
+                    Math.Acos(Math.Sin(userParams.CurrentLatitude * Math.PI / 180) * Math.Sin(u.Latitude * Math.PI / 180) +
+                              Math.Cos(userParams.CurrentLatitude * Math.PI / 180) * Math.Cos(u.Latitude * Math.PI / 180) *
+                              Math.Cos((u.Longitude - userParams.CurrentLongitude) * Math.PI / 180)) * 6371 <= userParams.Distance);
+            }
+            
             query = query.Where(u => u.UserName != userParams.CurrentUsername);
 
             query = userParams.OrderBy switch

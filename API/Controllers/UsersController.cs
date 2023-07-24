@@ -16,7 +16,7 @@ namespace API.Controllers
         private readonly IPhotoService _photoService;
         private readonly IUnitOfWork _uow;
         private readonly INSFWChecker _nsfwChecker;
-        public UsersController(IUnitOfWork uow, IMapper mapper, 
+        public UsersController(IUnitOfWork uow, IMapper mapper,
             IPhotoService photoService, INSFWChecker nsfwChecker)
         {
             _uow = uow;
@@ -26,14 +26,20 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedList<MemberDto>>> GetUsers([FromQuery]UserParams userParams)
+        public async Task<ActionResult<PagedList<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
         {
             var currentUser = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
             userParams.CurrentUsername = currentUser.UserName;
 
+            if (userParams.CurrentLatitude == 0.0 || userParams.CurrentLongitude == 0.0)
+            {
+                userParams.CurrentLatitude = currentUser.Latitude;
+                userParams.CurrentLongitude = currentUser.Longitude;
+            }
+
             var users = await _uow.UserRepository.GetMembersAsync(userParams);
 
-            Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize, 
+            Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize,
                 users.TotalCount, users.TotalPages));
 
             return Ok(users);
@@ -44,6 +50,20 @@ namespace API.Controllers
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
             return await _uow.UserRepository.GetMemberAsync(username);
+        }
+
+        [HttpPut("update-location")]
+        public async Task<ActionResult> UpdateLocation(LocationDto locationDto)
+        {
+            var user = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+
+            if (user == null) return NotFound();
+
+            _mapper.Map(locationDto, user);
+
+            if (await _uow.Complete()) return NoContent();
+
+            return BadRequest("Failed to update location");
         }
 
         [HttpPut]
@@ -87,10 +107,10 @@ namespace API.Controllers
 
             user.Photos.Add(photo);
 
-            if (await _uow.Complete()) 
+            if (await _uow.Complete())
             {
-                return CreatedAtAction(nameof(GetUser), 
-                    new {username = user.UserName}, _mapper.Map<PhotoDto>(photo));
+                return CreatedAtAction(nameof(GetUser),
+                    new { username = user.UserName }, _mapper.Map<PhotoDto>(photo));
             }
 
             return BadRequest("Problem adding photo");

@@ -99,12 +99,13 @@ namespace API.Controllers
 
             var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-            var encodeToken = HttpUtility.UrlEncode(resetToken);
+            var encodedToken = HttpUtility.UrlEncode(resetToken);
+            var encodedEmail = HttpUtility.UrlEncode(user.Email);
 
-            var resetUrl = $"https://iconnectify.vercel.app/reset-password/{encodeToken}";
+            var resetUrl = $"https://iconnectify.vercel.app/reset-password/email{encodedEmail}&token{encodedToken}";
 
             var emailContent = ResetPasswordTemplate.ResetPassword(resetUrl, user.FirstName);
-            
+
             await _mailService.SendEmailAsync(user.Email, "Reset Password", emailContent);
 
             return Ok("Password reset link sent to your email.");

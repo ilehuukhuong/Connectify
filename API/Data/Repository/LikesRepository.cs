@@ -43,7 +43,6 @@ namespace API.Data.Repository
                 KnownAs = user.KnownAs,
                 Age = user.DateOfBirth.CalcuateAge(),
                 PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain).Url,
-                City = user.City,
                 Id = user.Id
             });
 
