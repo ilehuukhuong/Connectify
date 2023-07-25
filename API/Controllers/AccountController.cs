@@ -111,8 +111,8 @@ namespace API.Controllers
             return Ok("Password reset link sent to your email.");
         }
 
-        [HttpPost("reset-password")]
-        public async Task<ActionResult> ResetPassword(ResetPasswordDto resetPasswordDto)
+        [HttpPut("reset-password/{email}/{token}")]
+        public async Task<ActionResult> ResetPassword([FromBody]ResetPasswordDto resetPasswordDto)
         {
             var user = await _userManager.FindByEmailAsync(resetPasswordDto.Email.ToLower());
 
