@@ -62,8 +62,8 @@ namespace API.Controllers
         public async Task<ActionResult> UpdateLocation(LocationDto locationDto)
         {
             var user = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
-
             if (user == null) return NotFound();
+            if (user.Latitude == locationDto.Latitude || user.Longitude == locationDto.Longitude) return NoContent();
 
             _mapper.Map(locationDto, user);
 
