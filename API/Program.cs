@@ -50,7 +50,7 @@ app.UseCors(builder => builder
     .AllowAnyMethod()
     .AllowCredentials()
     .WithOrigins("https://localhost:4200")
-    .WithOrigins("https://iconnectify.vercel.app")
+    .WithOrigins("https://connectify.io.vn")
 );
 
 app.UseAuthentication();
