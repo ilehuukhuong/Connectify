@@ -31,6 +31,7 @@ namespace API.Controllers
             var currentUser = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
 
             userParams.CurrentUsername = currentUser.UserName;
+            userParams.CurrentUserId = currentUser.Id;
 
             if (userParams.CurrentLatitude == null || userParams.CurrentLongitude == null)
             {
@@ -55,6 +56,17 @@ namespace API.Controllers
 
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
+            var user = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+            if (user == null) return NotFound();
+
+            var targetUser = await _uow.UserRepository.GetUserByUsernameAsync(username.ToLower());
+            if (targetUser == null) return NotFound();
+
+            if (targetUser.IsBlocked) return BadRequest("This user is unavailable");
+
+            if(await _uow.LikesRepository.GetUserLike(targetUser.Id, user.Id) == null) return BadRequest("This user is unavailable");
+
+
             return await _uow.UserRepository.GetMemberAsync(username);
         }
 
@@ -71,6 +83,31 @@ namespace API.Controllers
 
             return BadRequest("Failed to update location");
         }
+
+        [HttpPut("visible")]
+        public async Task<ActionResult> UpdateVisible()
+        {
+            var user = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+            if (user != null)
+            {
+                user.IsVisible = true;
+                if (await _uow.Complete()) return NoContent();
+            }
+            return NotFound("Failed to update");
+        }
+
+        [HttpPut("invisible")]
+        public async Task<ActionResult> UpdateInvisible()
+        {
+            var user = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+            if (user != null)
+            {
+                user.IsVisible = false;
+                if (await _uow.Complete()) return NoContent();
+            }
+            return NotFound("Failed to update");
+        }
+
 
         [HttpPut]
         public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)

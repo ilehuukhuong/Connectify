@@ -60,6 +60,11 @@ namespace API.SignalR
 
             if (recipient == null) throw new HubException("Not found user");
 
+            if (recipient.IsBlocked) throw new HubException("This user is unavailable");
+
+            if (await _uow.LikesRepository.GetUserLike(sender.Id, recipient.Id) == null || await _uow.LikesRepository.GetUserLike(recipient.Id, sender.Id) == null) 
+                throw new HubException("You cannot send messages to this user");
+
             var message = new Message
             {
                 Sender = sender,

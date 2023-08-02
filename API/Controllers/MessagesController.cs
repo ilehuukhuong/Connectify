@@ -33,6 +33,9 @@ namespace API.Controllers
 
             if (recipient.IsBlocked) return BadRequest("This user is unavailable");
 
+            if (await _uow.LikesRepository.GetUserLike(sender.Id, recipient.Id) == null || await _uow.LikesRepository.GetUserLike(recipient.Id, sender.Id) == null) 
+                return BadRequest("You cannot send messages to this user");
+
             var message = new Message
             {
                 Sender = sender,

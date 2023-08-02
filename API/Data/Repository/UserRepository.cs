@@ -54,7 +54,14 @@ namespace API.Data.Repository
                               Math.Cos(userParams.CurrentLatitude.Value * Math.PI / 180) * Math.Cos(u.Latitude * Math.PI / 180) *
                               Math.Cos((u.Longitude - userParams.CurrentLongitude.Value) * Math.PI / 180)) * 6371 <= userParams.Distance);
             }
-            
+
+            var likedUserIds = _context.Likes.Where(like => like.SourceUserId == userParams.CurrentUserId).Select(like => like.TargetUserId);
+            var likedByUsersIds = _context.Likes.Where(like => like.TargetUserId == userParams.CurrentUserId).Select(like => like.SourceUserId);
+
+            query = query.Where(u => u.IsVisible || likedByUsersIds.Contains(u.Id));
+
+            query = query.Where(u => !likedUserIds.Contains(u.Id));
+
             query = query.Where(u => u.UserName != userParams.CurrentUsername);
 
             query = userParams.OrderBy switch
@@ -79,18 +86,6 @@ namespace API.Data.Repository
             return await _context.Users
                 .Include(p => p.Photos)
                 .SingleOrDefaultAsync(x => x.UserName == username);
-        }
-
-        public async Task<IEnumerable<AppUser>> GetUsersAsync()
-        {
-            return await _context.Users
-                .Include(p => p.Photos)
-                .ToListAsync();
-        }
-
-        public void Update(AppUser user)
-        {
-            _context.Entry(user).State = EntityState.Modified;
         }
     }
 }
