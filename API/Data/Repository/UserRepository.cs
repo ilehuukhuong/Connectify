@@ -30,6 +30,8 @@ namespace API.Data.Repository
         {
             var query = _context.Users.AsQueryable();
 
+            query = query.Where(u => u.IsBlocked == false);
+
             if (userParams.Gender != null)
             {
                 var genderId = _context.Genders.FirstOrDefaultAsync(g => g.Name.ToLower() == userParams.Gender.ToLower()).Result.Id;

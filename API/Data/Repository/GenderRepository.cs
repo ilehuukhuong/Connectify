@@ -1,6 +1,5 @@
 using API.Entities;
 using API.Interfaces;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data.Repository

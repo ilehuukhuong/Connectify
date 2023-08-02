@@ -26,6 +26,8 @@ namespace API.Controllers
 
             if (sourceUser.UserName == username) return BadRequest("You cannot like yourself");
 
+            if (sourceUser.IsBlocked) return BadRequest("User not exist");
+
             var userLike = await _uow.LikesRepository.GetUserLike(sourceUserId, likedUser.Id);
 
             if (userLike != null) return BadRequest("You already like this user");

@@ -31,6 +31,8 @@ namespace API.Controllers
 
             if (recipient == null) return NotFound();
 
+            if (recipient.IsBlocked) return BadRequest("This user is unavailable");
+
             var message = new Message
             {
                 Sender = sender,
