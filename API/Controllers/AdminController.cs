@@ -33,7 +33,7 @@ namespace API.Controllers
 
         [Authorize(Policy = "RequireAdminRole")]
         [HttpPost("edit-roles/{username}")]
-        public async Task<ActionResult> EditRoles(string username, [FromQuery]string roles)
+        public async Task<ActionResult> EditRoles(string username, [FromQuery] string roles)
         {
             if (string.IsNullOrEmpty(roles)) return BadRequest("You must select at least one role");
 
@@ -54,6 +54,34 @@ namespace API.Controllers
             if (!result.Succeeded) return BadRequest("Failed to remove from roles");
 
             return Ok(await _userManager.GetRolesAsync(user));
+        }
+
+        [Authorize(Policy = "RequireAdminRole")]
+        [HttpPut("block/{username}")]
+        public async Task<ActionResult> BlockUser(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username.ToLower());
+            if (user != null)
+            {
+                user.IsBlocked = true;
+                var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded) return NoContent();
+            }
+            return NotFound("User not found");
+        }
+
+        [Authorize(Policy = "RequireAdminRole")]
+        [HttpPut("unblock/{username}")]
+        public async Task<ActionResult> UnblockUser(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username.ToLower());
+            if (user != null)
+            {
+                user.IsBlocked = false;
+                var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded) return NoContent();
+            }
+            return NotFound("User not found");
         }
 
         [Authorize(Policy = "ModeratePhotoRole")]

@@ -65,6 +65,8 @@ namespace API.Controllers
 
             if (user == null) return BadRequest("Invalid Username or Email");
 
+            if (user.IsBlocked) return Unauthorized("This account has been block. Please contact admin for more information.");
+
             var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
 
             if (!result) return BadRequest("Invalid Password");

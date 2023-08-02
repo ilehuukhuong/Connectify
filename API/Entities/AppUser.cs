@@ -18,6 +18,7 @@ namespace API.Entities
         public string Interests { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+        public bool IsBlocked { get; set; } = false;
         public List<Photo> Photos { get; set; } = new();
         public List<UserLike> LikedByUsers { get; set; }
         public List<UserLike> LikedUsers { get; set; }

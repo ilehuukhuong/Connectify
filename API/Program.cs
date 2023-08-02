@@ -54,6 +54,12 @@ app.UseCors(builder => builder
 );
 
 app.UseAuthentication();
+app.Use(async (context, next) =>
+{
+    var userManager = context.RequestServices.GetRequiredService<UserManager<AppUser>>();
+    var middleware = new BlockUserMiddleware(next, userManager);
+    await middleware.InvokeAsync(context);
+});
 app.UseAuthorization();
 
 app.MapControllers();
