@@ -22,12 +22,12 @@ namespace API.Data.Repository
 
         public async Task<PagedList<LikeDto>> GetUserLikes(LikesParams likesParams)
         {
-            var sourceUser = await _context.Users.Where(x => x.Id == likesParams.UserId).Include(x => x.LikedUsers).Include(x => x.LikedByUsers).FirstOrDefaultAsync();
             var users = _context.Users.OrderBy(u => u.UserName).AsQueryable();
-            var likes = _context.Likes.AsQueryable();
 
             if (likesParams.Predicate == "liked")
             {
+                var sourceUser = await _context.Users.Where(x => x.Id == likesParams.UserId).Include(x => x.LikedUsers).Include(x => x.LikedByUsers).FirstOrDefaultAsync();
+                var likes = _context.Likes.AsQueryable();
                 likes = likes.Where(like => like.SourceUserId == likesParams.UserId);
                 users = likes.Select(like => like.TargetUser);
                 foreach (var user in sourceUser.LikedByUsers)
@@ -38,6 +38,8 @@ namespace API.Data.Repository
 
             if (likesParams.Predicate == "likedBy")
             {
+                var sourceUser = await _context.Users.Where(x => x.Id == likesParams.UserId).Include(x => x.LikedUsers).Include(x => x.LikedByUsers).FirstOrDefaultAsync();
+                var likes = _context.Likes.AsQueryable();
                 likes = likes.Where(like => like.TargetUserId == likesParams.UserId);
                 users = likes.Select(like => like.SourceUser);
                 foreach (var user in sourceUser.LikedUsers)
@@ -54,15 +56,15 @@ namespace API.Data.Repository
                     .Select(like => like.SourceUser);
 
                 // Users liked by the source user
-                var likedUsersTemp = _context.Likes
+                var likedUsers = _context.Likes
                     .Where(like => like.SourceUserId == likesParams.UserId)
                     .Select(like => like.TargetUser);
 
                 // Intersection of the two lists
-                users = likedUsersTemp.Intersect(likedByUsers);
+                users = likedUsers.Intersect(likedByUsers);
             }
 
-            var likedUsers = users.Select(user => new LikeDto
+            var listUsers = users.Select(user => new LikeDto
             {
                 UserName = user.UserName,
                 KnownAs = user.KnownAs,
@@ -71,7 +73,7 @@ namespace API.Data.Repository
                 Id = user.Id
             });
 
-            return await PagedList<LikeDto>.CreateAsync(likedUsers, likesParams.PageNumber, likesParams.PageSize);
+            return await PagedList<LikeDto>.CreateAsync(listUsers, likesParams.PageNumber, likesParams.PageSize);
         }
 
         public async Task<AppUser> GetUserWithLikes(int userId)
