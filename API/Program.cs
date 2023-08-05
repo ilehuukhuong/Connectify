@@ -20,7 +20,7 @@ if (builder.Environment.IsDevelopment())
 else
 {
     // Use connection string provided at runtime by Server.
-    var connUrl = Environment.GetEnvironmentVariable("DefaultConnection");
+    var connUrl = Environment.GetEnvironmentVariable("NEON_POSTGRESQL_CONNECTIONSTRING");
 
     // Parse connection URL to connection string for Npgsql
     connUrl = connUrl.Replace("postgres://", string.Empty);
