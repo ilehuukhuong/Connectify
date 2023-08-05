@@ -43,7 +43,7 @@ namespace API.Controllers
 
             foreach (var user in users)
             {
-                user.Distance = (int)CoordinateExtensions.CalculateDistance(userParams.CurrentLatitude.Value,userParams.CurrentLongitude.Value, user.Latitude,user.Longitude);
+                user.Distance = (int)CoordinateExtensions.CalculateDistance(userParams.CurrentLatitude.Value, userParams.CurrentLongitude.Value, user.Latitude, user.Longitude);
             }
 
             Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize,
@@ -59,15 +59,20 @@ namespace API.Controllers
             var user = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
             if (user == null) return NotFound();
 
+            if (user.UserName == username.ToLower())
+            {
+                return _mapper.Map<MemberDto>(user);
+            }
+
             var targetUser = await _uow.UserRepository.GetUserByUsernameAsync(username.ToLower());
+
             if (targetUser == null) return NotFound();
 
             if (targetUser.IsBlocked) return BadRequest("This user is unavailable");
 
-            if(await _uow.LikesRepository.GetUserLike(targetUser.Id, user.Id) == null) return BadRequest("This user is unavailable");
+            if (await _uow.LikesRepository.GetUserLike(targetUser.Id, user.Id) == null && targetUser.IsVisible == false) return NotFound();
 
-
-            return await _uow.UserRepository.GetMemberAsync(username);
+            return _mapper.Map<MemberDto>(targetUser);
         }
 
         [HttpPut("update-location")]
