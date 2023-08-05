@@ -16,9 +16,11 @@ namespace API.Controllers
         private readonly IPhotoService _photoService;
         private readonly IUnitOfWork _uow;
         private readonly INSFWChecker _nsfwChecker;
+        private readonly IContentModeratorService _contentModeratorService;
         public UsersController(IUnitOfWork uow, IMapper mapper,
-            IPhotoService photoService, INSFWChecker nsfwChecker)
+            IPhotoService photoService, INSFWChecker nsfwChecker, IContentModeratorService contentModeratorService)
         {
+            _contentModeratorService = contentModeratorService;
             _uow = uow;
             _photoService = photoService;
             _mapper = mapper;
@@ -120,6 +122,12 @@ namespace API.Controllers
             var user = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
 
             if (user == null) return NotFound();
+
+            bool isInappropriate = await _contentModeratorService.IsInappropriateText(memberUpdateDto.Introduction);
+            if (isInappropriate)
+            {
+                return BadRequest("The introduction contains inappropriate content.");
+            }
 
             _mapper.Map(memberUpdateDto, user);
 

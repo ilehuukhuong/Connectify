@@ -18,6 +18,7 @@ namespace API.Extensions
             services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
             services.Configure<OutlookMailSettings>(config.GetSection("OutlookMailSettings"));
             services.AddScoped<INSFWChecker, NSFWChecker>();
+            services.AddScoped<IContentModeratorService, ContentModeratorService>();
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<IMailService, MailService>();
             services.AddScoped<LogUserActivity>();
