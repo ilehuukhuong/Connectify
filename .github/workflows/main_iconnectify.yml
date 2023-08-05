@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -35,7 +35,7 @@ jobs:
           path: ${{env.DOTNET_ROOT}}/myapp
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: build
     environment:
       name: 'Production'
@@ -53,5 +53,5 @@ jobs:
         with:
           app-name: 'iConnectify'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E0C698FF810C4BD6BFBD9BE7D1F6A1FF }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_60B502649F894355B6E29EF338F14A6E }}
           package: .
