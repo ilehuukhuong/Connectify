@@ -3,10 +3,12 @@ using API.Entities;
 using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize]
     public class LikesController : BaseApiController
     {
         private readonly IUnitOfWork _uow;
@@ -18,23 +20,24 @@ namespace API.Controllers
         [HttpPost("{username}")]
         public async Task<ActionResult> AddLike(string username)
         {
-            var sourceUserId = User.GetUserId();
             var likedUser = await _uow.UserRepository.GetUserByUsernameAsync(username);
-            var sourceUser = await _uow.LikesRepository.GetUserWithLikes(sourceUserId);
+            var sourceUser = await _uow.LikesRepository.GetUserWithLikes(User.GetUserId());
 
-            if (likedUser == null) return NotFound();
+            if (likedUser == null || sourceUser == null) return NotFound();
 
-            if (sourceUser.UserName == username) return BadRequest("You cannot like yourself");
+            if (sourceUser.UserName == likedUser.UserName) return BadRequest("You cannot like yourself");
 
-            if (sourceUser.IsBlocked) return BadRequest("User not exist");
+            if (likedUser.IsBlocked || likedUser.IsDeleted) return NotFound();
 
-            var userLike = await _uow.LikesRepository.GetUserLike(sourceUserId, likedUser.Id);
+            if (await _uow.LikesRepository.GetUserLike(likedUser.Id, sourceUser.Id) == null && likedUser.IsVisible == false) return NotFound();
+
+            var userLike = await _uow.LikesRepository.GetUserLike(sourceUser.Id, likedUser.Id);
 
             if (userLike != null) return BadRequest("You already like this user");
 
             userLike = new UserLike
             {
-                SourceUserId = sourceUserId,
+                SourceUserId = sourceUser.Id,
                 TargetUserId = likedUser.Id
             };
 

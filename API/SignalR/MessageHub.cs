@@ -34,8 +34,6 @@ namespace API.SignalR
             var messages = await _uow.MessageRepository
                 .GetMessageThread(Context.User.GetUsername(), otherUser);
 
-            var changes = _uow.HasChanges();
-
             if (_uow.HasChanges()) await _uow.Complete();
 
             await Clients.Caller.SendAsync("ReceiveMessageThread", messages);
@@ -56,13 +54,11 @@ namespace API.SignalR
                 throw new HubException("You cannot send messages to yourself");
 
             var sender = await _uow.UserRepository.GetUserByUsernameAsync(username);
-            var recipient = await _uow.UserRepository.GetUserByUsernameAsync(createMessageDto.RecipientUsername);
+            var recipient = await _uow.UserRepository.GetUserByUsernameAsync(createMessageDto.RecipientUsername) ?? throw new HubException("Not found user");
 
-            if (recipient == null) throw new HubException("Not found user");
+            if (recipient.IsBlocked || recipient.IsDeleted) throw new HubException("This user is unavailable");
 
-            if (recipient.IsBlocked) throw new HubException("This user is unavailable");
-
-            if (await _uow.LikesRepository.GetUserLike(sender.Id, recipient.Id) == null || await _uow.LikesRepository.GetUserLike(recipient.Id, sender.Id) == null) 
+            if (await _uow.LikesRepository.GetUserLike(sender.Id, recipient.Id) == null || await _uow.LikesRepository.GetUserLike(recipient.Id, sender.Id) == null)
                 throw new HubException("You cannot send messages to this user");
 
             var message = new Message
@@ -88,7 +84,7 @@ namespace API.SignalR
                 if (connections != null)
                 {
                     await _presenceHub.Clients.Clients(connections).SendAsync("NewMessageReceived",
-                        new {username = sender.UserName, knownAs = sender.KnownAs});
+                        new { username = sender.UserName, knownAs = sender.KnownAs });
                 }
             }
 

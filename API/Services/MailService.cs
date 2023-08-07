@@ -23,8 +23,10 @@ namespace API.Services
             message.To.Add(new MailboxAddress("", email));
             message.Subject = subject;
 
-            var builder = new BodyBuilder();
-            builder.HtmlBody = body;
+            var builder = new BodyBuilder
+            {
+                HtmlBody = body
+            };
 
             message.Body = builder.ToMessageBody();
 

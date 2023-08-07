@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using API.Entities;
 using API.Extensions;
 using Microsoft.AspNetCore.Identity;
@@ -22,10 +21,25 @@ namespace API.Middleware
             {
                 var username = context.User.GetUsername();
                 var user = await _userManager.FindByNameAsync(username);
-                if (user != null && user.IsBlocked)
+                
+                if (user == null)
                 {
                     context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    await context.Response.WriteAsync("Unauthorized: User is blocked");
+                    await context.Response.WriteAsync("Unauthorized: The account was not found.");
+                    return;
+                }
+
+                if (user.IsBlocked)
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    await context.Response.WriteAsync("Unauthorized: Your account has been blocked.");
+                    return;
+                }
+
+                if (user.IsDeleted)
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    await context.Response.WriteAsync("Unauthorized: Your account has been deleted.");
                     return;
                 }
             }

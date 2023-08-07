@@ -25,7 +25,8 @@ namespace API.Controllers
                     u.Id,
                     Username = u.UserName,
                     Roles = u.UserRoles.Select(r => r.Role.Name).ToList(),
-                    isBlocked = u.IsBlocked
+                    isBlocked = u.IsBlocked,
+                    isDeleted = u.IsDeleted
                 })
                 .ToListAsync();
 

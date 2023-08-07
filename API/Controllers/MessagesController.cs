@@ -4,10 +4,12 @@ using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize]
     public class MessagesController : BaseApiController
     {
         private readonly IMapper _mapper;
@@ -23,15 +25,14 @@ namespace API.Controllers
         {
             var username = User.GetUsername();
 
-            if (username == createMessageDto.RecipientUsername.ToLower())
-                return BadRequest("You cannot send messages to yourself");
+            if (username == createMessageDto.RecipientUsername.ToLower()) return BadRequest("You cannot send messages to yourself");
 
             var sender = await _uow.UserRepository.GetUserByUsernameAsync(username);
             var recipient = await _uow.UserRepository.GetUserByUsernameAsync(createMessageDto.RecipientUsername);
 
-            if (recipient == null) return NotFound();
+            if (recipient == null || sender == null) return NotFound();
 
-            if (recipient.IsBlocked) return BadRequest("This user is unavailable");
+            if (recipient.IsBlocked || recipient.IsDeleted) return NotFound();
 
             if (await _uow.LikesRepository.GetUserLike(sender.Id, recipient.Id) == null || await _uow.LikesRepository.GetUserLike(recipient.Id, sender.Id) == null) 
                 return BadRequest("You cannot send messages to this user");
@@ -53,15 +54,13 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedList<MessageDto>>> GetMessagesForUser([FromQuery]
-            MessageParams messageParams)
+        public async Task<ActionResult<PagedList<MessageDto>>> GetMessagesForUser([FromQuery] MessageParams messageParams)
         {
             messageParams.Username = User.GetUsername();
 
             var messages = await _uow.MessageRepository.GetMessagesForUser(messageParams);
 
-            Response.AddPaginationHeader(new PaginationHeader(messages.CurrentPage, messages.PageSize, 
-                messages.TotalCount, messages.TotalPages));
+            Response.AddPaginationHeader(new PaginationHeader(messages.CurrentPage, messages.PageSize, messages.TotalCount, messages.TotalPages));
             
             return messages;
         }

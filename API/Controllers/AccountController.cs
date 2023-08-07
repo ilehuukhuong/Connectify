@@ -71,6 +71,12 @@ namespace API.Controllers
 
             if (!result) return BadRequest("Invalid Password");
 
+            if (user.IsDeleted) 
+            {
+                user.IsDeleted = false;
+                await _userManager.UpdateAsync(user);
+            }
+
             return new UserDto
             {
                 Username = user.UserName,

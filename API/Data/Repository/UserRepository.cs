@@ -31,6 +31,7 @@ namespace API.Data.Repository
             var query = _context.Users.AsQueryable();
 
             query = query.Where(u => u.IsBlocked == false);
+            query = query.Where(u => u.IsDeleted == false);
 
             if (userParams.Gender != null)
             {

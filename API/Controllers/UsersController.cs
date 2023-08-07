@@ -62,7 +62,7 @@ namespace API.Controllers
 
             if (targetUser == null) return NotFound();
 
-            if (targetUser.IsBlocked) return BadRequest("This user is unavailable");
+            if (targetUser.IsBlocked || targetUser.IsDeleted) NotFound();
 
             if (await _uow.LikesRepository.GetUserLike(targetUser.Id, user.Id) == null && targetUser.IsVisible == false) return NotFound();
 
@@ -92,7 +92,7 @@ namespace API.Controllers
                 user.IsVisible = true;
                 if (await _uow.Complete()) return NoContent();
             }
-            return NotFound("Failed to update");
+            return NotFound("User not found");
         }
 
         [HttpPut("invisible")]
@@ -104,7 +104,19 @@ namespace API.Controllers
                 user.IsVisible = false;
                 if (await _uow.Complete()) return NoContent();
             }
-            return NotFound("Failed to update");
+            return NotFound("User not found");
+        }
+
+        [HttpPut("delete-account")]
+        public async Task<ActionResult> DeleteAccount()
+        {
+            var user = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+            if (user != null)
+            {
+                user.IsDeleted = true;
+                if (await _uow.Complete()) return Ok("Account deleted");
+            }
+            return NotFound("User not found");
         }
     }
 }

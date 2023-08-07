@@ -29,6 +29,8 @@ namespace API.Data.Repository
                 var sourceUser = await _context.Users.Where(x => x.Id == likesParams.UserId).Include(x => x.LikedUsers).Include(x => x.LikedByUsers).FirstOrDefaultAsync();
                 var likes = _context.Likes.AsQueryable();
                 likes = likes.Where(like => like.SourceUserId == likesParams.UserId);
+                likes = likes.Where(like => like.TargetUser.IsBlocked == false);
+                likes = likes.Where(like => like.TargetUser.IsDeleted == false);
                 users = likes.Select(like => like.TargetUser);
                 foreach (var user in sourceUser.LikedByUsers)
                 {
@@ -41,6 +43,8 @@ namespace API.Data.Repository
                 var sourceUser = await _context.Users.Where(x => x.Id == likesParams.UserId).Include(x => x.LikedUsers).Include(x => x.LikedByUsers).FirstOrDefaultAsync();
                 var likes = _context.Likes.AsQueryable();
                 likes = likes.Where(like => like.TargetUserId == likesParams.UserId);
+                likes = likes.Where(like => like.TargetUser.IsBlocked == false);
+                likes = likes.Where(like => like.TargetUser.IsDeleted == false);
                 users = likes.Select(like => like.SourceUser);
                 foreach (var user in sourceUser.LikedUsers)
                 {
@@ -53,11 +57,15 @@ namespace API.Data.Repository
                 // Users who liked the source user
                 var likedByUsers = _context.Likes
                     .Where(like => like.TargetUserId == likesParams.UserId)
+                    .Where(like => like.SourceUser.IsBlocked == false)
+                    .Where(like => like.SourceUser.IsDeleted == false)
                     .Select(like => like.SourceUser);
 
                 // Users liked by the source user
                 var likedUsers = _context.Likes
                     .Where(like => like.SourceUserId == likesParams.UserId)
+                    .Where(like => like.TargetUser.IsBlocked == false)
+                    .Where(like => like.TargetUser.IsDeleted == false)
                     .Select(like => like.TargetUser);
 
                 // Intersection of the two lists
