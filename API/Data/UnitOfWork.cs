@@ -15,11 +15,11 @@ namespace API.Data
         }
 
         public IUserRepository UserRepository => new UserRepository(_context, _mapper);
-
         public IMessageRepository MessageRepository => new MessageRepository(_context, _mapper);
-
         public ILikesRepository LikesRepository => new LikesRepository(_context);
         public IGenderRepository GenderRepository => new GenderRepository(_context);
+        public ILookingForRepository LookingForRepository => new LookingForRepository(_context);
+        public IInterestRepository InterestRepository => new InterestRepository(_context);
 
         public async Task<bool> Complete()
         {

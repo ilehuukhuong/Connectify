@@ -29,6 +29,38 @@ namespace API.Data
             await context.SaveChangesAsync();
         }
 
+        public static async Task SeedInterest(DataContext context)
+        {
+            if (await context.Interests.AnyAsync()) return;
+
+            var interestData = await File.ReadAllTextAsync("Data/DatabaseDataSeed/InterestSeedData.json");
+            var options = new JsonSerializerOptions{PropertyNameCaseInsensitive = true};
+            var interests = JsonSerializer.Deserialize<List<Interest>>(interestData);
+
+            foreach (var interest in interests)
+            {
+                context.Interests.Add(interest);
+            }
+            
+            await context.SaveChangesAsync();
+        }
+
+        public static async Task SeedLookingFor(DataContext context)
+        {
+            if (await context.LookingFors.AnyAsync()) return;
+
+            var lookingForData = await File.ReadAllTextAsync("Data/DatabaseDataSeed/LookingForSeedData.json");
+            var options = new JsonSerializerOptions{PropertyNameCaseInsensitive = true};
+            var lookingFors = JsonSerializer.Deserialize<List<LookingFor>>(lookingForData);
+
+            foreach (var lookingFor in lookingFors)
+            {
+                context.LookingFors.Add(lookingFor);
+            }
+            
+            await context.SaveChangesAsync();
+        }
+
         public static async Task SeedUsers(UserManager<AppUser> userManager, 
             RoleManager<AppRole> roleManager)
         {

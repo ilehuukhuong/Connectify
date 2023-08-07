@@ -86,7 +86,28 @@ namespace API.Data.Repository
         {
             return await _context.Users
                 .Include(p => p.Photos)
+                .Include(g => g.Gender)
+                .Include(l => l.LookingFors)
+                .Include(i => i.Interests)
                 .SingleOrDefaultAsync(x => x.UserName == username);
+        }
+
+        public bool GetUserInterestAsync(AppUser user, int interestId)
+        {
+            if (user.Interests.Any(l => l.Id == interestId))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool GetUserLookingForAsync(AppUser user, int lookingForId)
+        {
+            if (user.LookingFors.Any(l => l.Id == lookingForId))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

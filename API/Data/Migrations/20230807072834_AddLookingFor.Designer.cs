@@ -3,6 +3,7 @@ using System;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230807072834_AddLookingFor")]
+    partial class AddLookingFor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,6 +87,9 @@ namespace API.Data.Migrations
 
                     b.Property<int>("GenderId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Interests")
+                        .HasColumnType("text");
 
                     b.Property<string>("Introduction")
                         .HasColumnType("text");
@@ -216,27 +222,6 @@ namespace API.Data.Migrations
                     b.HasKey("Name");
 
                     b.ToTable("Groups");
-                });
-
-            modelBuilder.Entity("API.Entities.Interest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AppUserId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
-
-                    b.ToTable("Interests");
                 });
 
             modelBuilder.Entity("API.Entities.LookingFor", b =>
@@ -471,17 +456,10 @@ namespace API.Data.Migrations
                         .HasForeignKey("GroupName");
                 });
 
-            modelBuilder.Entity("API.Entities.Interest", b =>
-                {
-                    b.HasOne("API.Entities.AppUser", null)
-                        .WithMany("Interests")
-                        .HasForeignKey("AppUserId");
-                });
-
             modelBuilder.Entity("API.Entities.LookingFor", b =>
                 {
                     b.HasOne("API.Entities.AppUser", null)
-                        .WithMany("LookingFors")
+                        .WithMany("LookingFor")
                         .HasForeignKey("AppUserId");
                 });
 
@@ -577,13 +555,11 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Entities.AppUser", b =>
                 {
-                    b.Navigation("Interests");
-
                     b.Navigation("LikedByUsers");
 
                     b.Navigation("LikedUsers");
 
-                    b.Navigation("LookingFors");
+                    b.Navigation("LookingFor");
 
                     b.Navigation("MessagesReceived");
 

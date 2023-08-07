@@ -1,4 +1,5 @@
 using API.DTOs;
+using API.Entities;
 using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
@@ -47,7 +48,6 @@ namespace API.Controllers
         }
 
         [HttpGet("{username}")]
-
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
             var user = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
@@ -67,6 +67,82 @@ namespace API.Controllers
             if (await _uow.LikesRepository.GetUserLike(targetUser.Id, user.Id) == null && targetUser.IsVisible == false) return NotFound();
 
             return _mapper.Map<MemberDto>(targetUser);
+        }
+
+        [HttpPost("add-lookingfor/{id}")]
+        public async Task<ActionResult> AddLookingFor(int id)
+        {
+            var user = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+            if (user == null) return NotFound();
+
+            var lookingFor = await _uow.LookingForRepository.GetLookingForById(id);
+            if (lookingFor == null) return NotFound();
+
+            if (user.LookingFors.Count >= 3) return BadRequest("You can only have 3 looking fors");
+
+            if (_uow.UserRepository.GetUserLookingForAsync(user, id) == true) return BadRequest("You already have this looking for");
+
+            user.LookingFors.Add(lookingFor);
+
+            if (await _uow.Complete()) return NoContent();
+
+            return BadRequest("Failed to add looking for");
+        }
+
+        [HttpDelete("delete-lookingfor/{id}")]
+        public async Task<ActionResult> DeleteLookingFor(int id)
+        {
+            var user = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+            if (user == null) return NotFound();
+
+            var lookingFor = await _uow.LookingForRepository.GetLookingForById(id);
+            if (lookingFor == null) return NotFound();
+
+            if (_uow.UserRepository.GetUserLookingForAsync(user, id) == false) return NotFound();
+
+            user.LookingFors.Remove(lookingFor);
+
+            if (await _uow.Complete()) return NoContent();
+
+            return BadRequest("Failed to delete looking for"); 
+        }
+
+        [HttpPost("add-interest/{id}")]
+        public async Task<ActionResult> AddInterest(int id)
+        {
+            var user = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+            if (user == null) return NotFound();
+
+            var interest = await _uow.InterestRepository.GetInterestById(id);
+            if (interest == null) return NotFound();
+
+            if (user.Interests.Count >= 5) return BadRequest("You can only have 5 looking fors");
+
+            if (_uow.UserRepository.GetUserInterestAsync(user, id) == true) return BadRequest("You already have this interest");
+
+            user.Interests.Add(interest);
+
+            if (await _uow.Complete()) return NoContent();
+
+            return BadRequest("Failed to add interest");
+        }
+
+        [HttpDelete("delete-interest/{id}")]
+        public async Task<ActionResult> DeleteInterest(int id)
+        {
+            var user = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+            if (user == null) return NotFound();
+
+            var interest = await _uow.InterestRepository.GetInterestById(id);
+            if (interest == null) return NotFound();
+
+            if (_uow.UserRepository.GetUserInterestAsync(user, id) == false) return NotFound();
+
+            user.Interests.Remove(interest);
+
+            if (await _uow.Complete()) return NoContent();
+
+            return BadRequest("Failed to delete interest"); 
         }
 
         [HttpPut("update-location")]
@@ -92,7 +168,7 @@ namespace API.Controllers
                 user.IsVisible = true;
                 if (await _uow.Complete()) return NoContent();
             }
-            return NotFound("User not found");
+            return BadRequest("Failed to update visible");
         }
 
         [HttpPut("invisible")]
@@ -104,7 +180,7 @@ namespace API.Controllers
                 user.IsVisible = false;
                 if (await _uow.Complete()) return NoContent();
             }
-            return NotFound("User not found");
+            return BadRequest("Failed to update invisible");
         }
 
         [HttpPut("delete-account")]

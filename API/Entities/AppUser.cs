@@ -14,14 +14,14 @@ namespace API.Entities
         public int GenderId { get; set; }
         public Gender Gender { get; set; }
         public string Introduction { get; set; }
-        public string LookingFor { get; set; }
-        public string Interests { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public bool IsBlocked { get; set; } = false;
         public bool IsDeleted { get; set; } = false;
         public bool IsVisible  { get; set; } = true;
         public List<Photo> Photos { get; set; } = new();
+        public List<LookingFor> LookingFors { get; set; } = new();
+        public List<Interest> Interests {get; set; } = new();
         public List<UserLike> LikedByUsers { get; set; }
         public List<UserLike> LikedUsers { get; set; }
         public List<Message> MessagesSent { get; set; }
