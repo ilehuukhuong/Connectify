@@ -1,5 +1,7 @@
+using API.Helpers;
 using API.Interfaces;
 using Microsoft.Azure.CognitiveServices.ContentModerator;
+using Microsoft.Extensions.Options;
 
 namespace API.Services
 {
@@ -7,13 +9,11 @@ namespace API.Services
     {
         private readonly ContentModeratorClient _client;
 
-        public ContentModeratorService(IConfiguration configuration)
+        public ContentModeratorService(IOptions<ContentModeratorSettings> config)
         {
-            string subscriptionKey = configuration["ContentModerator:SubscriptionKey"];
-            string endpoint = configuration["ContentModerator:Endpoint"];
-            _client = new ContentModeratorClient(new ApiKeyServiceClientCredentials(subscriptionKey))
+            _client = new ContentModeratorClient(new ApiKeyServiceClientCredentials(config.Value.Key))
             {
-                Endpoint = endpoint
+                Endpoint = config.Value.Endpoint
             };
         }
 
