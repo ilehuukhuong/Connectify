@@ -14,8 +14,7 @@ namespace API.Helpers
                     opt => opt.MapFrom(src => src.Photos.FirstOrDefault(x => x.IsMain).Url))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender.Name))
                 .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalcuateAge()))
-                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City.Name))
-                .ForMember(dest => dest.Distance, opt => opt.Ignore());
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City.Name));
             CreateMap<AppUser, MemberDtoWithoutIsVisible>()
                 .ForMember(dest => dest.PhotoUrl, 
                     opt => opt.MapFrom(src => src.Photos.FirstOrDefault(x => x.IsMain).Url))

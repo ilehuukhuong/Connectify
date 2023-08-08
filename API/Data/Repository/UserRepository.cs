@@ -18,7 +18,7 @@ namespace API.Data.Repository
             _context = context;
         }
 
-        public async Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams)
+        public async Task<PagedList<MemberDtoWithoutIsVisible>> GetMembersAsync(UserParams userParams)
         {
             var query = _context.Users
                 .AsSplitQuery()
@@ -65,8 +65,8 @@ namespace API.Data.Repository
                 _ => query.OrderByDescending(u => u.LastActive)
             };
 
-            return await PagedList<MemberDto>.CreateAsync(
-                query.AsNoTracking().ProjectTo<MemberDto>(_mapper.ConfigurationProvider),
+            return await PagedList<MemberDtoWithoutIsVisible>.CreateAsync(
+                query.AsNoTracking().ProjectTo<MemberDtoWithoutIsVisible>(_mapper.ConfigurationProvider),
                 userParams.PageNumber,
                 userParams.PageSize);
         }
