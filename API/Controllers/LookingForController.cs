@@ -2,10 +2,10 @@ using API.Entities;
 using API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
+    [Authorize]
     public class LookingForController : BaseApiController
     {
         private readonly IUnitOfWork _uow;
@@ -18,7 +18,7 @@ namespace API.Controllers
         [HttpGet("{name}")]
         public async Task<ActionResult<IEnumerable<LookingFor>>> GetLookingFors(string name)
         {
-            return Ok(await _uow.LookingForRepository.GetLookingFors(name));
+            return Ok(await _uow.LookingForRepository.SearchLookingFors(name));
         }
 
         [HttpPost]

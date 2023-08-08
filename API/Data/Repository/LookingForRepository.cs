@@ -38,9 +38,13 @@ namespace API.Data.Repository
             return await _context.LookingFors.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
         }
 
-        public async Task<IEnumerable<LookingFor>> GetLookingFors(string name)
+        public async Task<IEnumerable<LookingFor>> SearchLookingFors(string name)
         {
-            return await _context.LookingFors.Where(x => x.Name.ToLower() == name.ToLower()).OrderBy(x => x.Name).ToListAsync();
+            return await _context.LookingFors
+                .Where(x => x.Name.ToLower()
+                .Contains(name.ToLower()))
+                .OrderBy(x => x.Name)
+                .ToListAsync();
         }
 
         public void UpdateLookingFor(LookingFor lF)

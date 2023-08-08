@@ -9,6 +9,6 @@ namespace API.Interfaces
         void UpdateInterest(Interest lF);
         Task<Interest> GetInterestById(int id);
         Task<Interest> GetInterestByName(string name);
-        Task<IEnumerable<Interest>> GetInterests (string name);
+        Task<IEnumerable<Interest>> SearchInterests (string name);
     }
 }

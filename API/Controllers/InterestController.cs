@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize]
     public class InterestController : BaseApiController
     {
         private readonly IUnitOfWork _uow;
@@ -17,7 +18,7 @@ namespace API.Controllers
         [HttpGet("{name}")]
         public async Task<ActionResult<IEnumerable<Interest>>> GetInterests(string name)
         {
-            return Ok(await _uow.InterestRepository.GetInterests(name));
+            return Ok(await _uow.InterestRepository.SearchInterests(name));
         }
 
         [HttpPost]

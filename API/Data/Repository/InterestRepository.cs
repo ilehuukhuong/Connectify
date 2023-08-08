@@ -38,9 +38,13 @@ namespace API.Data.Repository
             return await _context.Interests.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
         }
 
-        public async Task<IEnumerable<Interest>> GetInterests(string name)
+        public async Task<IEnumerable<Interest>> SearchInterests(string name)
         {
-            return await _context.Interests.Where(x => x.Name.ToLower() == name.ToLower()).OrderBy(x => x.Name).ToListAsync();
+            return await _context.Interests
+                .Where(x => x.Name.ToLower()
+                .Contains(name.ToLower()))
+                .OrderBy(x => x.Name)
+                .ToListAsync();
         }
 
         public void UpdateInterest(Interest lF)
