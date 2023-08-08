@@ -108,7 +108,7 @@ namespace API.Controllers
 
             if (await _uow.Complete()) return NoContent();
 
-            return BadRequest("Failed to delete looking for"); 
+            return BadRequest("Failed to delete looking for");
         }
 
         [HttpPost("add-interest/{id}")]
@@ -146,7 +146,7 @@ namespace API.Controllers
 
             if (await _uow.Complete()) return NoContent();
 
-            return BadRequest("Failed to delete interest"); 
+            return BadRequest("Failed to delete interest");
         }
 
         [HttpPut("update-location")]
@@ -180,19 +180,18 @@ namespace API.Controllers
 
             _mapper.Map(locationDto, user);
 
-            if (await _uow.Complete()) 
+            if (await _uow.Complete())
             {
                 if (tempCity != -1)
                 {
-                    _uow.CityRepository.DeleteCity(tempCity);
-
-                    if (await _uow.Complete()) return NoContent();
-
-                    return BadRequest("Failed to delete city");
+                    if (_uow.CityRepository.DeleteCity(tempCity))
+                    {
+                        if (await _uow.Complete()) return NoContent();
+                        return BadRequest("Failed to delete city");
+                    }
                 }
                 return NoContent();
             }
-
             return BadRequest("Failed to update location");
         }
 
