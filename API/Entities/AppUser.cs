@@ -13,6 +13,7 @@ namespace API.Entities
         public DateTime LastActive { get; set; } = DateTime.UtcNow;
         public int GenderId { get; set; }
         public Gender Gender { get; set; }
+        public City City { get; set; } = null;
         public string Introduction { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }

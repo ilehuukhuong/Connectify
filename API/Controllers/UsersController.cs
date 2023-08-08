@@ -21,7 +21,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedList<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
+        public async Task<ActionResult<PagedList<MemberDtoWithoutIsVisible>>> GetUsers([FromQuery] UserParams userParams)
         {
             var currentUser = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
 
@@ -48,7 +48,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{username}")]
-        public async Task<ActionResult<MemberDto>> GetUser(string username)
+        public async Task<ActionResult<object>> GetUser(string username)
         {
             var user = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
             if (user == null) return NotFound();
@@ -66,7 +66,11 @@ namespace API.Controllers
 
             if (await _uow.LikesRepository.GetUserLike(targetUser.Id, user.Id) == null && targetUser.IsVisible == false) return NotFound();
 
-            return _mapper.Map<MemberDto>(targetUser);
+            var returnUser = _mapper.Map<MemberDtoWithoutIsVisible>(targetUser);
+
+            returnUser.Distance = (int)CoordinateExtensions.CalculateDistance(user.Latitude, user.Longitude, targetUser.Latitude, targetUser.Longitude);
+
+            return returnUser;
         }
 
         [HttpPost("add-lookingfor/{id}")]
@@ -151,6 +155,23 @@ namespace API.Controllers
             var user = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
             if (user == null) return NotFound();
             if (user.Latitude == locationDto.Latitude || user.Longitude == locationDto.Longitude) return NoContent();
+
+            var checkCity = await _uow.CityRepository.GetCityByName(locationDto.LocationName);
+
+            if (checkCity == null)
+            {
+                var city = new City
+                {
+                    Name = locationDto.LocationName
+                };
+
+                _uow.CityRepository.AddCity(city);
+                user.City = city;
+            }
+            else
+            {
+                user.City = checkCity;
+            }
 
             _mapper.Map(locationDto, user);
 

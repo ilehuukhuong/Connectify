@@ -89,6 +89,7 @@ namespace API.Data.Repository
                 .Include(g => g.Gender)
                 .Include(l => l.LookingFors)
                 .Include(i => i.Interests)
+                .Include(c => c.City)
                 .SingleOrDefaultAsync(x => x.UserName == username);
         }
 

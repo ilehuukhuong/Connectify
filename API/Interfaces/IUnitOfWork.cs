@@ -8,6 +8,7 @@ namespace API.Interfaces
         IGenderRepository GenderRepository {get;}
         ILookingForRepository LookingForRepository {get;}
         IInterestRepository InterestRepository {get;}
+        ICityRepository CityRepository {get;}
         Task<bool> Complete();
         bool HasChanges();
     }

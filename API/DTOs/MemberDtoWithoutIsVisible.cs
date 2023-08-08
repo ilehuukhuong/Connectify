@@ -3,7 +3,7 @@ using API.Entities;
 
 namespace API.DTOs
 {
-    public class MemberDto
+    public class MemberDtoWithoutIsVisible
     {
         public int Id { get; set; }
         public string UserName { get; set; }
@@ -16,7 +16,6 @@ namespace API.DTOs
         public int Distance { get; set; }
         public string Introduction { get; set; }
         public string City { get; set; }
-        public bool IsVisible  { get; set; }
         public List<PhotoDto> Photos { get; set; }
         public List<LookingFor> LookingFors { get; set; }
         public List<Interest> Interests {get; set; }

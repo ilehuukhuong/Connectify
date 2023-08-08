@@ -20,6 +20,7 @@ namespace API.Data
         public DbSet<Connection> Connections { get; set; }
         public DbSet<LookingFor> LookingFors { get; set; }
         public DbSet<Interest> Interests { get; set; }
+        public DbSet<City> Cities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

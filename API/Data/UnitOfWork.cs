@@ -20,6 +20,7 @@ namespace API.Data
         public IGenderRepository GenderRepository => new GenderRepository(_context);
         public ILookingForRepository LookingForRepository => new LookingForRepository(_context);
         public IInterestRepository InterestRepository => new InterestRepository(_context);
+        public ICityRepository CityRepository => new CityRepository(_context);
 
         public async Task<bool> Complete()
         {
