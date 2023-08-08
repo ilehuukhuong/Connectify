@@ -19,11 +19,9 @@ namespace API.Data.Repository
 
         public bool DeleteCity(int id)
         {
-            var lF = _context.Cities.FirstOrDefault(x => x.Id == id);
+            if (_context.Users.FirstOrDefault(x => x.CityId == id) != null) return false;
 
-            if (lF == null) return false;
-
-            _context.Cities.Remove(lF);
+            _context.Cities.Remove(_context.Cities.FirstOrDefault(x => x.Id == id));
 
             return true;
         }

@@ -154,9 +154,10 @@ namespace API.Controllers
         {
             var user = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
             if (user == null) return NotFound();
-            if (user.Latitude == locationDto.Latitude || user.Longitude == locationDto.Longitude) return NoContent();
+            if (user.Latitude == locationDto.Latitude && user.Longitude == locationDto.Longitude) return NoContent();
 
             var checkCity = await _uow.CityRepository.GetCityByName(locationDto.LocationName);
+            var tempCity = -1;
 
             if (checkCity == null)
             {
@@ -166,16 +167,31 @@ namespace API.Controllers
                 };
 
                 _uow.CityRepository.AddCity(city);
+
+                if (user.CityId != null) tempCity = user.CityId.Value;
+
                 user.City = city;
             }
             else
             {
+                if (user.CityId != null) tempCity = user.CityId.Value;
                 user.City = checkCity;
             }
 
             _mapper.Map(locationDto, user);
 
-            if (await _uow.Complete()) return NoContent();
+            if (await _uow.Complete()) 
+            {
+                if (tempCity != -1)
+                {
+                    _uow.CityRepository.DeleteCity(tempCity);
+
+                    if (await _uow.Complete()) return NoContent();
+
+                    return BadRequest("Failed to delete city");
+                }
+                return NoContent();
+            }
 
             return BadRequest("Failed to update location");
         }

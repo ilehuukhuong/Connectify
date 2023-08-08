@@ -18,17 +18,11 @@ namespace API.Data.Repository
             _context = context;
         }
 
-        public async Task<MemberDto> GetMemberAsync(string username)
-        {
-            return await _context.Users
-                .Where(x => x.UserName == username)
-                .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync();
-        }
-
         public async Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams)
         {
-            var query = _context.Users.AsQueryable();
+            var query = _context.Users
+                .AsSplitQuery()
+                .AsQueryable();
 
             query = query.Where(u => u.IsBlocked == false);
             query = query.Where(u => u.IsDeleted == false);
@@ -90,6 +84,7 @@ namespace API.Data.Repository
                 .Include(l => l.LookingFors)
                 .Include(i => i.Interests)
                 .Include(c => c.City)
+                .AsSplitQuery()
                 .SingleOrDefaultAsync(x => x.UserName == username);
         }
 
