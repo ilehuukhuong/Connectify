@@ -18,6 +18,13 @@ namespace API.Data.Repository
             _context = context;
         }
 
+        public Task<BlockUserDto> BlockUserAsync(int UserId)
+        {
+            var query = _context.Users.AsQueryable();
+            query = query.Where(u => u.Id == UserId);
+            return _mapper.ProjectTo<BlockUserDto>(query).FirstOrDefaultAsync();
+        }
+
         public async Task<PagedList<MemberDtoWithoutIsVisible>> GetMembersAsync(UserParams userParams)
         {
             var query = _context.Users

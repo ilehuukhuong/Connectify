@@ -20,5 +20,6 @@ namespace API.DTOs
         public string Password { get; set; }
         [Required] public string KnownAs { get; set; }
         [Required] public int GenderId { get; set; }
+        [Required] public string Captcha { get; set; }
     }
 }

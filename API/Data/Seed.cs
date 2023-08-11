@@ -97,6 +97,8 @@ namespace API.Data
             {
                 UserName = "admin",
                 GenderId = 1,
+                IsVisible = false,
+                DateOfBirth = DateOnly.Parse(DateTime.UtcNow.ToString("yyyy-MM-dd"))
             };
 
             await userManager.CreateAsync(admin, "Pa$$w0rd");

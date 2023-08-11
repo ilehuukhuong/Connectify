@@ -18,6 +18,7 @@ namespace API.Controllers
         [HttpGet("{name}")]
         public async Task<ActionResult<IEnumerable<LookingFor>>> GetLookingFors(string name)
         {
+            if (name == null) return BadRequest("Please input name");
             return Ok(await _uow.LookingForRepository.SearchLookingFors(name));
         }
 

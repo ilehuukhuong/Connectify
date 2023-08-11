@@ -1,6 +1,7 @@
 using API.Data;
 using API.Entities;
 using API.Extensions;
+using API.Interfaces;
 using API.Middleware;
 using API.SignalR;
 using Microsoft.AspNetCore.Identity;
@@ -56,8 +57,8 @@ app.UseCors(builder => builder
 app.UseAuthentication();
 app.Use(async (context, next) =>
 {
-    var userManager = context.RequestServices.GetRequiredService<UserManager<AppUser>>();
-    var middleware = new BlockUserMiddleware(next, userManager);
+    var unitOfWork = context.RequestServices.GetRequiredService<IUnitOfWork>();
+    var middleware = new BlockUserMiddleware(next, unitOfWork);
     await middleware.InvokeAsync(context);
 });
 app.UseAuthorization();

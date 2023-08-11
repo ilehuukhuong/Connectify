@@ -22,6 +22,7 @@ namespace API.Helpers
                 .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalcuateAge()))
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City.Name))
                 .ForMember(dest => dest.Distance, opt => opt.Ignore());
+            CreateMap<AppUser, BlockUserDto>();
             CreateMap<Photo, PhotoDto>();
             CreateMap<IntroductionUpdateDto, AppUser>();
             CreateMap<LocationDto, AppUser>();

@@ -11,5 +11,6 @@ namespace API.Interfaces
         Task<PagedList<MemberDtoWithoutIsVisible>> GetMembersAsync(UserParams userParams);
         bool GetUserLookingForAsync(AppUser user, int lookingForId);
         bool GetUserInterestAsync(AppUser user, int interestId);
+        Task<BlockUserDto> BlockUserAsync(int UserId);
     }
 }

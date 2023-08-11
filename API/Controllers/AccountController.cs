@@ -16,8 +16,10 @@ namespace API.Controllers
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly IMailService _mailService;
-        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService, IMapper mapper, IMailService mailService)
+        private readonly ICaptchaService _captchaService;
+        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService, IMapper mapper, IMailService mailService, ICaptchaService captchaService)
         {
+            _captchaService = captchaService;
             _mailService = mailService;
             _userManager = userManager;
             _mapper = mapper;
@@ -27,6 +29,7 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
+            if (!await _captchaService.VerifyCaptcha(registerDto.Captcha)) return BadRequest("Invalid ReCapcha");
             if (await UserExists(registerDto.Username)) return BadRequest("Username already in use");
             if (await EmailExists(registerDto.Email)) return BadRequest("Email already in use");
 

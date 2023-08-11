@@ -62,7 +62,7 @@ namespace API.Controllers
 
             if (targetUser == null) return NotFound();
 
-            if (targetUser.IsBlocked || targetUser.IsDeleted) NotFound();
+            if (targetUser.IsBlocked || targetUser.IsDeleted) return NotFound();
 
             if (await _uow.LikesRepository.GetUserLike(targetUser.Id, user.Id) == null && targetUser.IsVisible == false) return NotFound();
 

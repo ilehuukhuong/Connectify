@@ -18,7 +18,7 @@ namespace API.Extensions
                 var wordCount = value.ToString().Split(' ').Length;
                 if (wordCount > _maxWords)
                 {
-                    return new ValidationResult($"The field {validationContext.DisplayName} must be less than {_maxWords} words.");
+                    return new ValidationResult($"The {validationContext.DisplayName.ToLower()} must be less than {_maxWords} words.");
                 }
             }
 

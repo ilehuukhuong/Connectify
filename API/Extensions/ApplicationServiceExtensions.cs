@@ -12,13 +12,16 @@ namespace API.Extensions
             IConfiguration config)
         {
             services.AddCors();
+            services.AddHttpClient();
             services.AddScoped<ITokenService, TokenService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.Configure<ComputervisionSettings>(config.GetSection("ComputervisionSettings"));
             services.Configure<ContentModeratorSettings>(config.GetSection("ContentModeratorSettings"));
             services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
             services.Configure<OutlookMailSettings>(config.GetSection("OutlookMailSettings"));
+            services.Configure<ReCaptchaSettings>(config.GetSection("ReCaptchaSettings"));
             services.AddScoped<INSFWChecker, NSFWChecker>();
+            services.AddScoped<ICaptchaService, CaptchaService>();
             services.AddScoped<IContentModeratorService, ContentModeratorService>();
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<IMailService, MailService>();
