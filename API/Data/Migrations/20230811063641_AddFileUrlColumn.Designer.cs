@@ -3,6 +3,7 @@ using System;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230811063641_AddFileUrlColumn")]
+    partial class AddFileUrlColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -295,11 +298,20 @@ namespace API.Data.Migrations
                     b.Property<DateTime?>("DateRead")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("FileUrl")
+                        .HasColumnType("text");
+
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("double precision");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("MediaType")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("MessageSent")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("MessageType")
-                        .HasColumnType("text");
 
                     b.Property<bool>("RecipientDeleted")
                         .HasColumnType("boolean");
