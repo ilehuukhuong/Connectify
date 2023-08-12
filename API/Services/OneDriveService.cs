@@ -10,7 +10,7 @@ namespace API.Services
     public class OneDriveService : IOneDriveService
     {
         private readonly OneDriveSettings _oneDriveSettings;
-        private readonly IConfidentialClientApplication _app;
+        //private readonly IConfidentialClientApplication _app;
         private static readonly string GraphApiEndpoint = "https://graph.microsoft.com/v1.0";
         private static readonly string UploadPathTemplate = "/users/{0}/drive/root:/{1}:/content"; // Updated this line
 
@@ -21,15 +21,19 @@ namespace API.Services
             _oneDriveSettings = oneDriveSettings.Value;
 
             // Initialize MSAL client
-            _app = ConfidentialClientApplicationBuilder.Create(_oneDriveSettings.ClientId)
-                .WithClientSecret(_oneDriveSettings.ClientSecret)
-                .WithAuthority(new Uri($"https://login.microsoftonline.com/{_oneDriveSettings.TenantId}"))
-                .Build();
+            // _app = ConfidentialClientApplicationBuilder.Create(_oneDriveSettings.ClientId)
+            //     .WithClientSecret(_oneDriveSettings.ClientSecret)
+            //     .WithAuthority(new Uri($"https://login.microsoftonline.com/{_oneDriveSettings.TenantId}"))
+            //     .Build();
         }
 
         private async Task<string> GetAccessTokenAsync()
         {
-            var result = await _app.AcquireTokenForClient(new[] { "https://graph.microsoft.com/.default" }).ExecuteAsync();
+            var app = ConfidentialClientApplicationBuilder.Create(_oneDriveSettings.ClientId)
+                .WithClientSecret(_oneDriveSettings.ClientSecret)
+                .WithAuthority(new Uri($"https://login.microsoftonline.com/{_oneDriveSettings.TenantId}"))
+                .Build();
+            var result = await app.AcquireTokenForClient(new[] { "https://graph.microsoft.com/.default" }).ExecuteAsync();
             return result.AccessToken;
         }
 

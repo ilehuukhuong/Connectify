@@ -13,16 +13,16 @@ namespace API.Helpers
                 .ForMember(dest => dest.PhotoUrl, 
                     opt => opt.MapFrom(src => src.Photos.FirstOrDefault(x => x.IsMain).Url))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender.Name))
-                .ForMember(dest => dest.LookingFors, opt => opt.MapFrom(src => src.UserLookingFors.Select(x => x.LookingFor).ToList()))
-                .ForMember(dest => dest.Interests, opt => opt.MapFrom(src => src.UserInterests.Select(x => x.Interest).ToList()))
+                .ForMember(dest => dest.LookingFors, opt => opt.MapFrom(src => src.UserLookingFors.Select(x => x.LookingFor)))
+                .ForMember(dest => dest.Interests, opt => opt.MapFrom(src => src.UserInterests.Select(x => x.Interest)))
                 .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalcuateAge()))
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City.Name));
             CreateMap<AppUser, MemberDtoWithoutIsVisible>()
                 .ForMember(dest => dest.PhotoUrl, 
                     opt => opt.MapFrom(src => src.Photos.FirstOrDefault(x => x.IsMain).Url))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender.Name))
-                .ForMember(dest => dest.LookingFors, opt => opt.MapFrom(src => src.UserLookingFors.Select(x => x.LookingFor).ToList()))
-                .ForMember(dest => dest.Interests, opt => opt.MapFrom(src => src.UserInterests.Select(x => x.Interest).ToList()))
+                .ForMember(dest => dest.LookingFors, opt => opt.MapFrom(src => src.UserLookingFors.Select(x => x.LookingFor)))
+                .ForMember(dest => dest.Interests, opt => opt.MapFrom(src => src.UserInterests.Select(x => x.Interest)))
                 .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalcuateAge()))
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City.Name))
                 .ForMember(dest => dest.Distance, opt => opt.Ignore());
