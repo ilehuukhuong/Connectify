@@ -1,8 +1,10 @@
 using System.Net.Http.Headers;
+using System.Text;
 using API.Helpers;
 using API.Interfaces;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace API.Services
@@ -12,8 +14,6 @@ namespace API.Services
         private readonly OneDriveSettings _oneDriveSettings;
         //private readonly IConfidentialClientApplication _app;
         private static readonly string GraphApiEndpoint = "https://graph.microsoft.com/v1.0";
-        private static readonly string UploadPathTemplate = "/users/{0}/drive/root:/{1}:/content"; // Updated this line
-
         private readonly string UserId = "cbf7a51b-d7b6-4dd9-897c-ce67dbae77f0";  // Use the provided OneDrive user ID.
 
         public OneDriveService(IOptions<OneDriveSettings> oneDriveSettings)
@@ -44,10 +44,40 @@ namespace API.Services
             return downloadUrl;
         }
 
+        public async Task<string> CreateUniqueFolderAsync()
+        {
+            var folderName = Guid.NewGuid().ToString();
+            var createFolderPath = $"{GraphApiEndpoint}/users/{UserId}/drive/root/children";
+
+            var folderContent = new JObject
+            {
+                ["name"] = folderName,
+                ["folder"] = new JObject(),
+                ["@microsoft.graph.conflictBehavior"] = "rename"
+            };
+
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetAccessTokenAsync());
+
+                var response = await httpClient.PostAsync(createFolderPath, new StringContent(JsonConvert.SerializeObject(folderContent), Encoding.UTF8, "application/json"));
+                var responseBody = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Failed to create folder. Status code: {response.StatusCode}. Error: {responseBody}");
+                }
+
+                return folderName; // Return the name of the folder
+            }
+        }
+
         public async Task<string> UploadToOneDriveAsync(IFormFile file)
         {
+            var folderName = await CreateUniqueFolderAsync();
             var fileName = file.FileName;
-            var uploadPath = string.Format(UploadPathTemplate, UserId, fileName);  // Updated this line
+            var uploadPath = $"{GraphApiEndpoint}/users/{UserId}/drive/root:/{folderName}/{fileName}:/content";
 
             using (var httpClient = new HttpClient())
             {
@@ -59,7 +89,7 @@ namespace API.Services
                     content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
 
                     // POST request to upload the file
-                    var response = await httpClient.PutAsync($"{GraphApiEndpoint}{uploadPath}", content);
+                    var response = await httpClient.PutAsync(uploadPath, content);
                     var responseBody = await response.Content.ReadAsStringAsync();
 
                     if (!response.IsSuccessStatusCode)

@@ -65,18 +65,18 @@ namespace API.Controllers
             return BadRequest("Failed to send message");
         }
 
-        [HttpPost("{recipientUsername}")]
+        [HttpPost("file")]
         [DisableRequestSizeLimit]
         //[RequestFormLimits(MultipartBodyLengthLimit = 500 * 1024 * 1024)]
         //[RequestSizeLimit(500 * 1024 * 1024)]
-        public async Task<ActionResult<MessageDto>> CreateFileMessage(string recipientUsername, IFormFile file)
+        public async Task<ActionResult<MessageDto>> CreateFileMessage([FromForm]CreateFileMessageDto createFileMessageDto)
         {
             var username = User.GetUsername();
 
-            if (username == recipientUsername.ToLower()) return BadRequest("You cannot send messages to yourself");
+            if (username == createFileMessageDto.RecipientUsername.ToLower()) return BadRequest("You cannot send messages to yourself");
 
             var sender = await _uow.UserRepository.GetUserByUsernameAsync(username);
-            var recipient = await _uow.UserRepository.GetUserByUsernameAsync(recipientUsername);
+            var recipient = await _uow.UserRepository.GetUserByUsernameAsync(createFileMessageDto.RecipientUsername);
 
             if (recipient == null || sender == null) return NotFound();
 
@@ -93,11 +93,12 @@ namespace API.Controllers
                 RecipientUsername = recipient.UserName
             };
 
-            if (file != null)
+            if (createFileMessageDto.File != null)
             {
-                var mediaType = DetermineMediaType(file);
-                if (mediaType == "File" && file.Length > 500 * 1024 * 1024) return BadRequest("File size cannot exceed 500 MB");
-                var fileUrl = await _oneDriveService.UploadToOneDriveAsync(file);
+                if (!FileExtensions.IsValidFileName(createFileMessageDto.File.FileName)) return BadRequest("Invalid file name");
+                var mediaType = DetermineMediaType(createFileMessageDto.File);
+                if (mediaType == "File" && createFileMessageDto.File.Length > 500 * 1024 * 1024) return BadRequest("File size cannot exceed 500 MB");
+                var fileUrl = await _oneDriveService.UploadToOneDriveAsync(createFileMessageDto.File);
                 message.Content = fileUrl;
                 message.MessageType = mediaType;
             }
