@@ -22,8 +22,8 @@ namespace API.Entities
         public bool IsDeleted { get; set; } = false;
         public bool IsVisible  { get; set; } = true;
         public List<Photo> Photos { get; set; } = new();
-        public List<LookingFor> LookingFors { get; set; } = new();
-        public List<Interest> Interests {get; set; } = new();
+        public List<UserLookingFor> UserLookingFors { get; set; } = new();
+        public List<UserInterest> UserInterests {get; set; } = new();
         public List<UserLike> LikedByUsers { get; set; }
         public List<UserLike> LikedUsers { get; set; }
         public List<Message> MessagesSent { get; set; }

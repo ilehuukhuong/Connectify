@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using API.Entities;
 
 namespace API.DTOs
 {
@@ -7,6 +6,7 @@ namespace API.DTOs
     {
         public int Id { get; set; }
         public string UserName { get; set; }
+        public string FullName { get; set; }
         public string PhotoUrl { get; set; }
         public int Age { get; set; }
         public string KnownAs { get; set; }
@@ -17,8 +17,8 @@ namespace API.DTOs
         public string Introduction { get; set; }
         public string City { get; set; }
         public List<PhotoDto> Photos { get; set; }
-        public List<LookingFor> LookingFors { get; set; }
-        public List<Interest> Interests {get; set; }
+        public List<IdNameDto> LookingFors { get; set; }
+        public List<IdNameDto> Interests {get; set; }
         [JsonIgnore]
         public double Latitude { get; set; }
         [JsonIgnore]

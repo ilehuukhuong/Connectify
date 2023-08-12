@@ -31,7 +31,44 @@ namespace API.Controllers
             return "File";
         }
 
+        [HttpPost("location/{recipientUsername}")]
+        public async Task<ActionResult> CreateLocationMessage(string recipientUsername)
+        {
+            var username = User.GetUsername();
+
+            if (username == recipientUsername.ToLower()) return BadRequest("You cannot send messages to yourself");
+
+            var sender = await _uow.UserRepository.GetUserByUsernameAsync(username);
+            var recipient = await _uow.UserRepository.GetUserByUsernameAsync(recipientUsername);
+
+            if (recipient == null || sender == null) return NotFound();
+
+            if (recipient.IsBlocked || recipient.IsDeleted) return NotFound();
+
+            if (await _uow.LikesRepository.GetUserLike(sender.Id, recipient.Id) == null || await _uow.LikesRepository.GetUserLike(recipient.Id, sender.Id) == null)
+                return BadRequest("You cannot send messages to this user");
+
+            var message = new Message
+            {
+                Sender = sender,
+                Recipient = recipient,
+                SenderUsername = sender.UserName,
+                RecipientUsername = recipient.UserName,
+                Content = sender.Latitude + "," + sender.Longitude,
+                MessageType = "Location"
+            };
+
+            _uow.MessageRepository.AddMessage(message);
+
+            if (await _uow.Complete()) return Ok(_mapper.Map<MessageDto>(message));
+
+            return BadRequest("Failed to send message");
+        }
+
         [HttpPost("{recipientUsername}")]
+        [DisableRequestSizeLimit]
+        //[RequestFormLimits(MultipartBodyLengthLimit = 500 * 1024 * 1024)]
+        //[RequestSizeLimit(500 * 1024 * 1024)]
         public async Task<ActionResult<MessageDto>> CreateFileMessage(string recipientUsername, IFormFile file)
         {
             var username = User.GetUsername();
@@ -100,21 +137,6 @@ namespace API.Controllers
                 MessageType = "Text"
             };
 
-            // if (createMessageDto.File != null)
-            // {
-            //     var mediaType = DetermineMediaType(createMessageDto.File.FileName);
-            //     //var fileUrl = await _oneDriveService.UploadToOneDriveAsync(createMessageDto.File);
-            //     message.FileUrl = "";
-            //     message.MediaType = mediaType;
-            // }
-            // else message.MediaType = "None";
-
-            // if (createMessageDto.Latitude.HasValue && createMessageDto.Longitude.HasValue)
-            // {
-            //     message.Latitude = createMessageDto.Latitude.Value;
-            //     message.Longitude = createMessageDto.Longitude.Value;
-            // }
-
             _uow.MessageRepository.AddMessage(message);
 
             if (await _uow.Complete()) return Ok(_mapper.Map<MessageDto>(message));
@@ -142,7 +164,7 @@ namespace API.Controllers
             var message = await _uow.MessageRepository.GetMessage(id);
 
             if (message.SenderUsername != username && message.RecipientUsername != username)
-                return Unauthorized();
+                return BadRequest("You cannot delete this message");
 
             if (message.SenderUsername == username) message.SenderDeleted = true;
             if (message.RecipientUsername == username) message.RecipientDeleted = true;

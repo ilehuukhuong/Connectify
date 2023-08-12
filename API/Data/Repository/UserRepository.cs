@@ -88,29 +88,21 @@ namespace API.Data.Repository
             return await _context.Users
                 .Include(p => p.Photos)
                 .Include(g => g.Gender)
-                .Include(l => l.LookingFors)
-                .Include(i => i.Interests)
+                .Include(l => l.UserLookingFors).ThenInclude(l => l.LookingFor)
+                .Include(i => i.UserInterests).ThenInclude(i => i.Interest)
                 .Include(c => c.City)
                 .AsSplitQuery()
                 .SingleOrDefaultAsync(x => x.UserName == username);
         }
 
-        public bool GetUserInterestAsync(AppUser user, int interestId)
+        public Task<UserLookingFor> GetUserLookingForEntityAsync(AppUser user, LookingFor lookingFor)
         {
-            if (user.Interests.Any(l => l.Id == interestId))
-            {
-                return true;
-            }
-            return false;
+            return _context.UserLookingFors.FirstOrDefaultAsync(x => x.User == user && x.LookingFor == lookingFor);
         }
 
-        public bool GetUserLookingForAsync(AppUser user, int lookingForId)
+        public Task<UserInterest> GetUserInterestForEntityAsync(AppUser user, Interest interest)
         {
-            if (user.LookingFors.Any(l => l.Id == lookingForId))
-            {
-                return true;
-            }
-            return false;
+            return _context.UserInterests.FirstOrDefaultAsync(x => x.User == user && x.Interest == interest);
         }
     }
 }

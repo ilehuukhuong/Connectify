@@ -82,11 +82,16 @@ namespace API.Controllers
             var lookingFor = await _uow.LookingForRepository.GetLookingForById(id);
             if (lookingFor == null) return NotFound();
 
-            if (user.LookingFors.Count >= 3) return BadRequest("You can only have 3 looking fors");
+            if (user.UserLookingFors.Count >= 3) return BadRequest("You can only have 3 looking fors");
 
-            if (_uow.UserRepository.GetUserLookingForAsync(user, id) == true) return BadRequest("You already have this looking for");
+            if (await _uow.UserRepository.GetUserLookingForEntityAsync(user, lookingFor) != null) return BadRequest("You already have this looking for");
 
-            user.LookingFors.Add(lookingFor);
+            var userLookingFor = new UserLookingFor{
+                User = user,
+                LookingFor = lookingFor
+            };
+
+            user.UserLookingFors.Add(userLookingFor);
 
             if (await _uow.Complete()) return NoContent();
 
@@ -102,9 +107,11 @@ namespace API.Controllers
             var lookingFor = await _uow.LookingForRepository.GetLookingForById(id);
             if (lookingFor == null) return NotFound();
 
-            if (_uow.UserRepository.GetUserLookingForAsync(user, id) == false) return NotFound();
+            var userLookingFor = await _uow.UserRepository.GetUserLookingForEntityAsync(user, lookingFor);
 
-            user.LookingFors.Remove(lookingFor);
+            if (userLookingFor == null) return NotFound();
+
+            user.UserLookingFors.Remove(userLookingFor);
 
             if (await _uow.Complete()) return NoContent();
 
@@ -120,11 +127,16 @@ namespace API.Controllers
             var interest = await _uow.InterestRepository.GetInterestById(id);
             if (interest == null) return NotFound();
 
-            if (user.Interests.Count >= 5) return BadRequest("You can only have 5 looking fors");
+            if (user.UserInterests.Count >= 5) return BadRequest("You can only have 5 interests");
 
-            if (_uow.UserRepository.GetUserInterestAsync(user, id) == true) return BadRequest("You already have this interest");
+            if (await _uow.UserRepository.GetUserInterestForEntityAsync(user, interest) != null) return BadRequest("You already have this interest");
 
-            user.Interests.Add(interest);
+            var userInterest = new UserInterest{
+                User = user,
+                Interest = interest
+            };
+
+            user.UserInterests.Add(userInterest);
 
             if (await _uow.Complete()) return NoContent();
 
@@ -140,9 +152,11 @@ namespace API.Controllers
             var interest = await _uow.InterestRepository.GetInterestById(id);
             if (interest == null) return NotFound();
 
-            if (_uow.UserRepository.GetUserInterestAsync(user, id) == false) return NotFound();
+            var userInterest = await _uow.UserRepository.GetUserInterestForEntityAsync(user, interest);
 
-            user.Interests.Remove(interest);
+            if (userInterest == null) return NotFound();
+
+            user.UserInterests.Remove(userInterest);
 
             if (await _uow.Complete()) return NoContent();
 

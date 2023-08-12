@@ -65,6 +65,32 @@ namespace API.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Interests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Interests", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LookingFors",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LookingFors", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -240,25 +266,6 @@ namespace API.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Interests",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    AppUserId = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Interests", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Interests_AspNetUsers_AppUserId",
-                        column: x => x.AppUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Likes",
                 columns: table => new
                 {
@@ -283,25 +290,6 @@ namespace API.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "LookingFors",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    AppUserId = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LookingFors", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_LookingFors_AspNetUsers_AppUserId",
-                        column: x => x.AppUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Messages",
                 columns: table => new
                 {
@@ -315,7 +303,8 @@ namespace API.Data.Migrations
                     DateRead = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     MessageSent = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     SenderDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    RecipientDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    RecipientDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    MessageType = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -352,6 +341,54 @@ namespace API.Data.Migrations
                         name: "FK_Photos_AspNetUsers_AppUserId",
                         column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserInterests",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    InterestId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserInterests", x => new { x.UserId, x.InterestId });
+                    table.ForeignKey(
+                        name: "FK_UserInterests_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserInterests_Interests_InterestId",
+                        column: x => x.InterestId,
+                        principalTable: "Interests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserLookingFors",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    LookingForId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserLookingFors", x => new { x.UserId, x.LookingForId });
+                    table.ForeignKey(
+                        name: "FK_UserLookingFors_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserLookingFors_LookingFors_LookingForId",
+                        column: x => x.LookingForId,
+                        principalTable: "LookingFors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -409,19 +446,9 @@ namespace API.Data.Migrations
                 column: "GroupName");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Interests_AppUserId",
-                table: "Interests",
-                column: "AppUserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Likes_TargetUserId",
                 table: "Likes",
                 column: "TargetUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_LookingFors_AppUserId",
-                table: "LookingFors",
-                column: "AppUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_RecipientId",
@@ -437,6 +464,16 @@ namespace API.Data.Migrations
                 name: "IX_Photos_AppUserId",
                 table: "Photos",
                 column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserInterests_InterestId",
+                table: "UserInterests",
+                column: "InterestId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserLookingFors_LookingForId",
+                table: "UserLookingFors",
+                column: "LookingForId");
         }
 
         /// <inheritdoc />
@@ -461,13 +498,7 @@ namespace API.Data.Migrations
                 name: "Connections");
 
             migrationBuilder.DropTable(
-                name: "Interests");
-
-            migrationBuilder.DropTable(
                 name: "Likes");
-
-            migrationBuilder.DropTable(
-                name: "LookingFors");
 
             migrationBuilder.DropTable(
                 name: "Messages");
@@ -476,13 +507,25 @@ namespace API.Data.Migrations
                 name: "Photos");
 
             migrationBuilder.DropTable(
+                name: "UserInterests");
+
+            migrationBuilder.DropTable(
+                name: "UserLookingFors");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Groups");
 
             migrationBuilder.DropTable(
+                name: "Interests");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "LookingFors");
 
             migrationBuilder.DropTable(
                 name: "Cities");

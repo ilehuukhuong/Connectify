@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230811063641_AddFileUrlColumn")]
-    partial class AddFileUrlColumn
+    [Migration("20230812040550_PostgresInitial")]
+    partial class PostgresInitial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -250,15 +250,10 @@ namespace API.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AppUserId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
 
                     b.ToTable("Interests");
                 });
@@ -271,15 +266,10 @@ namespace API.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AppUserId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
 
                     b.ToTable("LookingFors");
                 });
@@ -298,20 +288,11 @@ namespace API.Data.Migrations
                     b.Property<DateTime?>("DateRead")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("FileUrl")
-                        .HasColumnType("text");
-
-                    b.Property<double?>("Latitude")
-                        .HasColumnType("double precision");
-
-                    b.Property<double?>("Longitude")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("MediaType")
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("MessageSent")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("MessageType")
+                        .HasColumnType("text");
 
                     b.Property<bool>("RecipientDeleted")
                         .HasColumnType("boolean");
@@ -367,6 +348,21 @@ namespace API.Data.Migrations
                     b.ToTable("Photos");
                 });
 
+            modelBuilder.Entity("API.Entities.UserInterest", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("InterestId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "InterestId");
+
+                    b.HasIndex("InterestId");
+
+                    b.ToTable("UserInterests");
+                });
+
             modelBuilder.Entity("API.Entities.UserLike", b =>
                 {
                     b.Property<int>("SourceUserId")
@@ -380,6 +376,21 @@ namespace API.Data.Migrations
                     b.HasIndex("TargetUserId");
 
                     b.ToTable("Likes");
+                });
+
+            modelBuilder.Entity("API.Entities.UserLookingFor", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("LookingForId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "LookingForId");
+
+                    b.HasIndex("LookingForId");
+
+                    b.ToTable("UserLookingFors");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -513,20 +524,6 @@ namespace API.Data.Migrations
                         .HasForeignKey("GroupName");
                 });
 
-            modelBuilder.Entity("API.Entities.Interest", b =>
-                {
-                    b.HasOne("API.Entities.AppUser", null)
-                        .WithMany("Interests")
-                        .HasForeignKey("AppUserId");
-                });
-
-            modelBuilder.Entity("API.Entities.LookingFor", b =>
-                {
-                    b.HasOne("API.Entities.AppUser", null)
-                        .WithMany("LookingFors")
-                        .HasForeignKey("AppUserId");
-                });
-
             modelBuilder.Entity("API.Entities.Message", b =>
                 {
                     b.HasOne("API.Entities.AppUser", "Recipient")
@@ -557,6 +554,25 @@ namespace API.Data.Migrations
                     b.Navigation("AppUser");
                 });
 
+            modelBuilder.Entity("API.Entities.UserInterest", b =>
+                {
+                    b.HasOne("API.Entities.Interest", "Interest")
+                        .WithMany("UserInterests")
+                        .HasForeignKey("InterestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Entities.AppUser", "User")
+                        .WithMany("UserInterests")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Interest");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("API.Entities.UserLike", b =>
                 {
                     b.HasOne("API.Entities.AppUser", "SourceUser")
@@ -574,6 +590,25 @@ namespace API.Data.Migrations
                     b.Navigation("SourceUser");
 
                     b.Navigation("TargetUser");
+                });
+
+            modelBuilder.Entity("API.Entities.UserLookingFor", b =>
+                {
+                    b.HasOne("API.Entities.LookingFor", "LookingFor")
+                        .WithMany("UserLookingFors")
+                        .HasForeignKey("LookingForId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Entities.AppUser", "User")
+                        .WithMany("UserLookingFors")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LookingFor");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -619,13 +654,9 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Entities.AppUser", b =>
                 {
-                    b.Navigation("Interests");
-
                     b.Navigation("LikedByUsers");
 
                     b.Navigation("LikedUsers");
-
-                    b.Navigation("LookingFors");
 
                     b.Navigation("MessagesReceived");
 
@@ -633,12 +664,26 @@ namespace API.Data.Migrations
 
                     b.Navigation("Photos");
 
+                    b.Navigation("UserInterests");
+
+                    b.Navigation("UserLookingFors");
+
                     b.Navigation("UserRoles");
                 });
 
             modelBuilder.Entity("API.Entities.Group", b =>
                 {
                     b.Navigation("Connections");
+                });
+
+            modelBuilder.Entity("API.Entities.Interest", b =>
+                {
+                    b.Navigation("UserInterests");
+                });
+
+            modelBuilder.Entity("API.Entities.LookingFor", b =>
+                {
+                    b.Navigation("UserLookingFors");
                 });
 #pragma warning restore 612, 618
         }
