@@ -14,7 +14,6 @@ namespace API.Services
         private readonly OneDriveSettings _oneDriveSettings;
         //private readonly IConfidentialClientApplication _app;
         private static readonly string GraphApiEndpoint = "https://graph.microsoft.com/v1.0";
-        private readonly string UserId = "cbf7a51b-d7b6-4dd9-897c-ce67dbae77f0";  // Use the provided OneDrive user ID.
 
         public OneDriveService(IOptions<OneDriveSettings> oneDriveSettings)
         {
@@ -47,7 +46,7 @@ namespace API.Services
         public async Task<string> CreateUniqueFolderAsync()
         {
             var folderName = Guid.NewGuid().ToString();
-            var createFolderPath = $"{GraphApiEndpoint}/users/{UserId}/drive/root/children";
+            var createFolderPath = $"{GraphApiEndpoint}/users/{_oneDriveSettings.UserId}/drive/root/children";
 
             var folderContent = new JObject
             {
@@ -77,7 +76,7 @@ namespace API.Services
         {
             var folderName = await CreateUniqueFolderAsync();
             var fileName = file.FileName;
-            var uploadPath = $"{GraphApiEndpoint}/users/{UserId}/drive/root:/{folderName}/{fileName}:/content";
+            var uploadPath = $"{GraphApiEndpoint}/users/{_oneDriveSettings.UserId}/drive/root:/{folderName}/{fileName}:/content";
 
             using (var httpClient = new HttpClient())
             {
