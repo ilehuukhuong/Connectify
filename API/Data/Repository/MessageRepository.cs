@@ -111,5 +111,30 @@ namespace API.Data.Repository
         {
             _context.Connections.Remove(connection);
         }
+
+        public async Task<IEnumerable<UserMessageInfoDto>> GetUserMessages(int userId)
+        {
+            var messagesInfoQuery = await _context.Messages
+                .Include(m => m.Sender).ThenInclude(u => u.Photos)
+                .Include(m => m.Recipient).ThenInclude(u => u.Photos)
+                .Where(m => (m.RecipientId == userId && m.RecipientDeleted == false) || (m.SenderId == userId && m.SenderDeleted == false))
+                .GroupBy(m => m.RecipientId == userId ? m.SenderId : m.RecipientId)
+                .Select(g => new
+                {
+                    FullName = g.Key == userId ? g.FirstOrDefault().Sender.FullName : g.FirstOrDefault().Recipient.FullName,
+                    LastMessage = g.OrderByDescending(m => m.MessageSent).FirstOrDefault(),
+                    InteractingUserId = g.Key
+                })
+                .ToListAsync();
+
+            var messagesInfo = messagesInfoQuery.Select(m => new UserMessageInfoDto
+            {
+                PhotoUrl = m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.Photos.FirstOrDefault(p => p.IsMain)?.Url : m.LastMessage.Recipient.Photos.FirstOrDefault(p => p.IsMain)?.Url,
+                FullName = m.FullName,
+                LastMessage = m.LastMessage.Content,
+                UnreadCount = m.LastMessage.RecipientId == userId ? _context.Messages.Where(message => message.DateRead == null && message.SenderId == m.InteractingUserId && message.RecipientId == userId).Count() : 0
+            }).ToList();
+            return messagesInfo;
+        }
     }
 }

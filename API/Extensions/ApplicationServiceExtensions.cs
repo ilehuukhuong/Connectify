@@ -28,7 +28,10 @@ namespace API.Extensions
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<IMailService, MailService>();
             services.AddScoped<LogUserActivity>();
-            services.AddSignalR();
+            services.AddSignalR(options =>
+            {
+                options.MaximumReceiveMessageSize = 600 * 1024 * 1024; // e.g. 600 * 1024 * 1024 (for 600 MB)
+            });
             services.AddSingleton<PresenceTracker>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

@@ -48,14 +48,14 @@ namespace API.SignalR
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async Task CreateLocationMessage(string recipientUsername)
+        public async Task CreateLocationMessage(CreateMessageDto createMessageDto)
         {
             var username = Context.User.GetUsername();
 
-            if (username == recipientUsername.ToLower()) throw new HubException("You cannot send messages to yourself");
+            if (username == createMessageDto.RecipientUsername.ToLower()) throw new HubException("You cannot send messages to yourself");
 
             var sender = await _uow.UserRepository.GetUserByUsernameAsync(username);
-            var recipient = await _uow.UserRepository.GetUserByUsernameAsync(recipientUsername);
+            var recipient = await _uow.UserRepository.GetUserByUsernameAsync(createMessageDto.RecipientUsername);
 
             if (recipient == null || sender == null) throw new HubException("Not found user");
 
@@ -123,6 +123,8 @@ namespace API.SignalR
                 SenderUsername = sender.UserName,
                 RecipientUsername = recipient.UserName
             };
+
+            createFileMessageDto.ConvertFile64ToIFormFile();
 
             if (createFileMessageDto.File != null)
             {
