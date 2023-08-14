@@ -131,7 +131,14 @@ namespace API.Data.Repository
             {
                 PhotoUrl = m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.Photos.FirstOrDefault(p => p.IsMain)?.Url : m.LastMessage.Recipient.Photos.FirstOrDefault(p => p.IsMain)?.Url,
                 FullName = m.FullName,
-                LastMessage = m.LastMessage.Content,
+                LastMessage = m.LastMessage.MessageType switch
+                {
+                    "Image" => m.FullName + " sent you a photo.",
+                    "Video" => m.FullName + " sent you a video.",
+                    "File" => m.FullName + " sent you a file.",
+                    "Location" => m.FullName + " shared their location with you.",
+                    _ => m.LastMessage.Content
+                },
                 UnreadCount = m.LastMessage.RecipientId == userId ? _context.Messages.Where(message => message.DateRead == null && message.SenderId == m.InteractingUserId && message.RecipientId == userId).Count() : 0
             }).ToList();
             return messagesInfo;
