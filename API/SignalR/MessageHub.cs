@@ -100,7 +100,7 @@ namespace API.SignalR
             }
         }
 
-        public async Task CreateFileMessage([Microsoft.AspNetCore.Mvc.FromForm] CreateFileMessageDto createFileMessageDto)
+        public async Task CreateFileMessage(CreateFileMessageDto createFileMessageDto)
         {
             var username = Context.User.GetUsername();
 
@@ -168,6 +168,8 @@ namespace API.SignalR
             if (FileExtensions.IsImage(file)) return "Image";
 
             if (FileExtensions.IsVideo(file)) return "Video";
+
+            if (FileExtensions.IsAudio(file)) return "Audio";
 
             return "File";
         }

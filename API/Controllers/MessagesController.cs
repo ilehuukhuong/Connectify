@@ -33,6 +33,8 @@ namespace API.Controllers
 
         //     if(FileExtensions.IsVideo(file)) return "Video";
 
+        //     if(FileExtensions.IsAudio(file)) return "Audio";
+
         //     return "File";
         // }
 
