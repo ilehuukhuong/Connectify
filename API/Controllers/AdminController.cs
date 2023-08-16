@@ -20,13 +20,15 @@ namespace API.Controllers
         {
             var users = await _userManager.Users
                 .OrderBy(u => u.UserName)
+                .Include(p => p.Photos)
                 .Select(u => new
                 {
                     u.Id,
                     Username = u.UserName,
                     Roles = u.UserRoles.Select(r => r.Role.Name).ToList(),
                     isBlocked = u.IsBlocked,
-                    isDeleted = u.IsDeleted
+                    isDeleted = u.IsDeleted,
+                    PhotoUrl = u.Photos.FirstOrDefault(x => x.IsMain).Url
                 })
                 .ToListAsync();
 
