@@ -132,8 +132,9 @@ namespace API.SignalR
                 var mediaType = DetermineMediaType(createFileMessageDto.File);
                 if (mediaType == "File" && createFileMessageDto.File.Length > 500 * 1024 * 1024) throw new HubException("File size cannot exceed 500 MB");
                 var fileUrl = await _oneDriveService.UploadToOneDriveAsync(createFileMessageDto.File);
-                message.Content = createFileMessageDto.File.FileName + ";" + fileUrl;
+                message.Content = fileUrl;
                 message.MessageType = mediaType;
+                message.FileName = createFileMessageDto.File.FileName;
             }
             else throw new HubException("You must provide a file to send a file message");
 

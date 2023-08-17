@@ -13,5 +13,6 @@ namespace API.DTOs
         public DateTime? DateRead { get; set; }
         public DateTime MessageSent { get; set; }
         public string MessageType { get; set; }
+        public string FileName { get; set; }
     }
 }
