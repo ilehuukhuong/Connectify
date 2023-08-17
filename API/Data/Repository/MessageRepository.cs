@@ -136,6 +136,7 @@ namespace API.Data.Repository
                     "Image" => m.FullName + " sent you a photo.",
                     "Video" => m.FullName + " sent you a video.",
                     "File" => m.FullName + " sent you a file.",
+                    "Audio" => m.FullName + "sent you an audio.",
                     "Location" => m.FullName + " shared their location with you.",
                     _ => m.LastMessage.Content
                 },
