@@ -244,5 +244,21 @@ namespace API.Controllers
             }
             return NotFound("User not found");
         }
+
+        [HttpGet("recommended")]
+        public async Task<ActionResult<PagedList<MemberDtoWithoutIsVisible>>> GetRecommendedMembers([FromQuery] UserParams userParams)
+        {
+            var currentUser = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+            var users = await _uow.UserRepository.GetRecommendedMembersAsync(currentUser, userParams);
+
+            foreach (var user in users)
+            {
+                user.Distance = (int)CoordinateExtensions.CalculateDistance(currentUser.Latitude, currentUser.Longitude, user.Latitude, user.Longitude);
+            }
+
+            Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages));
+
+            return Ok(users);
+        }
     }
 }

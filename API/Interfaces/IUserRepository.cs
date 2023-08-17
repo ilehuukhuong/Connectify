@@ -12,5 +12,6 @@ namespace API.Interfaces
         Task<BlockUserDto> BlockUserAsync(int UserId);
         Task<UserLookingFor> GetUserLookingForEntityAsync(AppUser user, LookingFor lookingFor);
         Task<UserInterest> GetUserInterestForEntityAsync(AppUser user, Interest interest);
+        Task<PagedList<MemberDtoWithoutIsVisible>> GetRecommendedMembersAsync(AppUser currentUser, UserParams userParams);
     }
 }

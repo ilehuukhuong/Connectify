@@ -1,5 +1,6 @@
 using API.DTOs;
 using API.Entities;
+using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
@@ -103,6 +104,48 @@ namespace API.Data.Repository
         public Task<UserInterest> GetUserInterestForEntityAsync(AppUser user, Interest interest)
         {
             return _context.UserInterests.FirstOrDefaultAsync(x => x.User == user && x.Interest == interest);
+        }
+
+        public async Task<PagedList<MemberDtoWithoutIsVisible>> GetRecommendedMembersAsync(AppUser currentUser, UserParams userParams)
+        {
+
+            var likedUserIds = _context.Likes.Where(like => like.SourceUserId == currentUser.Id).Select(like => like.TargetUserId);
+            var likedByUsersIds = _context.Likes.Where(like => like.TargetUserId == currentUser.Id).Select(like => like.SourceUserId);
+
+            var allUsers = await _context.Users
+                .Include(p => p.Photos)
+                .Include(g => g.Gender)
+                .Include(l => l.UserLookingFors).ThenInclude(l => l.LookingFor)
+                .Include(i => i.UserInterests).ThenInclude(i => i.Interest)
+                .Include(c => c.City)
+                .Where(u => u.IsBlocked == false)
+                .Where(u => u.IsDeleted == false)
+                .Where(u => u.IsVisible || likedByUsersIds.Contains(u.Id))
+                .Where(u => !likedUserIds.Contains(u.Id))
+                .Where(u => u.UserName != currentUser.UserName)
+                .AsSplitQuery()
+                .ToListAsync();
+
+            var recommendedUsers = allUsers
+                .Where(user => CalculateSimilarity.CalculateUserSimilarity(currentUser, user) > 0.5)
+                .OrderByDescending(user => user.LastActive)
+                .Select(user => _mapper.Map<MemberDtoWithoutIsVisible>(user));
+
+            // var recommendedUsers = new List<MemberDtoWithoutIsVisible>();
+
+            // foreach (var user in allUsers)
+            // {
+            //     double similarity = CalculateSimilarity.CalculateUserSimilarity(currentUser, user);
+            //     if (similarity > 0.5) // Ngưỡng tương đồng để gợi ý
+            //     {
+            //         recommendedUsers.Add(_mapper.Map<MemberDtoWithoutIsVisible>(user));
+            //     }
+            // }
+
+            return PagedList<MemberDtoWithoutIsVisible>.CreateListAsync(
+                recommendedUsers,
+                userParams.PageNumber,
+                userParams.PageSize);
         }
     }
 }
