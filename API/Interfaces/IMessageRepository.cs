@@ -17,6 +17,6 @@ namespace API.Interfaces
         Task<Connection> GetConnection(string connectionId);
         Task<Group> GetMessageGroup(string groupName);
         Task<Group> GetGroupForConnection(string connectionId);
-        Task<IEnumerable<UserMessageInfoDto>> GetUserMessages(int userId);
+        Task<PagedList<UserMessageInfoDto>> GetUserMessages(int userId,MessageParams messageParams);
     }
 }

@@ -108,7 +108,6 @@ namespace API.Data.Repository
 
         public async Task<PagedList<MemberDtoWithoutIsVisible>> GetRecommendedMembersAsync(AppUser currentUser, UserParams userParams)
         {
-
             var likedUserIds = _context.Likes.Where(like => like.SourceUserId == currentUser.Id).Select(like => like.TargetUserId);
             var likedByUsersIds = _context.Likes.Where(like => like.TargetUserId == currentUser.Id).Select(like => like.SourceUserId);
 
@@ -131,21 +130,7 @@ namespace API.Data.Repository
                 .OrderByDescending(user => user.LastActive)
                 .Select(user => _mapper.Map<MemberDtoWithoutIsVisible>(user));
 
-            // var recommendedUsers = new List<MemberDtoWithoutIsVisible>();
-
-            // foreach (var user in allUsers)
-            // {
-            //     double similarity = CalculateSimilarity.CalculateUserSimilarity(currentUser, user);
-            //     if (similarity > 0.5) // Ngưỡng tương đồng để gợi ý
-            //     {
-            //         recommendedUsers.Add(_mapper.Map<MemberDtoWithoutIsVisible>(user));
-            //     }
-            // }
-
-            return PagedList<MemberDtoWithoutIsVisible>.CreateListAsync(
-                recommendedUsers,
-                userParams.PageNumber,
-                userParams.PageSize);
+            return PagedList<MemberDtoWithoutIsVisible>.CreateListAsync(recommendedUsers, userParams.PageNumber, userParams.PageSize);
         }
     }
 }

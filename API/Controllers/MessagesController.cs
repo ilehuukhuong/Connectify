@@ -218,9 +218,13 @@ namespace API.Controllers
         }
 
         [HttpGet("connectedmessages")]
-        public async Task<IEnumerable<UserMessageInfoDto>> GetMessage()
+        public async Task<PagedList<UserMessageInfoDto>> GetMessage([FromQuery] MessageParams messageParams)
         {
-            return await _uow.MessageRepository.GetUserMessages(User.GetUserId());
+            var messages = await _uow.MessageRepository.GetUserMessages(User.GetUserId(),messageParams);
+
+            Response.AddPaginationHeader(new PaginationHeader(messages.CurrentPage, messages.PageSize, messages.TotalCount, messages.TotalPages));
+
+            return messages;
         }
     }
 }

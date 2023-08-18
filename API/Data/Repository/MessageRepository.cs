@@ -112,18 +112,22 @@ namespace API.Data.Repository
             _context.Connections.Remove(connection);
         }
 
-        public async Task<IEnumerable<UserMessageInfoDto>> GetUserMessages(int userId)
+        public async Task<PagedList<UserMessageInfoDto>> GetUserMessages(int userId, MessageParams messageParams)
         {
             var messagesInfoQuery = await _context.Messages
                 .Include(m => m.Sender).ThenInclude(u => u.Photos)
                 .Include(m => m.Recipient).ThenInclude(u => u.Photos)
                 .Where(m => (m.RecipientId == userId && m.RecipientDeleted == false) || (m.SenderId == userId && m.SenderDeleted == false))
+                .Where(m => m.Recipient.IsBlocked == false && m.Sender.IsBlocked == false)
+                .Where(m => m.Recipient.IsDeleted == false && m.Sender.IsDeleted == false)
                 .GroupBy(m => m.RecipientId == userId ? m.SenderId : m.RecipientId)
+                .OrderByDescending(g => g.Max(m => m.MessageSent))
                 .Select(g => new
                 {
                     FullName = g.Key == userId ? g.FirstOrDefault().Sender.FullName : g.FirstOrDefault().Recipient.FullName,
                     LastMessage = g.OrderByDescending(m => m.MessageSent).FirstOrDefault(),
-                    InteractingUserId = g.Key
+                    InteractingUserId = g.Key,
+                    MessageSent = g.Max(m => m.MessageSent)
                 })
                 .ToListAsync();
 
@@ -131,6 +135,7 @@ namespace API.Data.Repository
             {
                 PhotoUrl = m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.Photos.FirstOrDefault(p => p.IsMain)?.Url : m.LastMessage.Recipient.Photos.FirstOrDefault(p => p.IsMain)?.Url,
                 FullName = m.FullName,
+                MessageSent = m.MessageSent,
                 LastMessage = m.LastMessage.MessageType switch
                 {
                     "Image" => m.FullName + " sent you a photo.",
@@ -141,8 +146,10 @@ namespace API.Data.Repository
                     _ => m.LastMessage.Content
                 },
                 UnreadCount = m.LastMessage.RecipientId == userId ? _context.Messages.Where(message => message.DateRead == null && message.SenderId == m.InteractingUserId && message.RecipientId == userId).Count() : 0
-            }).ToList();
-            return messagesInfo;
+            })
+            .ToList();
+
+            return PagedList<UserMessageInfoDto>.CreateListAsync(messagesInfo, messageParams.PageNumber, messageParams.PageSize);
         }
     }
 }

@@ -5,6 +5,7 @@ namespace API.DTOs
         public string PhotoUrl { get; set; }
         public string FullName { get; set; }
         public string LastMessage { get; set; }
-        public int UnreadCount { get; set; } 
+        public int UnreadCount { get; set; }
+        public DateTime MessageSent { get; set; }
     }
 }
