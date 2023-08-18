@@ -14,8 +14,10 @@ namespace API.SignalR
         private readonly IMapper _mapper;
         private readonly IHubContext<PresenceHub> _presenceHub;
         private readonly IUnitOfWork _uow;
-        public MessageHub(IUnitOfWork uow, IMapper mapper, IHubContext<PresenceHub> presenceHub)
+        private readonly IOneDriveService _oneDriveService;
+        public MessageHub(IUnitOfWork uow, IMapper mapper, IHubContext<PresenceHub> presenceHub, IOneDriveService oneDriveService)
         {
+            _oneDriveService = oneDriveService;
             _uow = uow;
             _presenceHub = presenceHub;
             _mapper = mapper;
@@ -33,6 +35,12 @@ namespace API.SignalR
 
             var messages = await _uow.MessageRepository
                 .GetMessageThread(Context.User.GetUsername(), otherUser);
+
+            foreach (var message in messages)
+            {
+                if (message.MessageType == "Image" || message.MessageType == "Video" || message.MessageType == "Audio" || message.MessageType == "File")
+                    message.Content = await _oneDriveService.BuildDownloadUrl(message.Content);
+            }
 
             if (_uow.HasChanges()) await _uow.Complete();
 

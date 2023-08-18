@@ -12,7 +12,7 @@ namespace API.Services
     public class OneDriveService : IOneDriveService
     {
         private readonly OneDriveSettings _oneDriveSettings;
-        //private readonly IConfidentialClientApplication _app;
+        private readonly IConfidentialClientApplication _app;
         private static readonly string GraphApiEndpoint = "https://graph.microsoft.com/v1.0";
 
         public OneDriveService(IOptions<OneDriveSettings> oneDriveSettings)
@@ -20,32 +20,30 @@ namespace API.Services
             _oneDriveSettings = oneDriveSettings.Value;
 
             // Initialize MSAL client
-            // _app = ConfidentialClientApplicationBuilder.Create(_oneDriveSettings.ClientId)
-            //     .WithClientSecret(_oneDriveSettings.ClientSecret)
-            //     .WithAuthority(new Uri($"https://login.microsoftonline.com/{_oneDriveSettings.TenantId}"))
-            //     .Build();
+            _app = ConfidentialClientApplicationBuilder.Create(_oneDriveSettings.ClientId)
+                .WithClientSecret(_oneDriveSettings.ClientSecret)
+                .WithAuthority(new Uri($"https://login.microsoftonline.com/{_oneDriveSettings.TenantId}"))
+                .Build();
         }
 
         private async Task<string> GetAccessTokenAsync()
         {
-            var app = ConfidentialClientApplicationBuilder.Create(_oneDriveSettings.ClientId)
-                .WithClientSecret(_oneDriveSettings.ClientSecret)
-                .WithAuthority(new Uri($"https://login.microsoftonline.com/{_oneDriveSettings.TenantId}"))
-                .Build();
-            var result = await app.AcquireTokenForClient(new[] { "https://graph.microsoft.com/.default" }).ExecuteAsync();
+            var result = await _app.AcquireTokenForClient(new[] { "https://graph.microsoft.com/.default" }).ExecuteAsync();
             return result.AccessToken;
         }
 
-        public string ExtractDownloadUrlFromResponse(string responseBody)
+        public string ExtractIdFromResponse(string responseBody)
         {
             var jsonObject = JObject.Parse(responseBody);
-            var downloadUrl = jsonObject["@microsoft.graph.downloadUrl"].ToString();
-            return downloadUrl;
+            var fileId = jsonObject["id"].ToString();
+            return fileId;
         }
 
         public async Task<string> CreateUniqueFolderAsync()
         {
             var folderName = Guid.NewGuid().ToString();
+            // The line below is for the case of saving to a folder
+            // var createFolderPath = $"{GraphApiEndpoint}/users/{_oneDriveSettings.UserId}/drive/root:/Connectify:/children";
             var createFolderPath = $"{GraphApiEndpoint}/users/{_oneDriveSettings.UserId}/drive/root/children";
 
             var folderContent = new JObject
@@ -68,7 +66,7 @@ namespace API.Services
                     throw new Exception($"Failed to create folder. Status code: {response.StatusCode}. Error: {responseBody}");
                 }
 
-                return folderName; // Return the name of the folder
+                return folderName;
             }
         }
 
@@ -77,6 +75,8 @@ namespace API.Services
             var folderName = await CreateUniqueFolderAsync();
             var fileName = file.FileName;
             var uploadPath = $"{GraphApiEndpoint}/users/{_oneDriveSettings.UserId}/drive/root:/{folderName}/{fileName}:/content";
+            // The line below is for the case of saving to a folder
+            // var uploadPath = $"{GraphApiEndpoint}/users/{_oneDriveSettings.UserId}/drive/root:/Connectify/{folderName}/{fileName}:/content";
 
             using (var httpClient = new HttpClient())
             {
@@ -96,9 +96,28 @@ namespace API.Services
                         throw new Exception($"Failed to upload file. Status code: {response.StatusCode}. Error: {responseBody}");
                     }
 
-                    // Here, we return the response body which will contain details of the uploaded file.
-                    // You can further process this response if needed.
-                    return ExtractDownloadUrlFromResponse(responseBody);
+                    return ExtractIdFromResponse(responseBody);
+                }
+            }
+        }
+
+        public async Task<string> BuildDownloadUrl(string fileId)
+        {
+            var downloadUrl = $"{GraphApiEndpoint}/drives/{_oneDriveSettings.UserId}/items/{fileId}/content";
+
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetAccessTokenAsync());
+
+                var response = httpClient.GetAsync(downloadUrl).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    var requestUri = response.RequestMessage.RequestUri.ToString();
+                    return requestUri;
+                }
+                else
+                {
+                    throw new Exception($"Failed to build download URL. Status code: {response.StatusCode}");
                 }
             }
         }

@@ -140,7 +140,21 @@ namespace API.Controllers
             _uow.MessageRepository.AddMessage(message);
 
             if (await _uow.Complete()){
-                await _messageHub.Clients.Group(groupName).SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
+                var messageDto = new MessageDto{
+                    MessageSent = message.MessageSent,
+                    SenderUsername = message.SenderUsername,
+                    SenderPhotoUrl = sender.Photos.FirstOrDefault(x => x.IsMain).Url,
+                    RecipientUsername = message.RecipientUsername,
+                    RecipientPhotoUrl = recipient.Photos.FirstOrDefault(x => x.IsMain).Url,
+                    Content = await _oneDriveService.BuildDownloadUrl(message.Content),
+                    MessageType = message.MessageType,
+                    FileName = message.FileName,
+                    Id = message.Id,
+                    SenderId = message.Sender.Id,
+                    RecipientId = message.Recipient.Id,
+                    DateRead = message.DateRead
+                };
+                await _messageHub.Clients.Group(groupName).SendAsync("NewMessage", messageDto);
                 return Ok(_mapper.Map<MessageDto>(message));
             }
 
