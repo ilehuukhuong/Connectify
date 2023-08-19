@@ -23,6 +23,7 @@ namespace API.Data
         public DbSet<City> Cities { get; set; }
         public DbSet<UserLookingFor> UserLookingFors { get; set; }
         public DbSet<UserInterest> UserInterests { get; set; }
+        public DbSet<Setting> Settings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

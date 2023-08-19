@@ -1,5 +1,7 @@
 using System.Net.Http.Headers;
 using System.Text;
+using API.Data;
+using API.Entities;
 using API.Helpers;
 using API.Interfaces;
 using Microsoft.Extensions.Options;
@@ -11,12 +13,14 @@ namespace API.Services
 {
     public class OneDriveService : IOneDriveService
     {
+        private readonly DataContext _context;
         private readonly OneDriveSettings _oneDriveSettings;
         private readonly IConfidentialClientApplication _app;
         private static readonly string GraphApiEndpoint = "https://graph.microsoft.com/v1.0";
 
-        public OneDriveService(IOptions<OneDriveSettings> oneDriveSettings)
+        public OneDriveService(IOptions<OneDriveSettings> oneDriveSettings, DataContext context)
         {
+            _context = context;
             _oneDriveSettings = oneDriveSettings.Value;
 
             // Initialize MSAL client
@@ -28,8 +32,50 @@ namespace API.Services
 
         private async Task<string> GetAccessTokenAsync()
         {
+            var token = _context.Settings.FirstOrDefault(x => x.Name == "OneDriveToken");
+
+            if (token == null)
+            {
+                var resultCreate = await _app.AcquireTokenForClient(new[] { "https://graph.microsoft.com/.default" }).ExecuteAsync();
+                var accessToken = new Setting
+                {
+                    Name = "OneDriveToken",
+                    Value = resultCreate.AccessToken
+                };
+
+                var expiresOn = new Setting
+                {
+                    Name = "OneDriveTokenExpiration",
+                    Value = resultCreate.ExpiresOn.ToString()
+                };
+
+                _context.Settings.Add(accessToken);
+
+                _context.Settings.Add(expiresOn);
+
+                _context.SaveChanges();
+            }
+
+            token = _context.Settings.FirstOrDefault(x => x.Name == "OneDriveToken");
+
+            var tokenExpiration = _context.Settings.FirstOrDefault(x => x.Name == "OneDriveTokenExpiration");
+            var test = DateTimeOffset.UtcNow;
+            var test2 = DateTimeOffset.Parse(tokenExpiration.Value);
+
+            if (DateTimeOffset.UtcNow.AddMinutes(3) < DateTimeOffset.Parse(tokenExpiration.Value))
+            {
+                // Return the cached token if it's still valid
+                return token.Value;
+            }
+
             var result = await _app.AcquireTokenForClient(new[] { "https://graph.microsoft.com/.default" }).ExecuteAsync();
-            return result.AccessToken;
+            token.Value = result.AccessToken;
+            tokenExpiration.Value = result.ExpiresOn.ToString();
+            _context.Settings.Update(token);
+            _context.Settings.Update(tokenExpiration);
+            _context.SaveChanges();
+
+            return token.Value;
         }
 
         public string ExtractIdFromResponse(string responseBody)

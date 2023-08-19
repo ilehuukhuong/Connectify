@@ -36,15 +36,29 @@ namespace API.SignalR
             var messages = await _uow.MessageRepository
                 .GetMessageThread(Context.User.GetUsername(), otherUser);
 
+            var tasks = new List<Task>();
+
             foreach (var message in messages)
             {
                 if (message.MessageType == "Image" || message.MessageType == "Video" || message.MessageType == "Audio" || message.MessageType == "File")
-                    message.Content = await _oneDriveService.BuildDownloadUrl(message.Content);
+                {
+                    var task = UpdateMessageContentAsync(message);
+                    tasks.Add(task);
+                }
             }
+
+            await Task.WhenAll(tasks);
 
             if (_uow.HasChanges()) await _uow.Complete();
 
             await Clients.Caller.SendAsync("ReceiveMessageThread", messages);
+        }
+
+        private async Task UpdateMessageContentAsync(MessageDto message)
+        {
+            //Console.WriteLine("Start Thread " + message.Id);
+            message.Content = await _oneDriveService.BuildDownloadUrl(message.Content);
+            //Console.WriteLine("End Thread " + message.Id);
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
