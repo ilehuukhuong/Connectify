@@ -54,13 +54,11 @@ namespace API.Services
                 _context.Settings.Add(expiresOn);
 
                 _context.SaveChanges();
+
+                token = _context.Settings.FirstOrDefault(x => x.Name == "OneDriveToken");
             }
 
-            token = _context.Settings.FirstOrDefault(x => x.Name == "OneDriveToken");
-
             var tokenExpiration = _context.Settings.FirstOrDefault(x => x.Name == "OneDriveTokenExpiration");
-            var test = DateTimeOffset.UtcNow;
-            var test2 = DateTimeOffset.Parse(tokenExpiration.Value);
 
             if (DateTimeOffset.UtcNow.AddMinutes(3) < DateTimeOffset.Parse(tokenExpiration.Value))
             {
