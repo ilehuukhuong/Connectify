@@ -228,7 +228,6 @@ namespace API.Controllers
             if (await _uow.Complete()) return Ok();
 
             return BadRequest("Problem deleting the message");
-
         }
 
         [HttpGet("connectedmessages")]

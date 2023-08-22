@@ -106,6 +106,14 @@ namespace API.Data.Repository
             return _context.UserInterests.FirstOrDefaultAsync(x => x.User == user && x.Interest == interest);
         }
 
+        public async Task<MemberDto> GetMemberAsync(string username)
+        {
+            return await _context.Users
+                .Where(x => x.UserName == username)
+                .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+        }
+
         public async Task<PagedList<MemberDtoWithoutIsVisible>> GetRecommendedMembersAsync(AppUser currentUser, UserParams userParams)
         {
             var likedUserIds = _context.Likes.Where(like => like.SourceUserId == currentUser.Id).Select(like => like.TargetUserId);

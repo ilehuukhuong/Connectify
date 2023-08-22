@@ -52,11 +52,16 @@ namespace API.Controllers
 
             if (await _uow.Complete())
             {
-                return CreatedAtAction(nameof(UsersController.GetUser),
-                    new { username = user.UserName }, _mapper.Map<PhotoDto>(photo));
+                return CreatedAtAction(nameof(GetUser),  new { username = user.UserName }, _mapper.Map<PhotoDto>(photo));
             }
 
             return BadRequest("Problem adding photo");
+        }
+
+        [HttpGet("{username}")]
+        public async Task<ActionResult<MemberDto>> GetUser(string username)
+        {
+            return await _uow.UserRepository.GetMemberAsync(username);
         }
 
         [HttpPut("set-main-photo/{photoId}")]

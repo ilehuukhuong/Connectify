@@ -9,6 +9,7 @@ namespace API.Interfaces
         Task<AppUser> GetUserByIdAsync(int id);
         Task<AppUser> GetUserByUsernameAsync(string username);
         Task<PagedList<MemberDtoWithoutIsVisible>> GetMembersAsync(UserParams userParams);
+        Task<MemberDto> GetMemberAsync(string username);
         Task<BlockUserDto> BlockUserAsync(int UserId);
         Task<UserLookingFor> GetUserLookingForEntityAsync(AppUser user, LookingFor lookingFor);
         Task<UserInterest> GetUserInterestForEntityAsync(AppUser user, Interest interest);
