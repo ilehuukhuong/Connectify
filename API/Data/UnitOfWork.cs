@@ -21,6 +21,7 @@ namespace API.Data
         public ILookingForRepository LookingForRepository => new LookingForRepository(_context);
         public IInterestRepository InterestRepository => new InterestRepository(_context);
         public ICityRepository CityRepository => new CityRepository(_context);
+        public IRoomRepository RoomRepository => new RoomRepository(_context);
 
         public async Task<bool> Complete()
         {

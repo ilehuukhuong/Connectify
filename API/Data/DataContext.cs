@@ -24,6 +24,8 @@ namespace API.Data
         public DbSet<UserLookingFor> UserLookingFors { get; set; }
         public DbSet<UserInterest> UserInterests { get; set; }
         public DbSet<Setting> Settings { get; set; }
+        public DbSet<Call> Calls { get; set; }
+        public DbSet<Room> Rooms { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
