@@ -148,6 +148,10 @@ namespace API.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
+            var checkPassword = await _userManager.CheckPasswordAsync(user, changePasswordDto.OldPassword);
+
+            if (!checkPassword) return BadRequest("Invalid Password");
+
             var result = await _userManager.ChangePasswordAsync(user, changePasswordDto.OldPassword, changePasswordDto.NewPassword);
 
             if (result.Succeeded)
@@ -156,7 +160,7 @@ namespace API.Controllers
             }
             else
             {
-                return BadRequest(result.Errors);
+                return BadRequest("Problem when changing password.");
             }
         }
     }
