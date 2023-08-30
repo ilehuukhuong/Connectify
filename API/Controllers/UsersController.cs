@@ -20,6 +20,26 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
+        [HttpPut("update-user")]
+        public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
+        {
+            var user = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+
+            _mapper.Map(memberUpdateDto, user);
+
+            if (await _uow.Complete()) return NoContent();
+
+            return BadRequest("Failed to update user");
+        }
+
+        [HttpGet("update-user")]
+        public async Task<ActionResult<MemberUpdateDto>> GetUserForUpdate()
+        {
+            var user = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+
+            return _mapper.Map<MemberUpdateDto>(user);
+        }
+
         [HttpGet]
         public async Task<ActionResult<PagedList<MemberDtoWithoutIsVisible>>> GetUsers([FromQuery] UserParams userParams)
         {
