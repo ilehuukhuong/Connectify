@@ -4,6 +4,7 @@ using API.DTOs;
 using API.Entities;
 using API.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -74,7 +75,7 @@ namespace API.Controllers
 
             if (!result) return BadRequest("Invalid Password");
 
-            if (user.IsDeleted) 
+            if (user.IsDeleted)
             {
                 user.IsDeleted = false;
                 await _userManager.UpdateAsync(user);
@@ -123,7 +124,7 @@ namespace API.Controllers
         }
 
         [HttpPut("reset-password/{email}/{token}")]
-        public async Task<ActionResult> ResetPassword([FromBody]ResetPasswordDto resetPasswordDto)
+        public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
         {
             var user = await _userManager.FindByEmailAsync(resetPasswordDto.Email.ToLower());
 
@@ -138,6 +139,24 @@ namespace API.Controllers
             else
             {
                 return BadRequest("Problem when resetting password.");
+            }
+        }
+
+        [Authorize]
+        [HttpPut("change-password")]
+        public async Task<ActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            var result = await _userManager.ChangePasswordAsync(user, changePasswordDto.OldPassword, changePasswordDto.NewPassword);
+
+            if (result.Succeeded)
+            {
+                return Ok("Password changed successfully");
+            }
+            else
+            {
+                return BadRequest(result.Errors);
             }
         }
     }
