@@ -2,7 +2,6 @@ using API.Entities;
 using API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -21,7 +20,7 @@ namespace API.Controllers
 
         [HttpPost]
         [Authorize(Policy = "RequireAdminRole")]
-        public async Task<ActionResult<Gender>> CreateGender(Gender gender)
+        public async Task<ActionResult> CreateGender(Gender gender)
         {
             if (gender.Name == null) return BadRequest("Name is required");
 
@@ -38,7 +37,7 @@ namespace API.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Policy = "RequireAdminRole")]
-        public async Task<ActionResult<Gender>> UpdateGender(Gender gender, int id)
+        public async Task<ActionResult> UpdateGender(Gender gender, int id)
         {
             if (gender.Name == null) return BadRequest("Name is required");
 
@@ -57,7 +56,7 @@ namespace API.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Policy = "RequireAdminRole")]
-        public async Task<ActionResult<Gender>> DeleteGender(int id)
+        public async Task<ActionResult> DeleteGender(int id)
         {
             if(_uow.GenderRepository.DeleteGender(id) == false) return BadRequest("This gender is being used by some users");
 

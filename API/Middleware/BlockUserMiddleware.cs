@@ -1,7 +1,5 @@
-using API.Entities;
 using API.Extensions;
 using API.Interfaces;
-using Microsoft.AspNetCore.Identity;
 
 namespace API.Middleware
 {

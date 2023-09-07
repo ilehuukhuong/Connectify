@@ -124,25 +124,24 @@ namespace API.Data.Repository
                 .OrderByDescending(g => g.Max(m => m.MessageSent))
                 .Select(g => new
                 {
-                    FullName = g.Key == userId ? g.FirstOrDefault().Sender.FullName : g.FirstOrDefault().Recipient.FullName,
                     LastMessage = g.OrderByDescending(m => m.MessageSent).FirstOrDefault(),
                     InteractingUserId = g.Key,
-                    MessageSent = g.Max(m => m.MessageSent)
                 })
                 .ToListAsync();
 
             var messagesInfo = messagesInfoQuery.Select(m => new UserMessageInfoDto
             {
                 PhotoUrl = m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.Photos.FirstOrDefault(p => p.IsMain)?.Url : m.LastMessage.Recipient.Photos.FirstOrDefault(p => p.IsMain)?.Url,
-                FullName = m.FullName,
-                MessageSent = m.MessageSent,
+                FullName = m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.FullName : m.LastMessage.Recipient.FullName,
+                UserName = m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.UserName : m.LastMessage.Recipient.UserName,
+                MessageSent = m.LastMessage.MessageSent,
                 LastMessage = m.LastMessage.MessageType switch
                 {
-                    "Image" => m.FullName + " sent you a photo.",
-                    "Video" => m.FullName + " sent you a video.",
-                    "File" => m.FullName + " sent you a file.",
-                    "Audio" => m.FullName + "sent you an audio.",
-                    "Location" => m.FullName + " shared their location with you.",
+                    "Image" => m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.FirstName + " sent a photo." :  "You sent a photo.",
+                    "Video" => m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.FirstName + " sent a video.": "You sent a video.",
+                    "File" => m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.FirstName + " sent a file." : "You sent a file.",
+                    "Audio" => m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.FirstName + "sent an audio." : "You sent an audio.",
+                    "Location" => m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.FirstName + " sent a live location." : "You sent a live location.",
                     _ => m.LastMessage.Content
                 },
                 UnreadCount = m.LastMessage.RecipientId == userId ? _context.Messages.Where(message => message.DateRead == null && message.SenderId == m.InteractingUserId && message.RecipientId == userId).Count() : 0
