@@ -22,7 +22,6 @@ namespace API.SignalR
             _messageHub = messageHub;
             _uow = uow;
             _mapper = mapper;
-
         }
 
         public override async Task OnConnectedAsync()
@@ -42,12 +41,28 @@ namespace API.SignalR
                 {
                     var caller = await _uow.UserRepository.GetUserByUsernameAsync(Context.User.GetUsername());
                     await _presenceHub.Clients.Clients(connections).SendAsync("IncomingCall", new { username = caller.UserName, knownAs = caller.KnownAs });
-                    await Clients.Group(roomName).SendAsync("StartCall");
+                    await Clients.Client(Context.ConnectionId).SendAsync("StartCall");
                 }
                 else
                 {
+                    var message = new Message
+                    {
+                        Sender = await _uow.UserRepository.GetUserByUsernameAsync(Context.User.GetUsername()),
+                        Recipient = await _uow.UserRepository.GetUserByUsernameAsync(otherUser),
+                        SenderUsername = Context.User.GetUsername(),
+                        RecipientUsername = otherUser,
+                        Content = "Missed Call",
+                        MessageType = "MissCall"
+                    };
+
+                    _uow.MessageRepository.AddMessage(message);
+
+                    if (await _uow.Complete())
+                    {
+                        await _messageHub.Clients.Group(roomName).SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
+                    }
+
                     await Clients.Group(roomName).SendAsync("UserOffline");
-                    throw new HubException("User Offline");
                 }
             }
             else
@@ -55,13 +70,11 @@ namespace API.SignalR
                 if (room.Connections.Count(x => x.Username == Context.User.GetUsername()) > 1)
                 {
                     await Clients.Client(Context.ConnectionId).SendAsync("YouAreAlreadyInThisCall");
-                    throw new HubException("YouAreAlreadyInThisCall");
                 }
 
                 if (await _uow.RoomRepository.CheckUserInCall(Context.User.GetUsername()) == true)
                 {
                     await Clients.Client(Context.ConnectionId).SendAsync("YouAreAlreadyInOtherCall");
-                    throw new HubException("YouAreAlreadyInOtherCall");
                 }
 
                 await Clients.Client(Context.ConnectionId).SendAsync("IncomingCall");
@@ -97,6 +110,29 @@ namespace API.SignalR
                 await _uow.Complete();
             }
             else throw new HubException("Failed to Accept Call");
+        }
+
+        public async Task MissCall(string recipientUsername)
+        {
+            var roomName = GetRoomName(Context.User.GetUsername(), recipientUsername);
+            var message = new Message
+            {
+                Sender = await _uow.UserRepository.GetUserByUsernameAsync(Context.User.GetUsername()),
+                Recipient = await _uow.UserRepository.GetUserByUsernameAsync(recipientUsername),
+                SenderUsername = Context.User.GetUsername(),
+                RecipientUsername = recipientUsername,
+                Content = "Missed Call",
+                MessageType = "MissCall"
+            };
+
+            _uow.MessageRepository.AddMessage(message);
+
+            if (await _uow.Complete())
+            {
+                await _messageHub.Clients.Group(roomName).SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
+            }
+
+            await Clients.Group(roomName).SendAsync("UserBusy");
         }
 
         public async Task Micro(CreateCallDto createCallDto)
@@ -138,50 +174,6 @@ namespace API.SignalR
             else
             {
                 throw new HubException("Failed to Update Screen");
-            }
-        }
-
-        public async Task StartCall(CreateCallDto createCallDto)
-        {
-            createCallDto.CallerUsername = Context.User.GetUsername();
-
-            if (_uow.RoomRepository.CheckCall(createCallDto.CallerUsername, createCallDto.RecipientUsername))
-            {
-                throw new HubException("Call already exists");
-            }
-            else
-            {
-                var otherUserConnections = await PresenceTracker.GetConnectionsForUser(createCallDto.RecipientUsername);
-                if (otherUserConnections != null)
-                {
-                    foreach (var connectionId in otherUserConnections)
-                    {
-                        await Clients.Client(connectionId).SendAsync("IncomingCall", createCallDto);
-                    }
-                }
-                else
-                {
-                    var message = new Message
-                    {
-                        Sender = await _uow.UserRepository.GetUserByUsernameAsync(createCallDto.CallerUsername),
-                        Recipient = await _uow.UserRepository.GetUserByUsernameAsync(createCallDto.RecipientUsername),
-                        SenderUsername = createCallDto.CallerUsername,
-                        RecipientUsername = createCallDto.RecipientUsername,
-                        Content = "Missed Call",
-                        MessageType = "MissCall"
-                    };
-
-                    var groupName = GetGroupName(createCallDto.CallerUsername, createCallDto.RecipientUsername);
-
-                    _uow.MessageRepository.AddMessage(message);
-
-                    if (await _uow.Complete())
-                    {
-                        await _messageHub.Clients.Group(groupName).SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
-                    }
-
-                    await Clients.Group(GetRoomName(createCallDto.CallerUsername, createCallDto.RecipientUsername)).SendAsync("UserOffline");
-                }
             }
         }
 
