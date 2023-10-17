@@ -46,7 +46,7 @@ namespace API.Data.Repository
 
         public async Task<Room> GetRoom(string roomName)
         {
-            return await _context.Rooms.FindAsync(roomName);
+            return await _context.Rooms.Include(x => x.Connections).FirstOrDefaultAsync(x => x.Name == roomName);
         }
 
         public async Task<Room> GetRoomForConnection(string connectionId)
@@ -64,6 +64,18 @@ namespace API.Data.Repository
         public void RemoveRoom(Room room)
         {
             _context.Rooms.Remove(room);
+        }
+
+        public async Task<bool> CheckUserInCall(string username)
+        {
+            if (await _context.Calls.Where(x => (x.CallerUsername == username || x.RecipientUsername == username) && x.EndTime == null).FirstOrDefaultAsync() != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

@@ -13,5 +13,6 @@ namespace API.Interfaces
         Task<Call> FindCall(string caller, string recipient);
         void UpdateCall(Call call);
         bool CheckCall(string caller, string recipient);
+        Task<bool> CheckUserInCall(string username);
     }
 }

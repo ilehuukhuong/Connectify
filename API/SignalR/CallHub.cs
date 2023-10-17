@@ -37,11 +37,34 @@ namespace API.SignalR
 
             if (room.Connections.Count() == 1)
             {
-                await Clients.Group(roomName).SendAsync("StartCall");
+                var connections = await PresenceTracker.GetConnectionsForUser(otherUser);
+                if (connections != null)
+                {
+                    var caller = await _uow.UserRepository.GetUserByUsernameAsync(Context.User.GetUsername());
+                    await _presenceHub.Clients.Clients(connections).SendAsync("IncomingCall", new { username = caller.UserName, knownAs = caller.KnownAs });
+                    await Clients.Group(roomName).SendAsync("StartCall");
+                }
+                else
+                {
+                    await Clients.Group(roomName).SendAsync("UserOffline");
+                    throw new HubException("User Offline");
+                }
             }
             else
             {
-                await Clients.Group(roomName).SendAsync("IncomingCall");
+                if (room.Connections.Count(x => x.Username == Context.User.GetUsername()) > 1)
+                {
+                    await Clients.Client(Context.ConnectionId).SendAsync("YouAreAlreadyInThisCall");
+                    throw new HubException("YouAreAlreadyInThisCall");
+                }
+
+                if (await _uow.RoomRepository.CheckUserInCall(Context.User.GetUsername()) == true)
+                {
+                    await Clients.Client(Context.ConnectionId).SendAsync("YouAreAlreadyInOtherCall");
+                    throw new HubException("YouAreAlreadyInOtherCall");
+                }
+
+                await Clients.Client(Context.ConnectionId).SendAsync("IncomingCall");
             }
         }
 
