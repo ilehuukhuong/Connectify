@@ -107,9 +107,9 @@ namespace API.SignalR
                     Caller = caller,
                     Receiver = receiver,
                     CallerId = caller.Id,
-                    RecipientId = receiver.Id,
+                    ReceiverId = receiver.Id,
                     CallerUsername = createCallDto.CallerUsername,
-                    RecipientUsername = createCallDto.RecipientUsername
+                    ReceiverUsername = createCallDto.RecipientUsername
                 };
 
                 _uow.RoomRepository.AddCall(call);
@@ -235,24 +235,24 @@ namespace API.SignalR
                     var message = new Message
                     {
                         SenderId = call.CallerId,
-                        RecipientId = call.RecipientId,
+                        RecipientId = call.ReceiverId,
                         Sender = call.Caller,
                         Recipient = call.Receiver,
                         SenderUsername = call.CallerUsername,
-                        RecipientUsername = call.RecipientUsername,
+                        RecipientUsername = call.ReceiverUsername,
                         Content = duration.ToString(@"hh\:mm\:ss"),
                         MessageType = "Call"
                     };
 
                     var group = await _uow.MessageRepository.GetMessageGroup(room.Name);
 
-                    if (group.Connections.Any(x => x.Username == call.RecipientUsername || x.Username == call.CallerUsername))
+                    if (group.Connections.Any(x => x.Username == call.ReceiverUsername || x.Username == call.CallerUsername))
                     {
                         message.DateRead = DateTime.UtcNow;
                     }
                     else
                     {
-                        var connectionsPresenceTracker = await PresenceTracker.GetConnectionsForUser(call.RecipientUsername);
+                        var connectionsPresenceTracker = await PresenceTracker.GetConnectionsForUser(call.ReceiverUsername);
                         if (connectionsPresenceTracker != null)
                         {
                             await _presenceHub.Clients.Clients(connectionsPresenceTracker).SendAsync("NewMessageReceived", new { username = call.CallerUsername, knownAs = call.Caller.KnownAs });
@@ -314,24 +314,24 @@ namespace API.SignalR
                 var message = new Message
                 {
                     SenderId = call.CallerId,
-                    RecipientId = call.RecipientId,
+                    RecipientId = call.ReceiverId,
                     Sender = call.Caller,
                     Recipient = call.Receiver,
                     SenderUsername = call.CallerUsername,
-                    RecipientUsername = call.RecipientUsername,
+                    RecipientUsername = call.ReceiverUsername,
                     Content = duration.ToString(@"hh\:mm\:ss"),
                     MessageType = "Call"
                 };
 
                 var group = await _uow.MessageRepository.GetMessageGroup(room.Name);
 
-                if (group.Connections.Any(x => x.Username == call.RecipientUsername || x.Username == call.CallerUsername))
+                if (group.Connections.Any(x => x.Username == call.ReceiverUsername || x.Username == call.CallerUsername))
                 {
                     message.DateRead = DateTime.UtcNow;
                 }
                 else
                 {
-                    var connectionsPresenceTracker = await PresenceTracker.GetConnectionsForUser(call.RecipientUsername);
+                    var connectionsPresenceTracker = await PresenceTracker.GetConnectionsForUser(call.ReceiverUsername);
                     if (connectionsPresenceTracker != null)
                     {
                         await _presenceHub.Clients.Clients(connectionsPresenceTracker).SendAsync("NewMessageReceived", new { username = call.CallerUsername, knownAs = call.Caller.KnownAs });

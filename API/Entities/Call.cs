@@ -6,8 +6,8 @@ namespace API.Entities
         public string CallerUsername { get; set; }
         public int CallerId { get; set; }
         public AppUser Caller { get; set; }
-        public string RecipientUsername { get; set; }
-        public int RecipientId { get; set; }
+        public string ReceiverUsername { get; set; }
+        public int ReceiverId { get; set; }
         public AppUser Receiver { get; set; }
         public DateTime StartTime { get; set; } = DateTime.UtcNow;
         public DateTime? EndTime { get; set; }

@@ -196,13 +196,10 @@ namespace API.Data.Migrations
                     b.Property<DateTime?>("EndTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("ReceiverId")
+                    b.Property<int>("ReceiverId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("RecipientId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("RecipientUsername")
+                    b.Property<string>("ReceiverUsername")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("StartTime")
@@ -600,7 +597,8 @@ namespace API.Data.Migrations
                     b.HasOne("API.Entities.AppUser", "Receiver")
                         .WithMany("ReceiveFromUser")
                         .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Caller");
 

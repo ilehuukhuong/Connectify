@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230819045216_AddSetting")]
-    partial class AddSetting
+    [Migration("20231017093759_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -182,6 +182,41 @@ namespace API.Data.Migrations
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
+            modelBuilder.Entity("API.Entities.Call", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CallerId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CallerUsername")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("ReceiverId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ReceiverUsername")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CallerId");
+
+                    b.HasIndex("ReceiverId");
+
+                    b.ToTable("Calls");
+                });
+
             modelBuilder.Entity("API.Entities.City", b =>
                 {
                     b.Property<int>("Id")
@@ -206,12 +241,17 @@ namespace API.Data.Migrations
                     b.Property<string>("GroupName")
                         .HasColumnType("text");
 
+                    b.Property<string>("RoomName")
+                        .HasColumnType("text");
+
                     b.Property<string>("Username")
                         .HasColumnType("text");
 
                     b.HasKey("ConnectionId");
 
                     b.HasIndex("GroupName");
+
+                    b.HasIndex("RoomName");
 
                     b.ToTable("Connections");
                 });
@@ -349,6 +389,16 @@ namespace API.Data.Migrations
                     b.HasIndex("AppUserId");
 
                     b.ToTable("Photos");
+                });
+
+            modelBuilder.Entity("API.Entities.Room", b =>
+                {
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Name");
+
+                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("API.Entities.Setting", b =>
@@ -539,11 +589,34 @@ namespace API.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("API.Entities.Call", b =>
+                {
+                    b.HasOne("API.Entities.AppUser", "Caller")
+                        .WithMany("CallUser")
+                        .HasForeignKey("CallerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("API.Entities.AppUser", "Receiver")
+                        .WithMany("ReceiveFromUser")
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Caller");
+
+                    b.Navigation("Receiver");
+                });
+
             modelBuilder.Entity("API.Entities.Connection", b =>
                 {
                     b.HasOne("API.Entities.Group", null)
                         .WithMany("Connections")
                         .HasForeignKey("GroupName");
+
+                    b.HasOne("API.Entities.Room", null)
+                        .WithMany("Connections")
+                        .HasForeignKey("RoomName");
                 });
 
             modelBuilder.Entity("API.Entities.Message", b =>
@@ -676,6 +749,8 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Entities.AppUser", b =>
                 {
+                    b.Navigation("CallUser");
+
                     b.Navigation("LikedByUsers");
 
                     b.Navigation("LikedUsers");
@@ -685,6 +760,8 @@ namespace API.Data.Migrations
                     b.Navigation("MessagesSent");
 
                     b.Navigation("Photos");
+
+                    b.Navigation("ReceiveFromUser");
 
                     b.Navigation("UserInterests");
 
@@ -706,6 +783,11 @@ namespace API.Data.Migrations
             modelBuilder.Entity("API.Entities.LookingFor", b =>
                 {
                     b.Navigation("UserLookingFors");
+                });
+
+            modelBuilder.Entity("API.Entities.Room", b =>
+                {
+                    b.Navigation("Connections");
                 });
 #pragma warning restore 612, 618
         }

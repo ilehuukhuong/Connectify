@@ -29,7 +29,7 @@ namespace API.Data.Repository
 
         public bool CheckCall(string caller, string recipient)
         {
-            if (_context.Calls.Where(x => ((x.CallerUsername == caller && x.RecipientUsername == recipient) || (x.CallerUsername == recipient && x.RecipientUsername == caller)) && x.EndTime == null).FirstOrDefault() != null)
+            if (_context.Calls.Where(x => ((x.CallerUsername == caller && x.ReceiverUsername == recipient) || (x.CallerUsername == recipient && x.ReceiverUsername == caller)) && x.EndTime == null).FirstOrDefault() != null)
             {
                 return true;
             }
@@ -42,7 +42,7 @@ namespace API.Data.Repository
         public async Task<Call> FindCall(string caller, string recipient)
         {
             return await _context.Calls
-                .Where(x => ((x.CallerUsername == caller && x.RecipientUsername == recipient) || (x.CallerUsername == recipient && x.RecipientUsername == caller)) && x.EndTime == null)
+                .Where(x => ((x.CallerUsername == caller && x.ReceiverUsername == recipient) || (x.CallerUsername == recipient && x.ReceiverUsername == caller)) && x.EndTime == null)
                 .Include(x => x.Caller)
                 .Include(x => x.Receiver)
                 .FirstOrDefaultAsync();
@@ -72,7 +72,7 @@ namespace API.Data.Repository
 
         public async Task<bool> CheckUserInCall(string username)
         {
-            if (await _context.Calls.Where(x => (x.CallerUsername == username || x.RecipientUsername == username) && x.EndTime == null).FirstOrDefaultAsync() != null)
+            if (await _context.Calls.Where(x => (x.CallerUsername == username || x.ReceiverUsername == username) && x.EndTime == null).FirstOrDefaultAsync() != null)
             {
                 return true;
             }

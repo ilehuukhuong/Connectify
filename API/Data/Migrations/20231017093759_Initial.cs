@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class PostgresInitial : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -91,6 +91,31 @@ namespace API.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Rooms",
+                columns: table => new
+                {
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rooms", x => x.Name);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Settings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Value = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Settings", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -168,7 +193,8 @@ namespace API.Data.Migrations
                 {
                     ConnectionId = table.Column<string>(type: "text", nullable: false),
                     Username = table.Column<string>(type: "text", nullable: true),
-                    GroupName = table.Column<string>(type: "text", nullable: true)
+                    GroupName = table.Column<string>(type: "text", nullable: true),
+                    RoomName = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -177,6 +203,11 @@ namespace API.Data.Migrations
                         name: "FK_Connections_Groups_GroupName",
                         column: x => x.GroupName,
                         principalTable: "Groups",
+                        principalColumn: "Name");
+                    table.ForeignKey(
+                        name: "FK_Connections_Rooms_RoomName",
+                        column: x => x.RoomName,
+                        principalTable: "Rooms",
                         principalColumn: "Name");
                 });
 
@@ -266,6 +297,36 @@ namespace API.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Calls",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CallerUsername = table.Column<string>(type: "text", nullable: true),
+                    CallerId = table.Column<int>(type: "integer", nullable: false),
+                    ReceiverUsername = table.Column<string>(type: "text", nullable: true),
+                    ReceiverId = table.Column<int>(type: "integer", nullable: false),
+                    StartTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Calls", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Calls_AspNetUsers_CallerId",
+                        column: x => x.CallerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Calls_AspNetUsers_ReceiverId",
+                        column: x => x.ReceiverId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Likes",
                 columns: table => new
                 {
@@ -304,7 +365,8 @@ namespace API.Data.Migrations
                     MessageSent = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     SenderDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     RecipientDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    MessageType = table.Column<string>(type: "text", nullable: true)
+                    MessageType = table.Column<string>(type: "text", nullable: true),
+                    FileName = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -441,9 +503,24 @@ namespace API.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Calls_CallerId",
+                table: "Calls",
+                column: "CallerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Calls_ReceiverId",
+                table: "Calls",
+                column: "ReceiverId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Connections_GroupName",
                 table: "Connections",
                 column: "GroupName");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Connections_RoomName",
+                table: "Connections",
+                column: "RoomName");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Likes_TargetUserId",
@@ -495,6 +572,9 @@ namespace API.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Calls");
+
+            migrationBuilder.DropTable(
                 name: "Connections");
 
             migrationBuilder.DropTable(
@@ -507,6 +587,9 @@ namespace API.Data.Migrations
                 name: "Photos");
 
             migrationBuilder.DropTable(
+                name: "Settings");
+
+            migrationBuilder.DropTable(
                 name: "UserInterests");
 
             migrationBuilder.DropTable(
@@ -517,6 +600,9 @@ namespace API.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Groups");
+
+            migrationBuilder.DropTable(
+                name: "Rooms");
 
             migrationBuilder.DropTable(
                 name: "Interests");
