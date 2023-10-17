@@ -99,10 +99,17 @@ namespace API.SignalR
                     await Clients.Client(connectionId).SendAsync("AcceptCall");
                 }
 
+                var caller = await _uow.UserRepository.GetUserByUsernameAsync(createCallDto.CallerUsername);
+                var receiver = await _uow.UserRepository.GetUserByUsernameAsync(createCallDto.RecipientUsername);
+
                 var call = new Call
                 {
+                    Caller = caller,
+                    Receiver = receiver,
+                    CallerId = caller.Id,
+                    RecipientId = receiver.Id,
                     CallerUsername = createCallDto.CallerUsername,
-                    RecipientUsername = createCallDto.RecipientUsername,
+                    RecipientUsername = createCallDto.RecipientUsername
                 };
 
                 _uow.RoomRepository.AddCall(call);
@@ -227,6 +234,8 @@ namespace API.SignalR
 
                     var message = new Message
                     {
+                        SenderId = call.CallerId,
+                        RecipientId = call.RecipientId,
                         Sender = call.Caller,
                         Recipient = call.Receiver,
                         SenderUsername = call.CallerUsername,
@@ -304,6 +313,8 @@ namespace API.SignalR
 
                 var message = new Message
                 {
+                    SenderId = call.CallerId,
+                    RecipientId = call.RecipientId,
                     Sender = call.Caller,
                     Recipient = call.Receiver,
                     SenderUsername = call.CallerUsername,
