@@ -112,6 +112,29 @@ namespace API.SignalR
             else throw new HubException("Failed to Accept Call");
         }
 
+        public async Task Decline(string callerUserName)
+        {
+            var roomName = GetRoomName(callerUserName, Context.User.GetUsername());
+            var message = new Message
+            {
+                Sender = await _uow.UserRepository.GetUserByUsernameAsync(callerUserName),
+                Recipient = await _uow.UserRepository.GetUserByUsernameAsync(Context.User.GetUsername()),
+                SenderUsername = callerUserName,
+                RecipientUsername = Context.User.GetUsername(),
+                Content = "Miss Call",
+                MessageType = "MissCall"
+            };
+
+            _uow.MessageRepository.AddMessage(message);
+
+            if (await _uow.Complete())
+            {
+                await _messageHub.Clients.Group(roomName).SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
+            }
+
+            await Clients.Group(roomName).SendAsync("UserBusy");
+        }
+
         public async Task MissCall(string recipientUsername)
         {
             var roomName = GetRoomName(Context.User.GetUsername(), recipientUsername);
@@ -177,12 +200,6 @@ namespace API.SignalR
             }
         }
 
-        private string GetGroupName(string caller, string other)
-        {
-            var stringCompare = string.CompareOrdinal(caller, other) < 0;
-            return stringCompare ? $"{caller}-{other}" : $"{other}-{caller}";
-        }
-
         public async Task EndCall(CreateCallDto createCallDto)
         {
             var roomName = GetRoomName(Context.User.GetUsername(), createCallDto.RecipientUsername);
@@ -210,30 +227,32 @@ namespace API.SignalR
 
                     var message = new Message
                     {
-                        Sender = await _uow.UserRepository.GetUserByUsernameAsync(call.CallerUsername),
-                        Recipient = await _uow.UserRepository.GetUserByUsernameAsync(call.RecipientUsername),
+                        Sender = call.Caller,
+                        Recipient = call.Receiver,
                         SenderUsername = call.CallerUsername,
                         RecipientUsername = call.RecipientUsername,
                         Content = duration.ToString(@"hh\:mm\:ss"),
                         MessageType = "Call"
                     };
 
-                    var groupName = GetGroupName(call.CallerUsername, call.RecipientUsername);
+                    var group = await _uow.MessageRepository.GetMessageGroup(room.Name);
 
-                    var group = await _uow.MessageRepository.GetMessageGroup(groupName);
-
-                    if (group.Connections.Any(x => x.Username == call.RecipientUsername))
+                    if (group.Connections.Any(x => x.Username == call.RecipientUsername || x.Username == call.CallerUsername))
                     {
                         message.DateRead = DateTime.UtcNow;
                     }
                     else
                     {
-                        var connectionsMessage = await PresenceTracker.GetConnectionsForUser(call.RecipientUsername);
-                        if (connectionsMessage != null)
+                        var connectionsPresenceTracker = await PresenceTracker.GetConnectionsForUser(call.RecipientUsername);
+                        if (connectionsPresenceTracker != null)
                         {
-                            var sender = await _uow.UserRepository.GetUserByUsernameAsync(call.CallerUsername);
-                            await _presenceHub.Clients.Clients(connections).SendAsync("NewMessageReceived",
-                                new { username = sender.UserName, knownAs = sender.KnownAs });
+                            await _presenceHub.Clients.Clients(connectionsPresenceTracker).SendAsync("NewMessageReceived", new { username = call.CallerUsername, knownAs = call.Caller.KnownAs });
+                        }
+
+                        connectionsPresenceTracker = await PresenceTracker.GetConnectionsForUser(call.CallerUsername);
+                        if (connectionsPresenceTracker != null)
+                        {
+                            await _presenceHub.Clients.Clients(connectionsPresenceTracker).SendAsync("NewMessageReceived", new { username = call.CallerUsername, knownAs = call.Caller.KnownAs });
                         }
                     }
 
@@ -241,18 +260,86 @@ namespace API.SignalR
 
                     if (await _uow.Complete())
                     {
-                        await _messageHub.Clients.Group(groupName).SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
+                        await _messageHub.Clients.Group(room.Name).SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
                     }
                 }
-                else throw new HubException("Failed to End Call");
+                else throw new HubException("Failed to find call");
             }
-            else throw new HubException("Failed to End Call");
+            else throw new HubException("Failed to find room");
+        }
+
+        private (string caller, string other) GetCallerAndOtherFromRoomName(string roomName)
+        {
+            string[] parts = roomName.Split('-');
+
+            string callerOrOther1 = parts[0];
+            string callerOrOther2 = parts[1];
+
+            return (callerOrOther1, callerOrOther2);
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             var room = await RemoveFromRoom();
             await Clients.Group(room.Name).SendAsync("UpdatedGroup");
+            (string caller, string other) = GetCallerAndOtherFromRoomName(room.Name);
+
+            if (_uow.RoomRepository.CheckCall(caller, other))
+            {
+                var connections = room.Connections.Select(c => c.ConnectionId).ToList();
+
+                foreach (var connectionId in connections)
+                {
+                    var connection = room.Connections.FirstOrDefault(x => x.ConnectionId == connectionId);
+                    await Clients.Client(connectionId).SendAsync("EndCall");
+                }
+
+                var call = await _uow.RoomRepository.FindCall(caller, other);
+
+                call.EndTime = DateTime.UtcNow;
+
+                _uow.RoomRepository.UpdateCall(call);
+
+                TimeSpan duration = call.EndTime.Value - call.StartTime;
+
+                var message = new Message
+                {
+                    Sender = call.Caller,
+                    Recipient = call.Receiver,
+                    SenderUsername = call.CallerUsername,
+                    RecipientUsername = call.RecipientUsername,
+                    Content = duration.ToString(@"hh\:mm\:ss"),
+                    MessageType = "Call"
+                };
+
+                var group = await _uow.MessageRepository.GetMessageGroup(room.Name);
+
+                if (group.Connections.Any(x => x.Username == call.RecipientUsername || x.Username == call.CallerUsername))
+                {
+                    message.DateRead = DateTime.UtcNow;
+                }
+                else
+                {
+                    var connectionsPresenceTracker = await PresenceTracker.GetConnectionsForUser(call.RecipientUsername);
+                    if (connectionsPresenceTracker != null)
+                    {
+                        await _presenceHub.Clients.Clients(connectionsPresenceTracker).SendAsync("NewMessageReceived", new { username = call.CallerUsername, knownAs = call.Caller.KnownAs });
+                    }
+
+                    connectionsPresenceTracker = await PresenceTracker.GetConnectionsForUser(call.CallerUsername);
+                    if (connectionsPresenceTracker != null)
+                    {
+                        await _presenceHub.Clients.Clients(connectionsPresenceTracker).SendAsync("NewMessageReceived", new { username = call.CallerUsername, knownAs = call.Caller.KnownAs });
+                    }
+                }
+
+                _uow.MessageRepository.AddMessage(message);
+
+                if (await _uow.Complete())
+                {
+                    await _messageHub.Clients.Group(room.Name).SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
+                }
+            }
             await base.OnDisconnectedAsync(exception);
         }
 
