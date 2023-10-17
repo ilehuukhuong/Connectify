@@ -97,6 +97,16 @@ namespace API.Data
                 .HasOne(u => u.Sender)
                 .WithMany(m => m.MessagesSent)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Call>()
+            .HasOne(u => u.Receiver)
+            .WithMany(m => m.ReceiveFromUser)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Call>()
+                .HasOne(u => u.Caller)
+                .WithMany(m => m.CallUser)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

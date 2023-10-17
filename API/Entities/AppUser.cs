@@ -20,14 +20,16 @@ namespace API.Entities
         public double Longitude { get; set; }
         public bool IsBlocked { get; set; } = false;
         public bool IsDeleted { get; set; } = false;
-        public bool IsVisible  { get; set; } = true;
+        public bool IsVisible { get; set; } = true;
         public List<Photo> Photos { get; set; } = new();
         public List<UserLookingFor> UserLookingFors { get; set; } = new();
-        public List<UserInterest> UserInterests {get; set; } = new();
+        public List<UserInterest> UserInterests { get; set; } = new();
         public List<UserLike> LikedByUsers { get; set; }
         public List<UserLike> LikedUsers { get; set; }
         public List<Message> MessagesSent { get; set; }
         public List<Message> MessagesReceived { get; set; }
+        public List<Call> CallUser { get; set; }
+        public List<Call> ReceiveFromUser { get; set; }
         public ICollection<AppUserRole> UserRoles { get; set; }
     }
 }

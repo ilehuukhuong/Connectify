@@ -41,7 +41,11 @@ namespace API.Data.Repository
 
         public async Task<Call> FindCall(string caller, string recipient)
         {
-            return await _context.Calls.Where(x => ((x.CallerUsername == caller && x.RecipientUsername == recipient) || (x.CallerUsername == recipient && x.RecipientUsername == caller)) && x.EndTime == null).FirstOrDefaultAsync();
+            return await _context.Calls
+                .Where(x => ((x.CallerUsername == caller && x.RecipientUsername == recipient) || (x.CallerUsername == recipient && x.RecipientUsername == caller)) && x.EndTime == null)
+                .Include(x => x.Caller)
+                .Include(x => x.Receiver)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<Room> GetRoom(string roomName)
