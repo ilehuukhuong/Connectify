@@ -18,7 +18,7 @@ namespace API.DTOs
         public string City { get; set; }
         public List<PhotoDto> Photos { get; set; }
         public List<IdNameDto> LookingFors { get; set; }
-        public List<IdNameDto> Interests {get; set; }
+        public List<IdNameDto> Interests { get; set; }
         [JsonIgnore]
         public double Latitude { get; set; }
         [JsonIgnore]

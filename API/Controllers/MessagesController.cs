@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.SignalR;
 namespace API.Controllers
 {
     [Authorize]
-    public class MessagesController : BaseApiController 
+    public class MessagesController : BaseApiController
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _uow;
@@ -139,8 +139,10 @@ namespace API.Controllers
 
             _uow.MessageRepository.AddMessage(message);
 
-            if (await _uow.Complete()){
-                var messageDto = new MessageDto{
+            if (await _uow.Complete())
+            {
+                var messageDto = new MessageDto
+                {
                     MessageSent = message.MessageSent,
                     SenderUsername = message.SenderUsername,
                     SenderPhotoUrl = sender.Photos.FirstOrDefault(x => x.IsMain).Url,
@@ -233,7 +235,7 @@ namespace API.Controllers
         [HttpGet("connectedmessages")]
         public async Task<PagedList<UserMessageInfoDto>> GetMessage([FromQuery] MessageParams messageParams)
         {
-            var messages = await _uow.MessageRepository.GetUserMessages(User.GetUserId(),messageParams);
+            var messages = await _uow.MessageRepository.GetUserMessages(User.GetUserId(), messageParams);
 
             Response.AddPaginationHeader(new PaginationHeader(messages.CurrentPage, messages.PageSize, messages.TotalCount, messages.TotalPages));
 

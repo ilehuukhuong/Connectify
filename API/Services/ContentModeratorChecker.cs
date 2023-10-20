@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace API.Services
 {
-        public class ContentModeratorService : IContentModeratorService
+    public class ContentModeratorService : IContentModeratorService
     {
         private readonly ContentModeratorClient _client;
 

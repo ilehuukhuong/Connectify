@@ -26,7 +26,7 @@ namespace API.Controllers
 
             var checkname = await _uow.GenderRepository.GetGenderByName(gender.Name);
 
-            if(checkname != null) return BadRequest("This name has taken");
+            if (checkname != null) return BadRequest("This name has taken");
 
             _uow.GenderRepository.AddGender(gender);
 
@@ -43,7 +43,7 @@ namespace API.Controllers
 
             var checkname = await _uow.GenderRepository.GetGenderByName(gender.Name);
 
-            if(checkname != null) return BadRequest("This name has taken");
+            if (checkname != null) return BadRequest("This name has taken");
 
             gender.Id = id;
 
@@ -58,7 +58,7 @@ namespace API.Controllers
         [Authorize(Policy = "RequireAdminRole")]
         public async Task<ActionResult> DeleteGender(int id)
         {
-            if(_uow.GenderRepository.DeleteGender(id) == false) return BadRequest("This gender is being used by some users");
+            if (_uow.GenderRepository.DeleteGender(id) == false) return BadRequest("This gender is being used by some users");
 
             if (await _uow.Complete()) return Ok("The gender has been deleted successfully");
 

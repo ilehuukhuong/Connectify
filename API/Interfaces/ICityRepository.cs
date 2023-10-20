@@ -9,6 +9,6 @@ namespace API.Interfaces
         void UpdateCity(City lF);
         Task<City> GetCityById(int id);
         Task<City> GetCityByName(string name);
-        Task<IEnumerable<City>> SearchCities (string name);
+        Task<IEnumerable<City>> SearchCities(string name);
     }
 }

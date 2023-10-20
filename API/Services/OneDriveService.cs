@@ -1,5 +1,3 @@
-using System.Net.Http.Headers;
-using System.Text;
 using API.Data;
 using API.Entities;
 using API.Helpers;
@@ -8,6 +6,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace API.Services
 {

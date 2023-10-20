@@ -2,21 +2,21 @@ namespace API.SignalR
 {
     public class PresenceTracker
     {
-        private static readonly Dictionary<string, List<string>> OnlineUsers = 
+        private static readonly Dictionary<string, List<string>> OnlineUsers =
             new Dictionary<string, List<string>>();
 
         public Task<bool> UserConnected(string username, string connectionId)
         {
             bool isOnline = false;
-            lock(OnlineUsers)
+            lock (OnlineUsers)
             {
                 if (OnlineUsers.ContainsKey(username))
                 {
                     OnlineUsers[username].Add(connectionId);
                 }
-                else 
+                else
                 {
-                    OnlineUsers.Add(username, new List<string>{connectionId});
+                    OnlineUsers.Add(username, new List<string> { connectionId });
                     isOnline = true;
                 }
             }
@@ -28,7 +28,7 @@ namespace API.SignalR
         {
             bool isOffline = false;
 
-            lock(OnlineUsers)
+            lock (OnlineUsers)
             {
                 if (!OnlineUsers.ContainsKey(username)) return Task.FromResult(isOffline);
 
@@ -47,7 +47,7 @@ namespace API.SignalR
         public Task<string[]> GetOnlineUsers()
         {
             string[] onlineUsers;
-            lock(OnlineUsers)
+            lock (OnlineUsers)
             {
                 onlineUsers = OnlineUsers.OrderBy(k => k.Key).Select(k => k.Key).ToArray();
             }

@@ -1,7 +1,7 @@
-using System.Text.Json;
 using API.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace API.Data
 {
@@ -18,14 +18,14 @@ namespace API.Data
             if (await context.Genders.AnyAsync()) return;
 
             var genderData = await File.ReadAllTextAsync("Data/DatabaseDataSeed/GenderSeedData.json");
-            var options = new JsonSerializerOptions{PropertyNameCaseInsensitive = true};
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var genders = JsonSerializer.Deserialize<List<Gender>>(genderData);
 
             foreach (var gender in genders)
             {
                 context.Genders.Add(gender);
             }
-            
+
             await context.SaveChangesAsync();
         }
 
@@ -34,14 +34,14 @@ namespace API.Data
             if (await context.Interests.AnyAsync()) return;
 
             var interestData = await File.ReadAllTextAsync("Data/DatabaseDataSeed/InterestSeedData.json");
-            var options = new JsonSerializerOptions{PropertyNameCaseInsensitive = true};
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var interests = JsonSerializer.Deserialize<List<Interest>>(interestData);
 
             foreach (var interest in interests)
             {
                 context.Interests.Add(interest);
             }
-            
+
             await context.SaveChangesAsync();
         }
 
@@ -50,25 +50,25 @@ namespace API.Data
             if (await context.LookingFors.AnyAsync()) return;
 
             var lookingForData = await File.ReadAllTextAsync("Data/DatabaseDataSeed/LookingForSeedData.json");
-            var options = new JsonSerializerOptions{PropertyNameCaseInsensitive = true};
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var lookingFors = JsonSerializer.Deserialize<List<LookingFor>>(lookingForData);
 
             foreach (var lookingFor in lookingFors)
             {
                 context.LookingFors.Add(lookingFor);
             }
-            
+
             await context.SaveChangesAsync();
         }
 
-        public static async Task SeedUsers(UserManager<AppUser> userManager, 
+        public static async Task SeedUsers(UserManager<AppUser> userManager,
             RoleManager<AppRole> roleManager)
         {
             if (await userManager.Users.AnyAsync()) return;
 
             var userData = await File.ReadAllTextAsync("Data/DatabaseDataSeed/UserSeedData.json");
 
-            var options = new JsonSerializerOptions{PropertyNameCaseInsensitive = true};
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
             var users = JsonSerializer.Deserialize<List<AppUser>>(userData);
 
@@ -102,7 +102,7 @@ namespace API.Data
             };
 
             await userManager.CreateAsync(admin, "Pa$$w0rd");
-            await userManager.AddToRolesAsync(admin, new[] {"Admin", "Moderator"});
+            await userManager.AddToRolesAsync(admin, new[] { "Admin", "Moderator" });
         }
     }
 }

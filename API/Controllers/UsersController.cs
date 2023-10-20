@@ -106,7 +106,8 @@ namespace API.Controllers
 
             if (await _uow.UserRepository.GetUserLookingForEntityAsync(user, lookingFor) != null) return BadRequest("You already have this looking for");
 
-            var userLookingFor = new UserLookingFor{
+            var userLookingFor = new UserLookingFor
+            {
                 User = user,
                 LookingFor = lookingFor
             };
@@ -151,7 +152,8 @@ namespace API.Controllers
 
             if (await _uow.UserRepository.GetUserInterestForEntityAsync(user, interest) != null) return BadRequest("You already have this interest");
 
-            var userInterest = new UserInterest{
+            var userInterest = new UserInterest
+            {
                 User = user,
                 Interest = interest
             };

@@ -13,9 +13,9 @@ namespace API.DTOs
         public string Gender { get; set; }
         public string Introduction { get; set; }
         public string City { get; set; }
-        public bool IsVisible  { get; set; }
+        public bool IsVisible { get; set; }
         public List<PhotoDto> Photos { get; set; }
         public List<IdNameDto> LookingFors { get; set; }
-        public List<IdNameDto> Interests {get; set; }
+        public List<IdNameDto> Interests { get; set; }
     }
 }

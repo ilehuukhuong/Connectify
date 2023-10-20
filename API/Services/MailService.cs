@@ -1,5 +1,5 @@
-using API.Interfaces;
 using API.Helpers;
+using API.Interfaces;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;

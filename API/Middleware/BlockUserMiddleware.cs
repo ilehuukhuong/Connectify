@@ -19,7 +19,7 @@ namespace API.Middleware
             if (context.User.Identity.IsAuthenticated)
             {
                 var user = await _uow.UserRepository.BlockUserAsync(context.User.GetUserId());
-                
+
                 if (user == null)
                 {
                     context.Response.StatusCode = StatusCodes.Status401Unauthorized;

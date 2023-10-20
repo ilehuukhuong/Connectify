@@ -137,8 +137,10 @@ namespace API.Data.Repository
                 MessageSent = m.LastMessage.MessageSent,
                 LastMessage = m.LastMessage.MessageType switch
                 {
-                    "Image" => m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.FirstName + " sent a photo." :  "You sent a photo.",
-                    "Video" => m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.FirstName + " sent a video.": "You sent a video.",
+                    "Call" => m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.FirstName + " called you." : m.LastMessage.Recipient.FirstName + " called you.",
+                    "MissCall" => m.LastMessage.RecipientId == userId ? "You missed a call from " + m.LastMessage.Sender.FirstName : m.LastMessage.Recipient.FirstName + " missed your call.",
+                    "Image" => m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.FirstName + " sent a photo." : "You sent a photo.",
+                    "Video" => m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.FirstName + " sent a video." : "You sent a video.",
                     "File" => m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.FirstName + " sent a file." : "You sent a file.",
                     "Audio" => m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.FirstName + "sent an audio." : "You sent an audio.",
                     "Location" => m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.FirstName + " sent a live location." : "You sent a live location.",

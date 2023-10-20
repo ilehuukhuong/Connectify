@@ -30,7 +30,7 @@ namespace API.Controllers
 
             var checkname = await _uow.InterestRepository.GetInterestByName(lF.Name);
 
-            if(checkname != null) return BadRequest("This name has taken");
+            if (checkname != null) return BadRequest("This name has taken");
 
             _uow.InterestRepository.AddInterest(lF);
 
@@ -47,7 +47,7 @@ namespace API.Controllers
 
             var checkname = await _uow.InterestRepository.GetInterestByName(lF.Name);
 
-            if(checkname != null) return BadRequest("This name has taken");
+            if (checkname != null) return BadRequest("This name has taken");
 
             lF.Id = id;
 
@@ -62,7 +62,7 @@ namespace API.Controllers
         [Authorize(Policy = "RequireAdminRole")]
         public async Task<ActionResult<Interest>> DeleteInterest(int id)
         {
-            if(_uow.InterestRepository.DeleteInterest(id) == false) return NotFound();
+            if (_uow.InterestRepository.DeleteInterest(id) == false) return NotFound();
 
             if (await _uow.Complete()) return Ok("Deleted successfully");
 

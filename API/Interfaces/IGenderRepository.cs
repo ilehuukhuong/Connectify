@@ -9,6 +9,6 @@ namespace API.Interfaces
         void UpdateGender(Gender gender);
         Task<Gender> GetGenderById(int id);
         Task<Gender> GetGenderByName(string name);
-        Task<IEnumerable<Gender>> GetGenders ();
+        Task<IEnumerable<Gender>> GetGenders();
     }
 }

@@ -1,4 +1,3 @@
-using System.Web;
 using API.Data.Template;
 using API.DTOs;
 using API.Entities;
@@ -8,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Web;
 
 namespace API.Controllers
 {

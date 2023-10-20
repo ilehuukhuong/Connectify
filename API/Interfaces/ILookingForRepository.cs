@@ -9,6 +9,6 @@ namespace API.Interfaces
         void UpdateLookingFor(LookingFor lF);
         Task<LookingFor> GetLookingForById(int id);
         Task<LookingFor> GetLookingForByName(string name);
-        Task<IEnumerable<LookingFor>> SearchLookingFors (string name);
+        Task<IEnumerable<LookingFor>> SearchLookingFors(string name);
     }
 }

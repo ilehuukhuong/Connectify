@@ -10,7 +10,7 @@ namespace API.Helpers
         public AutoMapperProfiles()
         {
             CreateMap<AppUser, MemberDto>()
-                .ForMember(dest => dest.PhotoUrl, 
+                .ForMember(dest => dest.PhotoUrl,
                     opt => opt.MapFrom(src => src.Photos.FirstOrDefault(x => x.IsMain).Url))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender.Name))
                 .ForMember(dest => dest.LookingFors, opt => opt.MapFrom(src => src.UserLookingFors.Select(x => x.LookingFor)))
@@ -18,7 +18,7 @@ namespace API.Helpers
                 .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalcuateAge()))
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City.Name));
             CreateMap<AppUser, MemberDtoWithoutIsVisible>()
-                .ForMember(dest => dest.PhotoUrl, 
+                .ForMember(dest => dest.PhotoUrl,
                     opt => opt.MapFrom(src => src.Photos.FirstOrDefault(x => x.IsMain).Url))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender.Name))
                 .ForMember(dest => dest.LookingFors, opt => opt.MapFrom(src => src.UserLookingFors.Select(x => x.LookingFor)))
@@ -41,7 +41,7 @@ namespace API.Helpers
                 .ForMember(d => d.RecipientPhotoUrl, o => o.MapFrom(s => s.Recipient.Photos
                     .FirstOrDefault(x => x.IsMain).Url));
             CreateMap<DateTime, DateTime>().ConvertUsing(d => DateTime.SpecifyKind(d, DateTimeKind.Utc));
-            CreateMap<DateTime?, DateTime?>().ConvertUsing(d => d.HasValue ? 
+            CreateMap<DateTime?, DateTime?>().ConvertUsing(d => d.HasValue ?
                 DateTime.SpecifyKind(d.Value, DateTimeKind.Utc) : null);
         }
     }
