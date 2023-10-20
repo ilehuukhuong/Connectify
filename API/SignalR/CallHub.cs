@@ -29,6 +29,23 @@ namespace API.SignalR
             var httpContext = Context.GetHttpContext();
             var otherUser = httpContext.Request.Query["user"];
             var roomName = GetRoomName(Context.User.GetUsername(), otherUser);
+
+            var roomCheck = await _uow.RoomRepository.GetRoom(roomName);
+            if (roomCheck != null)
+            {
+                if (roomCheck.Connections.Any(x => x.Username == Context.User.GetUsername()))
+                {
+                    await Clients.Client(Context.ConnectionId).SendAsync("YouAreAlreadyInThisCall");
+                    throw new HubException("You Are Already In This Call");
+                }
+
+                if (await _uow.RoomRepository.CheckUserInCall(Context.User.GetUsername()) == true)
+                {
+                    await Clients.Client(Context.ConnectionId).SendAsync("YouAreAlreadyInOtherCall");
+                    throw new HubException("You Are Already In Other Call");
+                }
+            }
+
             await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
             var room = await AddToRoom(roomName);
 
@@ -39,9 +56,33 @@ namespace API.SignalR
                 var connections = await PresenceTracker.GetConnectionsForUser(otherUser);
                 if (connections != null)
                 {
-                    var caller = await _uow.UserRepository.GetUserByUsernameAsync(Context.User.GetUsername());
-                    await _presenceHub.Clients.Clients(connections).SendAsync("IncomingCall", new { username = caller.UserName, knownAs = caller.KnownAs });
-                    await Clients.Client(Context.ConnectionId).SendAsync("StartCall");
+                    if (await _uow.RoomRepository.CheckUserInCall(otherUser) == true)
+                    {
+                        var message = new Message
+                        {
+                            Sender = await _uow.UserRepository.GetUserByUsernameAsync(Context.User.GetUsername()),
+                            Recipient = await _uow.UserRepository.GetUserByUsernameAsync(otherUser),
+                            SenderUsername = Context.User.GetUsername(),
+                            RecipientUsername = otherUser,
+                            Content = "Missed Call",
+                            MessageType = "MissCall"
+                        };
+
+                        _uow.MessageRepository.AddMessage(message);
+
+                        if (await _uow.Complete())
+                        {
+                            await _messageHub.Clients.Group(roomName).SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
+                        }
+
+                        await Clients.Client(Context.ConnectionId).SendAsync("UserBusy");
+                    }
+                    else
+                    {
+                        var caller = await _uow.UserRepository.GetUserByUsernameAsync(Context.User.GetUsername());
+                        await _presenceHub.Clients.Clients(connections).SendAsync("IncomingCall", new { username = caller.UserName, knownAs = caller.KnownAs });
+                        await Clients.Client(Context.ConnectionId).SendAsync("StartCall");
+                    }
                 }
                 else
                 {
@@ -67,16 +108,6 @@ namespace API.SignalR
             }
             else
             {
-                if (room.Connections.Count(x => x.Username == Context.User.GetUsername()) > 1)
-                {
-                    await Clients.Client(Context.ConnectionId).SendAsync("YouAreAlreadyInThisCall");
-                }
-
-                if (await _uow.RoomRepository.CheckUserInCall(Context.User.GetUsername()) == true)
-                {
-                    await Clients.Client(Context.ConnectionId).SendAsync("YouAreAlreadyInOtherCall");
-                }
-
                 await Clients.Client(Context.ConnectionId).SendAsync("IncomingCall");
             }
         }
