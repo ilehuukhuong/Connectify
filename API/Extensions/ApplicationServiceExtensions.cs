@@ -28,16 +28,7 @@ namespace API.Extensions
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<IMailService, MailService>();
             services.AddScoped<LogUserActivity>();
-            services.AddSignalR(options =>
-            {
-                options.EnableDetailedErrors = true;
-                options.KeepAliveInterval = TimeSpan.FromMinutes(2);
-                options.ClientTimeoutInterval = TimeSpan.FromMinutes(2);
-            })
-            .AddJsonProtocol(options =>
-            {
-                options.PayloadSerializerOptions.PropertyNamingPolicy = null;
-            });
+            services.AddSignalR();
             services.AddSingleton<PresenceTracker>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

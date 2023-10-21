@@ -50,8 +50,8 @@ app.UseCors(builder => builder
     .AllowAnyHeader()
     .AllowAnyMethod()
     .AllowCredentials()
-    .WithMethods("GET", "POST", "OPTIONS")
-    .WithOrigins("https://localhost:4200", "https://connectify.io.vn")
+    .WithOrigins("https://localhost:4200")
+    .WithOrigins("https://connectify.io.vn")
 );
 
 app.UseAuthentication();
