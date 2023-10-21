@@ -238,9 +238,9 @@ namespace API.SignalR
             }
         }
 
-        public async Task EndCall(CreateCallDto createCallDto)
+        public async Task EndCall(string otherUserName)
         {
-            var roomName = GetRoomName(Context.User.GetUsername(), createCallDto.RecipientUsername);
+            var roomName = GetRoomName(Context.User.GetUsername(), otherUserName);
             var room = await _uow.RoomRepository.GetRoom(roomName);
 
             if (room != null)
@@ -253,9 +253,9 @@ namespace API.SignalR
                     await Clients.Client(connectionId).SendAsync("EndCall");
                 }
 
-                if (_uow.RoomRepository.CheckCall(Context.User.GetUsername(), createCallDto.RecipientUsername))
+                if (_uow.RoomRepository.CheckCall(Context.User.GetUsername(), otherUserName))
                 {
-                    var call = await _uow.RoomRepository.FindCall(Context.User.GetUsername(), createCallDto.RecipientUsername);
+                    var call = await _uow.RoomRepository.FindCall(Context.User.GetUsername(), otherUserName);
 
                     call.EndTime = DateTime.UtcNow;
 
