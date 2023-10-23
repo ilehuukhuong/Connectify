@@ -123,7 +123,7 @@ namespace API.Controllers
             return Ok("Password reset link sent to your email.");
         }
 
-        [HttpPut("reset-password/{email}/{token}")]
+        [HttpPut("reset-password")]
         public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
         {
             var user = await _userManager.FindByEmailAsync(resetPasswordDto.Email.ToLower());
