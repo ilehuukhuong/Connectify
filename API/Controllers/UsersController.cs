@@ -226,7 +226,7 @@ namespace API.Controllers
                         return BadRequest("Failed to delete city");
                     }
                 }
-                return NoContent();
+                return Ok();
             }
             return BadRequest("Failed to update location");
         }
