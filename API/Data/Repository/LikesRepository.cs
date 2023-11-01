@@ -54,22 +54,48 @@ namespace API.Data.Repository
 
             if (likesParams.Predicate == "connected")
             {
-                // Users who liked the source user
-                var likedByUsers = _context.Likes
-                    .Where(like => like.TargetUserId == likesParams.UserId)
-                    .Where(like => like.SourceUser.IsBlocked == false)
-                    .Where(like => like.SourceUser.IsDeleted == false)
-                    .Select(like => like.SourceUser);
+                if (!string.IsNullOrEmpty(likesParams.Search))
+                {
+                    // Users who liked the source user
+                    var likedByUsers = _context.Likes
+                        .Where(like => like.TargetUserId == likesParams.UserId)
+                        .Where(like => like.SourceUser.IsBlocked == false)
+                        .Where(like => like.SourceUser.IsDeleted == false)
+                        .Where(like => like.SourceUser.KnownAs.ToLower().Contains(likesParams.Search.ToLower()) ||
+                              (like.SourceUser.FirstName.ToLower() + " " + like.SourceUser.LastName.ToLower()).Contains(likesParams.Search.ToLower()))
+                        .Select(like => like.SourceUser);
 
-                // Users liked by the source user
-                var likedUsers = _context.Likes
-                    .Where(like => like.SourceUserId == likesParams.UserId)
-                    .Where(like => like.TargetUser.IsBlocked == false)
-                    .Where(like => like.TargetUser.IsDeleted == false)
-                    .Select(like => like.TargetUser);
+                    // Users liked by the source user
+                    var likedUsers = _context.Likes
+                        .Where(like => like.SourceUserId == likesParams.UserId)
+                        .Where(like => like.TargetUser.IsBlocked == false)
+                        .Where(like => like.TargetUser.IsDeleted == false)
+                        .Where(like => like.TargetUser.KnownAs.ToLower().Contains(likesParams.Search.ToLower()) ||
+                              (like.TargetUser.FirstName.ToLower() + " " + like.TargetUser.LastName.ToLower()).Contains(likesParams.Search.ToLower()))
+                        .Select(like => like.TargetUser);
 
-                // Intersection of the two lists
-                users = likedUsers.Intersect(likedByUsers);
+                    // Intersection of the two lists
+                    users = likedUsers.Intersect(likedByUsers);
+                }
+                else
+                {
+                    // Users who liked the source user
+                    var likedByUsers = _context.Likes
+                        .Where(like => like.TargetUserId == likesParams.UserId)
+                        .Where(like => like.SourceUser.IsBlocked == false)
+                        .Where(like => like.SourceUser.IsDeleted == false)
+                        .Select(like => like.SourceUser);
+
+                    // Users liked by the source user
+                    var likedUsers = _context.Likes
+                        .Where(like => like.SourceUserId == likesParams.UserId)
+                        .Where(like => like.TargetUser.IsBlocked == false)
+                        .Where(like => like.TargetUser.IsDeleted == false)
+                        .Select(like => like.TargetUser);
+
+                    // Intersection of the two lists
+                    users = likedUsers.Intersect(likedByUsers);
+                }
             }
 
             var listUsers = users.Select(user => new LikeDto
