@@ -58,28 +58,6 @@ namespace API.Data.Repository
                 .FirstOrDefaultAsync(x => x.Name == groupName);
         }
 
-        public async Task<PagedList<MessageDto>> GetMessagesForUser(MessageParams messageParams)
-        {
-            var query = _context.Messages
-                .OrderByDescending(x => x.MessageSent)
-                .AsQueryable();
-
-            query = messageParams.Container switch
-            {
-                "Inbox" => query.Where(u => u.RecipientUsername == messageParams.Username
-                    && u.RecipientDeleted == false),
-                "Outbox" => query.Where(u => u.SenderUsername == messageParams.Username
-                    && u.SenderDeleted == false),
-                _ => query.Where(u => u.RecipientUsername == messageParams.Username
-                    && u.RecipientDeleted == false && u.DateRead == null)
-            };
-
-            var messages = query.ProjectTo<MessageDto>(_mapper.ConfigurationProvider);
-
-            return await PagedList<MessageDto>
-                .CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
-        }
-
         public async Task<IEnumerable<MessageDto>> GetMessageThread(string currentUserName, string recipientUserName)
         {
             var query = _context.Messages
@@ -114,12 +92,19 @@ namespace API.Data.Repository
 
         public async Task<PagedList<UserMessageInfoDto>> GetUserMessages(int userId, MessageParams messageParams)
         {
-            var messagesInfoQuery = await _context.Messages
+            var messagesInfoQuery = _context.Messages
                 .Include(m => m.Sender).ThenInclude(u => u.Photos)
                 .Include(m => m.Recipient).ThenInclude(u => u.Photos)
                 .Where(m => (m.RecipientId == userId && m.RecipientDeleted == false) || (m.SenderId == userId && m.SenderDeleted == false))
                 .Where(m => m.Recipient.IsBlocked == false && m.Sender.IsBlocked == false)
-                .Where(m => m.Recipient.IsDeleted == false && m.Sender.IsDeleted == false)
+                .Where(m => m.Recipient.IsDeleted == false && m.Sender.IsDeleted == false);
+
+            if (!string.IsNullOrEmpty(messageParams.FullName))
+            {
+                messagesInfoQuery = messagesInfoQuery.Where(m => m.Sender.KnownAs.ToLower().Contains(messageParams.FullName.ToLower())|| m.Recipient.KnownAs.ToLower().Contains(messageParams.FullName.ToLower())|| (m.Recipient.FirstName.ToLower() + " " + m.Recipient.LastName.ToLower()).Contains(messageParams.FullName.ToLower()) || (m.Sender.FirstName.ToLower() + " " + m.Sender.LastName.ToLower()).Contains(messageParams.FullName.ToLower()));
+            }
+
+            var finalMessagesInfoQuery = await messagesInfoQuery
                 .GroupBy(m => m.RecipientId == userId ? m.SenderId : m.RecipientId)
                 .OrderByDescending(g => g.Max(m => m.MessageSent))
                 .Select(g => new
@@ -129,7 +114,8 @@ namespace API.Data.Repository
                 })
                 .ToListAsync();
 
-            var messagesInfo = messagesInfoQuery.Select(m => new UserMessageInfoDto
+
+            var messagesInfo = finalMessagesInfoQuery.Select(m => new UserMessageInfoDto
             {
                 PhotoUrl = m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.Photos.FirstOrDefault(p => p.IsMain)?.Url : m.LastMessage.Recipient.Photos.FirstOrDefault(p => p.IsMain)?.Url,
                 FullName = m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.FullName : m.LastMessage.Recipient.FullName,

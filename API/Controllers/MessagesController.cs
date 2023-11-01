@@ -197,18 +197,6 @@ namespace API.Controllers
             return BadRequest("Failed to send message");
         }
 
-        [HttpGet]
-        public async Task<ActionResult<PagedList<MessageDto>>> GetMessagesForUser([FromQuery] MessageParams messageParams)
-        {
-            messageParams.Username = User.GetUsername();
-
-            var messages = await _uow.MessageRepository.GetMessagesForUser(messageParams);
-
-            Response.AddPaginationHeader(new PaginationHeader(messages.CurrentPage, messages.PageSize, messages.TotalCount, messages.TotalPages));
-
-            return messages;
-        }
-
         [HttpPut("{id}")]
         public async Task<ActionResult> UnsendMessage(int id)
         {
