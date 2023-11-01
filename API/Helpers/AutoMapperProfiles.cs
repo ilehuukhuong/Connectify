@@ -36,6 +36,12 @@ namespace API.Helpers
             CreateMap<LocationDto, AppUser>();
             CreateMap<RegisterDto, AppUser>();
             CreateMap<Message, MessageDto>()
+                .ForMember(d => d.SenderUsername, o => o.MapFrom(s => s.SenderUsername))
+                .ForMember(d => d.SenderKnownAs, o => o.MapFrom(s => s.Sender.KnownAs))
+                .ForMember(d => d.SenderFullName, o => o.MapFrom(s => s.Sender.FullName))
+                .ForMember(d => d.RecipientUsername, o => o.MapFrom(s => s.RecipientUsername))
+                .ForMember(d => d.RecipientKnownAs, o => o.MapFrom(s => s.Recipient.KnownAs))
+                .ForMember(d => d.RecipientFullName, o => o.MapFrom(s => s.Recipient.FullName))
                 .ForMember(d => d.SenderPhotoUrl, o => o.MapFrom(s => s.Sender.Photos
                     .FirstOrDefault(x => x.IsMain).Url))
                 .ForMember(d => d.RecipientPhotoUrl, o => o.MapFrom(s => s.Recipient.Photos
