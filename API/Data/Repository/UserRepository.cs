@@ -134,7 +134,7 @@ namespace API.Data.Repository
                 .ToListAsync();
 
             var recommendedUsers = allUsers
-                .Where(user => CalculateSimilarity.CalculateUserSimilarity(currentUser, user) > 0.5)
+                .Where(user => CalculateSimilarity.CalculateUserSimilarity(currentUser, user) >= (double)userParams.Similarity / 10.0)
                 .OrderByDescending(user => user.LastActive)
                 .Select(user => _mapper.Map<MemberDtoWithoutIsVisible>(user));
 
