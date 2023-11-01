@@ -137,6 +137,7 @@ namespace API.Data.Repository
                 MessageSent = m.LastMessage.MessageSent,
                 LastMessage = m.LastMessage.MessageType switch
                 {
+                    "Unsent" => m.LastMessage.SenderId == userId ? "You unsent a message." : m.LastMessage.Sender.FirstName + " unsent a message.",
                     "Call" => m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.FirstName + " called you." : m.LastMessage.Recipient.FirstName + " called you.",
                     "MissCall" => m.LastMessage.RecipientId == userId ? "You missed a call from " + m.LastMessage.Sender.FirstName : m.LastMessage.Recipient.FirstName + " missed your call.",
                     "Image" => m.LastMessage.RecipientId == userId ? m.LastMessage.Sender.FirstName + " sent a photo." : "You sent a photo.",

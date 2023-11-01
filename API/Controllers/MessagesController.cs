@@ -209,23 +209,21 @@ namespace API.Controllers
             return messages;
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteMessage(int id)
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UnsendMessage(int id)
         {
             var username = User.GetUsername();
 
             var message = await _uow.MessageRepository.GetMessage(id);
 
-            if (message.SenderUsername != username && message.RecipientUsername != username)
-                return BadRequest("You cannot delete this message");
+            if (message.SenderUsername != username) return BadRequest("You cannot unsend this message");
 
-            if (message.SenderUsername == username) message.SenderDeleted = true;
-            if (message.RecipientUsername == username) message.RecipientDeleted = true;
+            message.Content = "This message has been unsent";
+            message.MessageType = "Unsent";
 
-            if (message.SenderDeleted && message.RecipientDeleted)
-            {
-                _uow.MessageRepository.DeleteMessage(message);
-            }
+            var groupName = GetGroupName(message.SenderUsername, message.RecipientUsername);
+
+            await _messageHub.Clients.Group(groupName).SendAsync("UnsendMessage", _mapper.Map<MessageDto>(message));
 
             if (await _uow.Complete()) return Ok();
 
