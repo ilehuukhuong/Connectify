@@ -227,5 +227,28 @@ namespace API.Controllers
 
             return messages;
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteMessage(int id)
+        {
+            var username = User.GetUsername();
+
+            var message = await _uow.MessageRepository.GetMessage(id);
+
+            if (message.SenderUsername != username && message.RecipientUsername != username)
+                return BadRequest("You cannot delete this message");
+
+            if (message.SenderUsername == username) message.SenderDeleted = true;
+            if (message.RecipientUsername == username) message.RecipientDeleted = true;
+
+            if (message.SenderDeleted && message.RecipientDeleted)
+            {
+                _uow.MessageRepository.DeleteMessage(message);
+            }
+
+            if (await _uow.Complete()) return Ok();
+
+            return BadRequest("Problem deleting the message");
+        }
     }
 }
