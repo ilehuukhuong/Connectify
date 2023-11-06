@@ -34,7 +34,7 @@ namespace API.SignalR
             await Clients.Group(groupName).SendAsync("UpdatedGroup", group);
 
             var messages = await _uow.MessageRepository
-                .GetMessageThread(Context.User.GetUsername(), otherUser);
+           .GetMessageThread(Context.User.GetUsername(), otherUser, null, 20);
 
             var tasks = new List<Task>();
 
@@ -203,6 +203,27 @@ namespace API.SignalR
             if (await _uow.Complete()) return group;
 
             throw new HubException("Failed to remove from group");
+        }
+        public async Task LoadMoreMessages(string otherUser, int? lastMessageId)
+        {
+            const int pageSize = 20;
+            var messages = await _uow.MessageRepository
+                .GetMessageThread(Context.User.GetUsername(), otherUser, lastMessageId, pageSize);
+
+            var tasks = new List<Task>();
+
+            foreach (var message in messages)
+            {
+                if (message.MessageType == "Image" || message.MessageType == "Video" || message.MessageType == "Audio" || message.MessageType == "File")
+                {
+                    var task = UpdateMessageContentAsync(message);
+                    tasks.Add(task);
+                }
+            }
+
+            await Task.WhenAll(tasks);
+
+            await Clients.Caller.SendAsync("LoadMoreMessageThread", messages);
         }
     }
 }
