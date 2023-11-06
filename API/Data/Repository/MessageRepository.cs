@@ -58,31 +58,36 @@ namespace API.Data.Repository
                 .FirstOrDefaultAsync(x => x.Name == groupName);
         }
 
-        public async Task<IEnumerable<MessageDto>> GetMessageThread(string currentUserName, string recipientUserName)
+        public async Task<IEnumerable<MessageDto>> GetMessageThread(string currentUserName, string recipientUserName, int? lastMessageId, int pageSize = 20)
         {
             var query = _context.Messages
-                .Where(
-                    m => m.RecipientUsername == currentUserName && m.RecipientDeleted == false &&
-                    m.SenderUsername == recipientUserName ||
-                    m.RecipientUsername == recipientUserName && m.SenderDeleted == false &&
-                    m.SenderUsername == currentUserName
-                )
-                .OrderBy(m => m.MessageSent)
+                .Where(m => m.RecipientUsername == currentUserName && !m.RecipientDeleted &&
+                            m.SenderUsername == recipientUserName ||
+                            m.RecipientUsername == recipientUserName && !m.SenderDeleted &&
+                            m.SenderUsername == currentUserName)
+                .OrderByDescending(m => m.MessageSent)
                 .AsQueryable();
 
-
-            var unreadMessages = query.Where(m => m.DateRead == null
-                && m.RecipientUsername == currentUserName).ToList();
-
-            if (unreadMessages.Any())
+            if (lastMessageId.HasValue)
             {
-                foreach (var message in unreadMessages)
-                {
-                    message.DateRead = DateTime.UtcNow;
-                }
+                query = query.Where(m => m.Id < lastMessageId.Value);
             }
 
-            return await query.ProjectTo<MessageDto>(_mapper.ConfigurationProvider).ToListAsync();
+            var messages = await query.Take(pageSize)
+                .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            messages.Reverse();
+
+            var unreadMessages = messages.Where(m => m.DateRead == null && m.RecipientUsername == currentUserName);
+            foreach (var message in unreadMessages)
+            {
+                _context.Messages.Find(message.Id).DateRead = DateTime.UtcNow;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return messages;
         }
 
         public void RemoveConnection(Connection connection)

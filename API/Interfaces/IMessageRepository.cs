@@ -9,7 +9,7 @@ namespace API.Interfaces
         void AddMessage(Message message);
         void DeleteMessage(Message message);
         Task<Message> GetMessage(int id);
-        Task<IEnumerable<MessageDto>> GetMessageThread(string currentUserName, string recipientUserName);
+       Task<IEnumerable<MessageDto>> GetMessageThread(string currentUserName, string recipientUserName, int? lastMessageId, int pageSize);
         void AddGroup(Group group);
         void RemoveConnection(Connection connection);
         Task<Connection> GetConnection(string connectionId);
