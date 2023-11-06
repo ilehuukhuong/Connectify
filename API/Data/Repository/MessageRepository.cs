@@ -101,7 +101,7 @@ namespace API.Data.Repository
 
             if (!string.IsNullOrEmpty(messageParams.FullName))
             {
-                messagesInfoQuery = messagesInfoQuery.Where(m => m.Sender.KnownAs.ToLower().Contains(messageParams.FullName.ToLower())|| m.Recipient.KnownAs.ToLower().Contains(messageParams.FullName.ToLower())|| (m.Recipient.FirstName.ToLower() + " " + m.Recipient.LastName.ToLower()).Contains(messageParams.FullName.ToLower()) || (m.Sender.FirstName.ToLower() + " " + m.Sender.LastName.ToLower()).Contains(messageParams.FullName.ToLower()));
+                messagesInfoQuery = messagesInfoQuery.Where(m => m.Sender.KnownAs.ToLower().Contains(messageParams.FullName.ToLower()) || m.Recipient.KnownAs.ToLower().Contains(messageParams.FullName.ToLower()) || (m.Recipient.FirstName.ToLower() + " " + m.Recipient.LastName.ToLower()).Contains(messageParams.FullName.ToLower()) || (m.Sender.FirstName.ToLower() + " " + m.Sender.LastName.ToLower()).Contains(messageParams.FullName.ToLower()));
             }
 
             var finalMessagesInfoQuery = await messagesInfoQuery
