@@ -160,7 +160,7 @@ namespace API.SignalR
                 Recipient = await _uow.UserRepository.GetUserByUsernameAsync(Context.User.GetUsername()),
                 SenderUsername = callerUserName,
                 RecipientUsername = Context.User.GetUsername(),
-                Content = "Miss Call",
+                Content = "Missed Call",
                 MessageType = "MissCall"
             };
 
