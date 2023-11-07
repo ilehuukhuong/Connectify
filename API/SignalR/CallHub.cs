@@ -28,6 +28,7 @@ namespace API.SignalR
         {
             var httpContext = Context.GetHttpContext();
             var otherUser = httpContext.Request.Query["user"];
+            if (otherUser == Context.User.GetUsername()) throw new HubException("You Cann't Call Yourself");
             var roomName = GetRoomName(Context.User.GetUsername(), otherUser);
 
             var roomCheck = await _uow.RoomRepository.GetRoom(roomName);
@@ -165,6 +166,13 @@ namespace API.SignalR
 
             _uow.MessageRepository.AddMessage(message);
 
+            var group = await _uow.MessageRepository.GetMessageGroup(roomName);
+
+            if (group.Connections.Any(x => x.Username == callerUserName))
+            {
+                message.DateRead = DateTime.UtcNow;
+            }
+
             if (await _uow.Complete())
             {
                 await _messageHub.Clients.Group(roomName).SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
@@ -187,6 +195,13 @@ namespace API.SignalR
             };
 
             _uow.MessageRepository.AddMessage(message);
+
+            var group = await _uow.MessageRepository.GetMessageGroup(roomName);
+
+            if (group.Connections.Any(x => x.Username == recipientUsername))
+            {
+                message.DateRead = DateTime.UtcNow;
+            }
 
             if (await _uow.Complete())
             {
@@ -245,14 +260,6 @@ namespace API.SignalR
 
             if (room != null)
             {
-                var connections = room.Connections.Select(c => c.ConnectionId).ToList();
-
-                foreach (var connectionId in connections)
-                {
-                    var connection = room.Connections.FirstOrDefault(x => x.ConnectionId == connectionId);
-                    await Clients.Client(connectionId).SendAsync("EndCall");
-                }
-
                 if (_uow.RoomRepository.CheckCall(Context.User.GetUsername(), otherUserName))
                 {
                     var call = await _uow.RoomRepository.FindCall(Context.User.GetUsername(), otherUserName);
@@ -304,6 +311,14 @@ namespace API.SignalR
                     }
                 }
                 else throw new HubException("Failed to find call");
+
+                var connections = room.Connections.Select(c => c.ConnectionId).ToList();
+
+                foreach (var connectionId in connections)
+                {
+                    var connection = room.Connections.FirstOrDefault(x => x.ConnectionId == connectionId);
+                    await Clients.Client(connectionId).SendAsync("EndCall");
+                }
             }
             else throw new HubException("Failed to find room");
         }
@@ -326,14 +341,6 @@ namespace API.SignalR
 
             if (_uow.RoomRepository.CheckCall(caller, other))
             {
-                var connections = room.Connections.Select(c => c.ConnectionId).ToList();
-
-                foreach (var connectionId in connections)
-                {
-                    var connection = room.Connections.FirstOrDefault(x => x.ConnectionId == connectionId);
-                    await Clients.Client(connectionId).SendAsync("EndCall");
-                }
-
                 var call = await _uow.RoomRepository.FindCall(caller, other);
 
                 call.EndTime = DateTime.UtcNow;
@@ -356,7 +363,7 @@ namespace API.SignalR
 
                 var group = await _uow.MessageRepository.GetMessageGroup(room.Name);
 
-                if (group.Connections.Any(x => x.Username == call.ReceiverUsername || x.Username == call.CallerUsername))
+                if (group.Connections.Any(x => x.Username == call.ReceiverUsername))
                 {
                     message.DateRead = DateTime.UtcNow;
                 }
@@ -380,6 +387,14 @@ namespace API.SignalR
                 if (await _uow.Complete())
                 {
                     await _messageHub.Clients.Group(room.Name).SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
+                }
+
+                var connections = room.Connections.Select(c => c.ConnectionId).ToList();
+
+                foreach (var connectionId in connections)
+                {
+                    var connection = room.Connections.FirstOrDefault(x => x.ConnectionId == connectionId);
+                    await Clients.Client(connectionId).SendAsync("EndCall");
                 }
             }
             await base.OnDisconnectedAsync(exception);
