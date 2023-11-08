@@ -71,6 +71,7 @@ namespace API.SignalR
         public async Task CreateLocationMessage(CreateMessageDto createMessageDto)
         {
             var username = Context.User.GetUsername();
+            createMessageDto.RecipientUsername = createMessageDto.RecipientUsername.ToLower();
 
             if (username == createMessageDto.RecipientUsername.ToLower()) throw new HubException("You cannot send messages to yourself");
 
@@ -123,6 +124,7 @@ namespace API.SignalR
         public async Task SendMessage(CreateMessageDto createMessageDto)
         {
             var username = Context.User.GetUsername();
+            createMessageDto.RecipientUsername = createMessageDto.RecipientUsername.ToLower();
 
             if (username == createMessageDto.RecipientUsername.ToLower())
                 throw new HubException("You cannot send messages to yourself");
@@ -206,6 +208,7 @@ namespace API.SignalR
         }
         public async Task LoadMoreMessages(string otherUser, int? lastMessageId)
         {
+            otherUser = otherUser.ToLower();
             const int pageSize = 20;
             var messages = await _uow.MessageRepository
                 .GetMessageThread(Context.User.GetUsername(), otherUser, lastMessageId, pageSize);

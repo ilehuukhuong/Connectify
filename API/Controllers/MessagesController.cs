@@ -86,6 +86,7 @@ namespace API.Controllers
         public async Task<ActionResult<MessageDto>> CreateFileMessage([FromForm] CreateFileMessageDto createFileMessageDto)
         {
             var username = User.GetUsername();
+            createFileMessageDto.RecipientUsername = createFileMessageDto.RecipientUsername.ToLower();
 
             if (username == createFileMessageDto.RecipientUsername.ToLower()) return BadRequest("You cannot send messages to yourself");
 
