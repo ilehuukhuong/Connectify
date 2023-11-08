@@ -97,6 +97,7 @@ namespace API.Data.Repository
                     users = likedUsers.Intersect(likedByUsers);
                 }
             }
+            users = users.OrderByDescending(u => u.FirstName + " " + u.LastName);
 
             var listUsers = users.Select(user => new LikeDto
             {
@@ -104,7 +105,8 @@ namespace API.Data.Repository
                 KnownAs = user.KnownAs,
                 Age = user.DateOfBirth.CalcuateAge(),
                 PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain).Url,
-                Id = user.Id
+                Id = user.Id,
+                FullName = user.FullName
             });
 
             return await PagedList<LikeDto>.CreateAsync(listUsers, likesParams.PageNumber, likesParams.PageSize);
