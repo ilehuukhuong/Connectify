@@ -274,8 +274,8 @@ namespace API.SignalR
                     {
                         SenderId = call.CallerId,
                         RecipientId = call.ReceiverId,
-                        Sender = call.Caller,
-                        Recipient = call.Receiver,
+                        Sender = await _uow.UserRepository.GetUserByUsernameAsync(call.CallerUsername),
+                        Recipient = await _uow.UserRepository.GetUserByUsernameAsync(call.ReceiverUsername),
                         SenderUsername = call.CallerUsername,
                         RecipientUsername = call.ReceiverUsername,
                         Content = duration.ToString(@"hh\:mm\:ss"),
@@ -310,8 +310,33 @@ namespace API.SignalR
                         await _messageHub.Clients.Group(room.Name).SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
                     }
                 }
-                else throw new HubException("Failed to find call");
+                else
+                {
+                    var message = new Message
+                    {
+                        Sender = await _uow.UserRepository.GetUserByUsernameAsync(Context.User.GetUsername()),
+                        Recipient = await _uow.UserRepository.GetUserByUsernameAsync(otherUserName),
+                        SenderUsername = Context.User.GetUsername(),
+                        RecipientUsername = otherUserName,
+                        Content = "Missed Call",
+                        MessageType = "MissCall"
+                    };
 
+                    _uow.MessageRepository.AddMessage(message);
+
+                    var group = await _uow.MessageRepository.GetMessageGroup(roomName);
+
+                    if (group.Connections.Any(x => x.Username == otherUserName))
+                    {
+                        message.DateRead = DateTime.UtcNow;
+                    }
+
+                    if (await _uow.Complete())
+                    {
+                        await _messageHub.Clients.Group(roomName).SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
+                    }
+                } 
+                    
                 var connections = room.Connections.Select(c => c.ConnectionId).ToList();
 
                 foreach (var connectionId in connections)
