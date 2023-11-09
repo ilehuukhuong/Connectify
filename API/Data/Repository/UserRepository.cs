@@ -134,9 +134,9 @@ namespace API.Data.Repository
                 .ToListAsync();
 
             var recommendedUsers = allUsers
-                .Where(user => CalculateSimilarity.CalculateUserSimilarity(currentUser, user) >= (double)userParams.Similarity / 10.0)
+                .Where(user => CalculateSimilarity.CalculateUserSimilarity(currentUser, user) > userParams.Similarity / 10.0)
                 .OrderByDescending(user => user.LastActive)
-                .Select(user => _mapper.Map<MemberDtoWithoutIsVisible>(user));
+                .Select(_mapper.Map<MemberDtoWithoutIsVisible>);
 
             return PagedList<MemberDtoWithoutIsVisible>.CreateListAsync(recommendedUsers, userParams.PageNumber, userParams.PageSize);
         }

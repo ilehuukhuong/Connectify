@@ -16,10 +16,20 @@ namespace API.Extensions
                 similarity += 0.2;
 
             var commonInterests = user1.UserInterests.Select(ui => ui.InterestId).Intersect(user2.UserInterests.Select(ui => ui.InterestId));
-            similarity += 0.3 * (double)commonInterests.Count() / Math.Max(user1.UserInterests.Count, user2.UserInterests.Count);
+            double checkCount = 0.3 * (double)commonInterests.Count() / Math.Max(user1.UserInterests.Count, user2.UserInterests.Count);
+            if (checkCount > 0.0 )
+            {
+                similarity += checkCount;
+            }
 
             var commonLookingFors = user1.UserLookingFors.Select(ul => ul.LookingForId).Intersect(user2.UserLookingFors.Select(ul => ul.LookingForId));
-            similarity += 0.3 * (double)commonLookingFors.Count() / Math.Max(user1.UserLookingFors.Count, user2.UserLookingFors.Count);
+
+            checkCount = 0.3 * (double)commonLookingFors.Count() / Math.Max(user1.UserLookingFors.Count, user2.UserLookingFors.Count);
+
+            if (checkCount > 0.0)
+            {
+                similarity += checkCount;
+            }
 
             return similarity;
         }
