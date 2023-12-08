@@ -65,8 +65,8 @@ export class AccountService {
     return JSON.parse(atob(token.split('.')[1]))
   }
 
-  async forgotPassword(email: string): Promise<void> {
-    const forgotPasswordDto = { email };
+  async forgotPassword(email: string, hostname: string): Promise<void> {
+    const forgotPasswordDto = { email, hostname };
     await this.http.post(this.baseUrl + 'account/forgot-password', forgotPasswordDto, { responseType: 'text' }).toPromise();
   }
 

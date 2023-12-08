@@ -27,9 +27,8 @@ export class MessageService {
     this.busyService.busy();
     this.hubConnection = new HubConnectionBuilder()
       .withUrl(this.hubUrl + 'message?user=' + otherUsername, {
-        accessTokenFactory: () => user.token,
-        transport: HttpTransportType.WebSockets 
-        //| HttpTransportType.ServerSentEvents | HttpTransportType.LongPolling
+        accessTokenFactory: () => user.token
+        //, transport: HttpTransportType.WebSockets | HttpTransportType.ServerSentEvents | HttpTransportType.LongPolling
       })
       .withAutomaticReconnect()
       .build();

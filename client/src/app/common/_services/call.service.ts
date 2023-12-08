@@ -27,9 +27,8 @@ export class CallService {
     // Tạo kết nối tới CallHub
     this.hubConnection = new HubConnectionBuilder()
       .withUrl(this.hubUrl + 'call?user=' + otherUsername, {
-        accessTokenFactory: () => user.token,
-        transport: HttpTransportType.WebSockets 
-        //| HttpTransportType.ServerSentEvents | HttpTransportType.LongPolling
+        accessTokenFactory: () => user.token
+        //, transport: HttpTransportType.WebSockets | HttpTransportType.ServerSentEvents | HttpTransportType.LongPolling
       })
       .withAutomaticReconnect()
       .build();

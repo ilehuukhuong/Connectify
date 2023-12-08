@@ -17,7 +17,7 @@ export class ForgotPasswordComponent {
   async onSubmit() {
     this.message = ''; // Reset the message before making a new request
     try {
-      await this.accountService.forgotPassword(this.email);
+      await this.accountService.forgotPassword(this.email, window.location.hostname);
       this.message = 'Password reset link sent to your email.';
       this.toastr.success(this.message, 'Success'); // Show success message
     } catch (error: any) {

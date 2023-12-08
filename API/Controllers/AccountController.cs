@@ -114,7 +114,7 @@ namespace API.Controllers
             var encodedToken = HttpUtility.UrlEncode(resetToken);
             var encodedEmail = HttpUtility.UrlEncode(user.Email);
 
-            var resetUrl = $"https://connectify.io.vn/reset-password/email{encodedEmail}&token{encodedToken}";
+            var resetUrl = $"https://{forgotPasswordDto.Hostname}/reset-password/email{encodedEmail}&token{encodedToken}";
 
             var emailContent = ResetPasswordTemplate.ResetPassword(resetUrl, user.FirstName);
 

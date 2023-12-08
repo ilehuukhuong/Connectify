@@ -7,5 +7,6 @@ namespace API.DTOs
         [Required(ErrorMessage = "Please enter an email address")]
         [EmailAddress(ErrorMessage = "Invalid email address")]
         public string Email { get; set; }
+        public string Hostname { get; set; }
     }
 }
