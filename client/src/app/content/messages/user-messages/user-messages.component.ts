@@ -347,23 +347,14 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   handleNewMessages(): void {
     setTimeout(() => {
       const currentScrollTop = this.myScrollContainer?.nativeElement.scrollTop;
-      console.log('currentScrollTop = '+ currentScrollTop);
       const newScrollHeight = this.myScrollContainer?.nativeElement.scrollHeight;
-      console.log('newScrollHeight = '+ newScrollHeight);
   
       // Nếu đang không tải tin nhắn cũ, cuộn xuống cuối
       if (!this.loadingOldMessages) {
-        console.log('không tải tin nhắn cũ');
-        console.log('newScrollHeight = '+ newScrollHeight);
         this.myScrollContainer!.nativeElement.scrollTop = newScrollHeight;
       } else {
         // Nếu đang tải tin nhắn cũ, cập nhật vị trí cuộn để giữ nguyên vị trí hiện tại của người dùng
         this.myScrollContainer!.nativeElement.scrollTop = newScrollHeight - this.currentScrollHeight + currentScrollTop;
-        console.log('tải tin nhắn cũ');
-        console.log('newScrollHeight = '+ newScrollHeight);
-        console.log('currentScrollHeight = '+ this.currentScrollHeight);
-        console.log('currentScrollTop = '+ currentScrollTop);
-        console.log('scoll: ' + (newScrollHeight - this.currentScrollHeight + currentScrollTop));
       }
     });
   }
