@@ -48,7 +48,10 @@ namespace API.Data.Repository
 
         public async Task<Message> GetMessage(int id)
         {
-            return await _context.Messages.FindAsync(id);
+            return await _context.Messages.Where(x=>x.Id == id)
+                .Include(m => m.Sender).ThenInclude(u => u.Photos)
+                .Include(m => m.Recipient).ThenInclude(u => u.Photos)
+                .SingleOrDefaultAsync();
         }
 
         public async Task<Group> GetMessageGroup(string groupName)
