@@ -1,0 +1,97 @@
+/* You can add global styles to this file, and also import other style files */
+.nav{
+  --bs-nav-link-color: #000000;
+}
+
+.tab-panel {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: 'Roboto', sans-serif;
+  }
+
+  .nav-tabs > li.open, .member-tabset > .nav-tabs > li:hover {
+    border-bottom: 4px solid #ceb2fc;
+  }
+
+  .member-tabset > .nav-tabs > li.open > a, .member-tabset > .nav-tabs > li:hover > a {
+    border: 0 !important;
+    background: none !important;
+    color: #333333;
+  }
+
+  .member-tabset > .nav-tabs > li.open > a > i, .member-tabset > .nav-tabs > li:hover > a > i {
+    color: #a6a6a6;
+  }
+
+  .member-tabset > .nav-tabs > li.open .dropdown-menu, .member-tabset > .nav-tabs > li:hover .dropdown-menu {
+    margin-top: 0px;
+  }
+
+  .member-tabset > .nav-tabs > li.active {
+    border-bottom: 4px solid #ceb2fc;
+    color: black;
+    position: relative;
+  }
+
+  .member-tabset > .nav-tabs > li.active > a {
+    border: 0 !important;
+    color: #333333;
+  }
+
+  .member-tabset > .nav-tabs > li.active > a > i {
+    color: #404040;
+  }
+
+  .member-tabset > .tab-content {
+    margin-top: -3px;
+    background-color: #fff;
+    border: 0;
+    border-top: 1px solid #eee;
+    padding: 15px 0;
+  }
+
+  .nav-tabs {
+      --bs-nav-tabs-border-width: 0px;
+  }
+
+
+  .pagination .page-item.active .page-link {
+    background: #9F5BDC;
+    border-color: #9F5BDC;
+    color: #fff;
+    border: 1px solid transparent;
+  }
+  
+  .pagination .page-link {
+    text-align: center;
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    line-height: 24px;
+    border-radius: 50%;
+    color: rgba(0, 0, 0, 0.4);
+    background: transparent;
+    border: 2px solid #9F5BDC;
+    margin-right: 8px;
+    -webkit-box-shadow: 0px 10px 27px -20px rgba(0, 0, 0, 0.33);
+    box-shadow: 0px 10px 27px -20px rgba(0, 0, 0, 0.33);
+  }
+
+  .pagination .page-link:hover {
+    background: #9F5BDC;
+    border-color: #9F5BDC;
+    color: #fff;
+  }
+
+  .pagination .page-item:first-child .page-link {
+    margin-left: 0;
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+  }
+
+  ul.nav.nav-tabs {
+    justify-content: center;
+    font-family: 'Roboto', sans-serif;
+}
+  

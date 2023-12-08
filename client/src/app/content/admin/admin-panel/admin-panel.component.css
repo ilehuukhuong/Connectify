@@ -1,0 +1,33 @@
+@import url('https://fonts.cdnfonts.com/css/roboto');
+@import url('https://fonts.cdnfonts.com/css/lato');
+.row{
+    display: flex;
+    flex-wrap: wrap;
+    margin: 30px;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom-width: 1px;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-right: 0.625rem;
+    height: 3.5rem;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 0;
+    background: #ffffff;
+    border-bottom: 1px solid rgba(111, 132, 187, 0.316);
+    font-size: 1.7em;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #000000;
+    font-family: 'Lato', sans-serif;
+}
+
+td {
+    vertical-align: middle !important;
+    box-sizing: border-box;
+}
+

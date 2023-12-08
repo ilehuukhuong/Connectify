@@ -1,0 +1,364 @@
+/* .call-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .local-video, .remote-video, .screen-video, .other-screen-video {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 50%;
+  }
+  
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  button {
+    margin: 10px;
+  }
+
+.hidden {
+  display: none;
+}
+
+.micro-on {
+  background-color: green;
+  color: white;
+}
+
+.micro-off {
+  background-color: red;
+  color: white;
+}
+.camera-on {
+  background-color: green;
+  color: white;
+}
+
+.camera-off {
+  background-color: red;
+  color: white;
+}
+
+
+
+   */
+
+section {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.fullscreen-media-container {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.fullscreen-media-container.video video {
+  width: 100vw;
+  height: 100vh;
+  -o-object-fit: cover;
+  object-fit: cover;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 0;
+}
+
+.fullscreen-media-container .overlay-content-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1;
+  padding: 0 30px 30px;
+  display: flex;
+}
+
+.fullscreen-media-container .partner-text-container {
+  display: flex;
+  flex-direction: row;
+  min-width: 300px;
+  align-items: center;
+  position: relative;
+}
+
+.fullscreen-media-container .partner-text-container .name {
+  display: block;
+  position: absolute;
+  bottom: 10%;
+  color: #fff;
+}
+
+.fullscreen-media-container .ui-container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: row;
+  flex-basis: 0%;
+  flex-grow: 1;
+  margin: 0 auto;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.fullscreen-media-container .ui-container .navigation-controls-container {
+  padding: 12px 15px;
+  border-radius: 120px;
+  width: auto;
+  display: flex;
+  flex-direction: row;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  background-color: rgba(255, 255, 255, 0.05);
+  transform: translateZ(0);
+  background-color: rgba(0, 0, 0, 0.35);
+}
+
+.fullscreen-media-container .ui-container .incoming-call-controls {
+  padding: 12px 15px;
+  border-radius: 120px;
+  width: auto;
+  display: flex;
+  flex-direction: row;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  background-color: rgba(255, 255, 255, 0.05);
+  transform: translateZ(0);
+  background-color: rgba(0, 0, 0, 0.35);
+}
+
+.button-mic,
+.button-camera,
+.button-share {
+  all: unset;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  margin-right: 15px;
+  border-radius: 70px;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transform: translateZ(0);
+  background-color: rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+.button-accept {
+  all: unset;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  margin-right: 25px;
+  border-radius: 70px;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transform: translateZ(0);
+  background-color: #00ff00;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+.button-deny {
+  all: unset;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  margin-left: 15px;
+  border-radius: 70px;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transform: translateZ(0);
+  background-color: red;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+.button-end-call {
+  all: unset;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  margin-right: 15px;
+  border-radius: 70px;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transform: translateZ(0);
+  background-color: red;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+.button-accept:hover {
+  transform: scale(1.08);
+  background-color: green;
+}
+
+.button-end-call:hover,
+.button-deny:hover {
+  transform: scale(1.08);
+  background-color: #e52441;
+}
+
+.button-mic:hover,
+.button-camera:hover,
+.button-share:hover {
+  transform: scale(1.08);
+}
+
+.button-share.active {
+  background-color: #007bff;
+}
+
+.mic-on,
+.mic-off,
+.camera-on,
+.camera-off {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease-in-out;
+}
+
+.mic-on,
+.camera-on {
+  z-index: 1;
+}
+
+.mic-off,
+.camera-off {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0;
+}
+
+.mic-on,
+.mic-off,
+.camera-on,
+.camera-off svg {
+  color: #fff;
+}
+.button-mic.active,
+.button-camera.active {
+  background-color: red;
+}
+
+.button-mic.active .mic-off,
+.button-camera.active .camera-off {
+  opacity: 1;
+}
+
+.button-mic.active .mic-on,
+.button-camera.active .camera-on {
+  opacity: 0;
+}
+
+.button-mic:active,
+.button-camera:active {
+  transform: scale(1.2);
+}
+
+.button-mic.active svg,
+.button-camera.active svg,
+.button-end-call.active svg {
+  fill: #fff;
+}
+
+.fullscreen-media-container .cam-container {
+  flex-basis: 0%;
+  flex-grow: 1;
+  width: 100%;
+  max-width: 320px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0px 20px 20px -10px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease-in-out;
+  transform-origin: 100% 100%;
+}
+
+.fullscreen-media-container .cam-container .remote-video {
+  position: relative;
+  padding-bottom: 56.25%;
+}
+
+.fullscreen-media-container .cam-container .remote-video video {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+  object-fit: cover;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 0;
+}
+
+.fullscreen-media-container .cam-container .remote-video::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity cubic-bezier(0.445, 0.05, 0.55, 0.95);
+  background-color: #272727;
+}
+
+.fullscreen-media-container .cam-container .content {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  z-index: 2;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.fullscreen-media-container .cam-container .content .name {
+  display: block;
+  color: #fff;
+}

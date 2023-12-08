@@ -1,0 +1,31 @@
+<div *ngIf="memberUpdateInfo" class="container general-container">
+  <h4>General Account
+    <span class="icon">👤</span>
+  </h4>
+    <form (ngSubmit)="onUpdateUser()">
+      <div class="form-group">
+        <label for="firstName">Last Name</label>
+        <input type="text" class="form-input" id="firstName" [(ngModel)]="memberUpdateInfo.firstName" name="firstName">
+      </div>
+      <div class="form-group">
+        <label for="lastName">First Name</label>
+        <input type="text" class="form-input" id="lastName" [(ngModel)]="memberUpdateInfo.lastName" name="lastName">
+      </div>
+      <div class="form-group">
+        <label for="dateOfBirth">Date of Birth</label>
+        <input type="date" class="form-input" id="dateOfBirth" [(ngModel)]="memberUpdateInfo.dateOfBirth" name="dateOfBirth">
+      </div>
+      <div class="form-group">
+        <label for="knownAs">Known As</label>
+        <input type="text" class="form-input" id="knownAs" [(ngModel)]="memberUpdateInfo.knownAs" name="knownAs">
+      </div>
+      <div class="form-group">
+        <label for="gender">Gender</label>
+        <select class="form-input" id="gender" [(ngModel)]="memberUpdateInfo.genderId" name="genderId">
+          <option *ngFor="let gender of genders" [value]="gender.id">{{ gender.name }}</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Save changes</button>
+    </form>
+  </div>
+  

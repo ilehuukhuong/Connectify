@@ -1,0 +1,660 @@
+<div class="layout-wrapper d-lg-flex overflow-hidden" style="width: 100vw; height: 100vh;">
+  <!-- Start the left bar menu -->
+  <div class="side-menu flex-lg-column">
+    <!-- Star logo brand box -->
+    <div class="navbar-brand-box">
+      <a routerLink="/" class="logo logo-brand">
+        <span class="logo-sm">
+          <img src="../favicon.ico" alt="logo" height="30" />
+        </span>
+      </a>
+    </div>
+    <!-- End logo brand box -->
+    <!-- Start the side-mess menu -->
+    <div class="flex-lg-column my-0 sidemenu-navigation">
+      <ul class="nav nav-pills side-menu-nav">
+        <li class="nav-item d-none d-lg-block" role="presentation">
+          <a class="nav-link" id="pills-user-tab" data-bs-toggle="pill" role="button" routerLink="/member/edit"
+            aria-selected="false" tabindex="-1">
+            <i class="fa fa-user-o"></i>
+          </a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active" (click)="setActiveTab('chat')" [class.active]="activeTab === 'chat'" href="javascript:void(0);" role="tab">
+            <i class="fa fa-comment-o" aria-hidden="true">
+            </i>
+          </a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link" (click)="setActiveTab('contacts')" [class.active]="activeTab === 'contacts'" href="javascript:void(0);" role="tab" tabindex="-1">
+            <i class="fa fa-address-book-o" aria-hidden="true"> </i>
+          </a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link" data-bs-toggle="pill" routerLink="/lists" 
+            aria-selected="false" tabindex="-1">
+            <i class="fa fa-list-ul" aria-hidden="true"> </i>
+          </a>
+        </li>
+        <li class="nav-item mt-lg-auto" role="presentation">
+          <a class="nav-link setting" routerLink="/account-settings" aria-selected="false" tabindex="-1" role="tab">
+            <i class="fa fa-cog"></i>
+          </a>
+        </li>
+        <li class="nav-item profile-user-dropdown" role="presentation">
+          <a class="nav-link bg-light" aria-haspopup="true" aria-expanded="false"
+            *ngIf="accountService.currentUser$ | async as user">
+            <img src="{{ user.photoUrl || './assets/user.png' }}" alt="profile-user" routerLink="/member/edit" routerLinkActive="active" 
+              class="profile-user rounded-circle" />
+          </a>
+        </li>
+      </ul>
+    </div>
+    <!-- End the side-mess menu -->
+  </div>
+  <!-- End the left bar menu -->
+  <!-- Start chat left sidebar -->
+  <div class="chat-leftsidebar w-100">
+    <div class="tab-content">
+      <!-- Start Chatting tab -->
+      <div *ngIf="activeTab === 'chat'" id="chat" role="tabpanel" class="active">
+        <div>
+          <div class="px-4 pt-4">
+            <div class="d-flex align-items-start">
+              <div class="d-flex flex-grow-1 flex-wrap-0 justify-content-between">
+                <h4 class="mb-4">Messages</h4>
+              </div>
+            </div>
+            <form>
+              <div class="input-group search-panel mb-3">
+                <div class="InputContainer">
+                  <input placeholder="Search.. " id="input" class="input" name="text" type="text"
+                    (input)="loadConnectedMessages()" [(ngModel)]="fullName"
+                     />
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="chat-room-list" data-simplebar="init">
+            <div class="simplebar-wrapper" style="margin: 0px">
+              <div class="simplebar-height-auto-observer-wrapper">
+                <div class="simplebar-height-auto-observer"></div>
+              </div>
+              <div class="simplebar-mask">
+                <div class="simplebar-offset" style="right: 0px; bottom: 0px">
+                  <div class="simplebar-content-wrapper" style="height: auto">
+                    <div #scrollConnectedMessage class="simplebar-content" style="padding: 0px"
+                      (scroll)="onListUserMessageScroll($event)"
+                      style="overflow-x: hidden; overflow-y: scroll; height: 100%"> 
+                      <!-- Start chat-message-list -->
+                      <h5 class="mb-3 px-4 mt-4 fs-11 text-muted text-uppercase">
+                        Latest messages
+                      </h5>
+
+                      <div class="chat-message-list" *ngFor="let message of connectedMessage">
+                        <ul class="list-unstyled chat-list chat-user-list" id="favourite-users">
+                          <li id="contact-id-1" data-name="favorite" class="active">
+                            <a routerLink="/messages/{{ message.userName }}" class="unread-msg-user">
+                              <div class="d-flex align-items-center">
+                                <div class="chat-user-img online align-self-center me-2 ms-0">
+                                  <img src="{{
+                                      message.photoUrl || './assets/user.png'
+                                    }}" alt="Chat Avatar" class="rounded-circle avatar-xs" /><span
+                                    class="user-status" *ngIf="(presenceService.onlineUsers$ | async)?.includes(message.userName)"></span>
+                                </div>
+                                <div class="overflow-hidden me-2">
+                                  <p class="text-truncate chat-username mb-0">
+                                    {{ message.fullName | titlecase }}
+                                  </p>
+                                  <p class="text-truncate text-muted fs-13 mb-0">
+                                    {{ message.lastMessage }}
+                                  </p>
+                                </div>
+                                <div class="ms-auto">
+                                  <span class="badge badge-soft-danger rounded p-1 fs-10">{{message.unreadCount}}</span>
+                                </div>
+                              </div>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                      <!-- End chat-message-list -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="simplebar-placeholder" style="width: auto; height: 1128px"></div>
+            </div>
+            <div class="simplebar-track simplebar-horizontal" style="visibility: hidden">
+              <div class="simplebar-scrollbar" style="width: 0px; display: none"></div>
+            </div>
+            <div class="simplebar-track simplebar-vertical" style="visibility: visible">
+              <div class="simplebar-scrollbar" style="
+                  height: 323px;
+                  transform: translate3d(0px, 0px, 0px);
+                  display: block;
+                "></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div *ngIf="activeTab === 'contacts'" id="contacts" role="tabpanel">
+        <div>
+          <div class="px-4 pt-4">
+            <div class="d-flex align-items-start">
+              <div class="d-flex flex-grow-1 flex-wrap-0 justify-content-between">
+                <h4 class="mb-4">Contacts</h4>
+              </div>
+            </div>
+            <div class="input-group search-panel mb-3">
+              <div class="InputContainer">
+                <input placeholder="Search.." name="fullName" class="input" type="text" [(ngModel)]="search"
+                  (input)="loadSearchLikeConnected()" />
+              </div>
+            </div>
+          </div>
+          <div class="chat-room-list" data-simplebar="init">
+            <div class="simplebar-wrapper" style="margin: 0px">
+              <div class="simplebar-height-auto-observer-wrapper">
+                <div class="simplebar-height-auto-observer"></div>
+              </div>
+              <div class="simplebar-mask">
+                <div class="simplebar-offset" style="right: 0px; bottom: 0px">
+                  <div class="simplebar-content-wrapper" style="height: auto">
+                    <div #scrollConnected class="simplebar-content" style="padding: 0px"
+                      (scroll)="onConnectedScroll($event)"
+                      style="overflow-x: hidden; overflow-y: scroll; height: 100%">
+                      <!-- Start chat-message-list -->
+                      <h5 class="mb-3 px-4 mt-4 fs-11 text-muted text-uppercase">
+                        Connected users
+                      </h5>
+
+                      <div class="chat-message-list" *ngFor="let member of members">
+                        <ul class="list-unstyled chat-list chat-user-list" id="favourite-users">
+                          <li id="contact-id-1" data-name="favorite" class="active">
+                            <a routerLink="/messages/{{ member.userName }}" class="unread-msg-user">
+                              <div class="d-flex align-items-center">
+                                <div class="chat-user-img online align-self-center me-2 ms-0">
+                                  <img src="{{
+                                        member.photoUrl || './assets/user.png'
+                                      }}" alt="Chat Avatar" class="rounded-circle avatar-xs" /><span
+                                    class="user-status" *ngIf="(presenceService.onlineUsers$ | async)?.includes(member.userName)"></span>
+                                </div>
+                                <div class="overflow-hidden me-2">
+                                  <p class="text-truncate chat-username mb-0">
+                                    {{ member.fullName | titlecase }}
+                                  </p>
+                                </div>
+                              </div>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                      <!-- End chat-message-list -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="simplebar-placeholder" style="width: auto; height: 1128px"></div>
+            </div>
+            <div class="simplebar-track simplebar-horizontal" style="visibility: hidden">
+              <div class="simplebar-scrollbar" style="width: 0px; display: none"></div>
+            </div>
+            <div class="simplebar-track simplebar-vertical" style="visibility: visible">
+              <div class="simplebar-scrollbar" style="
+                    height: 323px;
+                    transform: translate3d(0px, 0px, 0px);
+                    display: block;
+                  "></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="user-chat w-100 overflow-hidden">
+    <div class="chat-content d-lg-flex">
+      <div class="w-100 overflow-hidden position-relative">
+        <div id="users-chat" class="position-relative" style="display: block">
+          <div class="py-3 user-chat-topbar">
+            <div class="row align-items-center">
+              <div class="col-sm-4 col-8">
+                <div class="d-flex align-items-center">
+                  <div class="flex-shrink-0 d-block d-lg-none me-3">
+                    <a href="javascript: void(0);" class="btn-primary user-chat-remove fs-18 p-1"><i
+                        class="fa fa-chevron-left align-middle"></i></a>
+                  </div>
+                  <div class="flex-grow-1 overflow-hidden">
+                    <div class="d-flex align-items-center">
+                      <div class="flex-shrink-0 chat-user-img online user-own-img align-self-center me-3 ms-0">
+                        <img src="../assets/user.png" class="rounded-circle avatar-sm" alt="" />
+                        <span class="user-status"></span>
+                      </div>
+                      <div class="flex-grow-1 overflow-hidden">
+                        <h6 class="text-truncate mb-0 fs-18">
+                          <a style="text-decoration: none" class="user-profile-show text-reset">Victoria Lane</a>
+                        </h6>
+                        <p class="text-truncate text-muted mb-0">
+                          <small>Online</small>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-8 col-4">
+                <ul class="list-inline user-chat-nav text-end mb-0">
+                  <li class="list-inline-item d-none d-lg-inline-block me-2 ms-0">
+                    <button type="button" class="btn nav-btn" data-bs-toggle="modal" data-bs-target=".audiocallModal">
+                      <i class="fa fa-phone"></i>
+                    </button>
+                  </li>
+
+                  <li class="list-inline-item d-none d-lg-inline-block me-2 ms-0">
+                    <button type="button" class="btn nav-btn" data-bs-toggle="modal" data-bs-target=".videocallModal">
+                      <i class="fa fa-video-camera"></i>
+                    </button>
+                  </li>
+
+                  <li class="list-inline-item d-none d-lg-inline-block me-2 ms-0">
+                    <button type="button" class="btn nav-btn" data-bs-toggle="modal" data-bs-target=".pinnedtabModal">
+                      <i class="fa fa-bookmark-o"></i>
+                    </button>
+                  </li>
+
+                  <li class="list-inline-item d-none d-lg-inline-block me-2 ms-0">
+                    <button type="button" class="btn nav-btn user-profile-show">
+                      <i class="fa fa-info-circle"></i>
+                    </button>
+                  </li>
+
+                  <li class="list-inline-item">
+                    <div class="dropdown">
+                      <button (click)="toggleMessageNavBox()" class="btn nav-btn" type="button"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-ellipsis-v"></i>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-start show" *ngIf="isMessageNavBoxVisible"
+                        style="position: absolute; right: 0">
+                        <a class="dropdown-item d-flex justify-content-between align-items-center d-lg-none user-profile-show"
+                          href="#">View Profile <i class="fa fa-user text-muted"></i></a>
+                        <a class="dropdown-item d-flex justify-content-between align-items-center d-lg-none"
+                          data-bs-toggle="modal" data-bs-target=".audiocallModal">Audio <i
+                            class="fa fa-phone-call text-muted"></i></a>
+                        <a class="dropdown-item d-flex justify-content-between align-items-center d-lg-none"
+                          data-bs-toggle="modal" data-bs-target=".videocallModal">Video <i
+                            class="fa fa-video text-muted"></i></a>
+                        <a class="dropdown-item d-flex justify-content-between align-items-center" href="#">Archive <i
+                            class="fa fa-archive text-muted"></i></a>
+                        <a class="dropdown-item d-flex justify-content-between align-items-center" href="#">Muted
+                          <i class="fa fa-microphone-slash text-muted"></i></a>
+                        <a class="dropdown-item d-flex justify-content-between align-items-center" href="#">Delete <i
+                            class="fa fa-trash-o text-muted"></i></a>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="chat-conversation p-3 p-lg-4" id="chat-conversation" data-simplebar="init">
+            <div class="simplebar-wrapper" style="margin: -24px">
+              <div class="simplebar-height-auto-observer-wrapper">
+                <div class="simplebar-height-auto-observer"></div>
+              </div>
+              <div class="simplebar-mask">
+                <div class="simplebar-offset" style="right: 0px; bottom: 0px">
+                  <div class="simplebar-content-wrapper" style="height: 100%; overflow: hidden scroll">
+                    <div class="simplebar-content" style="padding: 24px">
+                      <ul class="list-unstyled chat-conversation-list" id="users-conversation">
+                        <li class="chat-list left">
+                          <div class="conversation-list">
+                            <div class="chat-avatar">
+                              <img src="../assets/user.png" alt="" />
+                            </div>
+                            <div class="user-chat-content">
+                              <div class="ctext-wrap">
+                                <div class="ctext-wrap-content" (mouseenter)="toggleMessageBox(true)"
+                                  (mouseleave)="toggleMessageBox(false)">
+                                  <p class="mb-0 ctext-content">
+                                    Good morning 😊
+                                  </p>
+                                </div>
+                                <div *ngIf="isMessageBoxVisible" class="align-self-start message-box-drop d-flex">
+                                  <div class="dropdown message-box-dropdown">
+                                    <a (click)="toggleEmojiMenu()" role="button" data-bs-toggle="dropdown"
+                                      aria-haspopup="true" aria-expanded="false">
+                                      <i class="fa fa-smile-o"></i>
+                                    </a>
+                                    <div *ngIf="isEmojiMenuVisible" class="dropdown-menu emoji-dropdown-menu show"
+                                      data-popper-placement="bottom-end" style="
+                                        position: absolute;
+                                        inset: 0px 0px auto auto;
+                                        margin: 0px;
+                                        transform: translate3d(
+                                          0px,
+                                          33.6px,
+                                          0px
+                                        );
+                                      ">
+                                      <div class="hstack align-items-center gap-2 px-2 fs-25">
+                                        <a>💛</a>
+                                        <a>🤣</a>
+                                        <a>😜</a>
+                                        <a>😘</a>
+                                        <a>😍</a>
+                                        <div class="avatar-xs">
+                                          <a
+                                            class="avatar-title bg-soft-primary rounded-circle fs-19 text-primary">+</a>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="dropdown message-box-dropdown">
+                                    <a (click)="toggleMessageMenu()" role="button" data-bs-toggle="dropdown"
+                                      aria-haspopup="true" aria-expanded="false">
+                                      <i class="fa fa-ellipsis-h"></i>
+                                    </a>
+                                    <div *ngIf="isMessageMenuVisible" class="dropdown-menu show" style="
+                                        position: absolute;
+                                        inset: 0px auto auto 0px;
+                                        margin: 0px;
+                                        transform: translate3d(
+                                          0px,
+                                          33.6px,
+                                          0px
+                                        );
+                                      " data-popper-placement="bottom-start">
+                                      <a class="dropdown-item d-flex align-items-center justify-content-between reply-message"
+                                        href="#" id="reply-message-0" data-bs-toggle="collapse"
+                                        data-bs-target=".replyCollapse">Reply
+                                        <i class="fa fa-share ms-2 text-muted"></i></a>
+                                      <a class="dropdown-item d-flex align-items-center justify-content-between"
+                                        href="#" data-bs-toggle="modal" data-bs-target=".forwardModal">Forward
+                                        <i class="fa fa-share-alt ms-2 text-muted"></i></a>
+                                      <a class="dropdown-item d-flex align-items-center justify-content-between copy-message"
+                                        href="#" id="copy-message-0">Copy
+                                        <i class="fa fa-clone text-muted ms-2"></i></a>
+                                      <a class="dropdown-item d-flex align-items-center justify-content-between"
+                                        href="#">Bookmark
+                                        <i class="fa fa-bookmark-o text-muted ms-2"></i></a>
+                                      <a class="dropdown-item d-flex align-items-center justify-content-between delete-item"
+                                        href="#">Delete
+                                        <i class="fa fa-trash-o text-muted ms-2"></i></a>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="conversation-name">
+                                <small class="text-muted time">10:07 am</small>
+                                <span class="text-success check-message-icon">
+                                  <i class="fa fa-check-circle"></i>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="chat-list right">
+                          <div class="conversation-list">
+                            <div class="user-chat-content">
+                              <div class="ctext-wrap" (mouseenter)="toggleMessageBox(true)"
+                                (mouseleave)="toggleMessageBox(false)">
+                                <div class="ctext-wrap-content">
+                                  <p class="mb-0 ctext-content">
+                                    Good morning, How are you? What about our
+                                    next meeting?
+                                  </p>
+                                </div>
+                                <div *ngIf="isMessageBoxVisible" class="align-self-start message-box-drop d-flex">
+                                  <div class="dropdown message-box-dropdown">
+                                    <a (click)="toggleEmojiMenu()" role="button" data-bs-toggle="dropdown"
+                                      aria-haspopup="true" aria-expanded="false">
+                                      <i class="fa fa-smile-o"></i>
+                                    </a>
+                                    <div *ngIf="isEmojiMenuVisible" class="dropdown-menu emoji-dropdown-menu show"
+                                      data-popper-placement="bottom-end" style="
+                                        position: absolute;
+                                        inset: 0px 0px auto auto;
+                                        margin: 0px;
+                                        transform: translate3d(
+                                          0px,
+                                          33.6px,
+                                          0px
+                                        );
+                                      ">
+                                      <div class="hstack align-items-center gap-2 px-2 fs-25">
+                                        <a>💛</a>
+                                        <a>🤣</a>
+                                        <a>😜</a>
+                                        <a>😘</a>
+                                        <a>😍</a>
+                                        <div class="avatar-xs">
+                                          <a
+                                            class="avatar-title bg-soft-primary rounded-circle fs-19 text-primary">+</a>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="dropdown message-box-dropdown">
+                                    <a (click)="toggleMessageMenu()" role="button" data-bs-toggle="dropdown"
+                                      aria-haspopup="true" aria-expanded="false">
+                                      <i class="fa fa-ellipsis-h"></i>
+                                    </a>
+                                    <div *ngIf="isMessageMenuVisible" class="dropdown-menu show" style="
+                                        position: absolute;
+                                        inset: 0px auto auto 0px;
+                                        margin: 0px;
+                                        transform: translate3d(
+                                          0px,
+                                          33.6px,
+                                          0px
+                                        );
+                                      " data-popper-placement="bottom-start">
+                                      <a class="dropdown-item d-flex align-items-center justify-content-between reply-message"
+                                        href="#" id="reply-message-0" data-bs-toggle="collapse"
+                                        data-bs-target=".replyCollapse">Reply
+                                        <i class="fa fa-share ms-2 text-muted"></i></a>
+                                      <a class="dropdown-item d-flex align-items-center justify-content-between"
+                                        href="#" data-bs-toggle="modal" data-bs-target=".forwardModal">Forward
+                                        <i class="fa fa-share-alt ms-2 text-muted"></i></a>
+                                      <a class="dropdown-item d-flex align-items-center justify-content-between copy-message"
+                                        href="#" id="copy-message-0">Copy
+                                        <i class="fa fa-clone text-muted ms-2"></i></a>
+                                      <a class="dropdown-item d-flex align-items-center justify-content-between"
+                                        href="#">Bookmark
+                                        <i class="fa fa-bookmark-o text-muted ms-2"></i></a>
+                                      <a class="dropdown-item d-flex align-items-center justify-content-between delete-item"
+                                        href="#">Delete
+                                        <i class="fa fa-trash-o text-muted ms-2"></i></a>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="conversation-name">
+                                <small class="text-muted time">10:12 am</small>
+                                <span class="text-success check-message-icon"><i class="fa fa-check-circle"></i></span>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="simplebar-placeholder" style="width: auto; height: 1199px"></div>
+          </div>
+          <div class="simplebar-track simplebar-horizontal" style="visibility: hidden">
+            <div class="simplebar-scrollbar" style="
+                width: 0px;
+                display: none;
+                transform: translate3d(0px, 0px, 0px);
+              "></div>
+          </div>
+          <div class="simplebar-track simplebar-vertical" style="visibility: visible">
+            <div class="simplebar-scrollbar" style="
+                height: 337px;
+                display: block;
+                transform: translate3d(0px, 159px, 0px);
+              "></div>
+          </div>
+        </div>
+        <div class="position-relative">
+          <div class="chat-input-section p-4 border-top">
+            <form id="chatinput-form" enctype="multipart/form-data" #messageForm="ngForm" autocomplete="off">
+              <div class="row g-0 align-items-center">
+                <div class="col-auto">
+                  <div class="chat-input-links me-md-2">
+                    <div class="links-list-item" data-bs-toggle="tooltip" data-bs-trigger="hover"
+                      data-bs-placement="top" aria-label="More" data-bs-original-title="More">
+                      <button (click)="toggleChatinputMoreMenu()" type="button"
+                        class="btn btn-link text-decoration-none btn-lg waves-effect collapsed"
+                        data-bs-toggle="collapse" data-bs-target="#chatinputmorecollapse" aria-expanded="false"
+                        aria-controls="chatinputmorecollapse">
+                        <i class="fa fa-ellipsis-h align-middle"></i>
+                      </button>
+                    </div>
+                    <div class="links-list-item" data-bs-toggle="tooltip" data-bs-trigger="hover"
+                      data-bs-placement="top" aria-label="Emoji" data-bs-original-title="Emoji">
+                      <button (click)="toggleEmojiMenu()" type="button"
+                        class="btn btn-link text-decoration-none btn-lg waves-effect emoji-btn" id="emoji-btn">
+                        <i class="fa fa-smile-o align-middle"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="position-relative">
+                    <input name="messageContent" required type="text" class="form-input input-sm"
+                      placeholder="Type a message..." />
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <div class="chat-input-links ms-2 gap-md-1">
+                    <div class="links-list-item">
+                      <button class="sends" type="submit">
+                        <div class="svg-wrapper-1">
+                          <div class="svg-wrapper">
+                            <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M0 0h24v24H0z" fill="none"></path>
+                              <path
+                                d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"
+                                fill="currentColor"></path>
+                            </svg>
+                          </div>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div *ngIf="isChatinputMoreMenuVisible" class="dropup chat-input-collapse">
+              <div class="card mb-0">
+                <div class="card-body py-3">
+                  <div class="swiper chatinput-links">
+                    <div class="swiper-wrapper">
+                      <div class="swiper-slide">
+                        <div class="text-center px-2 position-relative">
+                          <div>
+                            <input id="attachedfile-input" type="file" class="d-none" accept=".zip,.rar,.7zip,.pdf"
+                              multiple="" />
+                            <label for="attachedfile-input" class="avatar-sm mx-auto stretched-link">
+                              <span class="avatar-title fs-18 rounded-circle">
+                                <i class="fa fa-paperclip"></i>
+                              </span>
+                            </label>
+                          </div>
+                          <h5 class="fs-11 text-uppercase mt-3 mb-0 text-body text-truncate">
+                            Attached
+                          </h5>
+                        </div>
+                      </div>
+                      <div class="swiper-slide">
+                        <div class="text-center px-2 position-relative">
+                          <div>
+                            <input id="galleryfile-input" type="file" class="d-none"
+                              accept="image/png, image/gif, image/jpeg" multiple="" />
+                            <label for="galleryfile-input" class="avatar-sm mx-auto stretched-link">
+                              <span class="avatar-title fs-18 rounded-circle">
+                                <i class="fa fa-file-image-o"></i>
+                              </span>
+                            </label>
+                          </div>
+                          <h5 class="fs-11 text-uppercase text-truncate mt-3 mb-0">
+                            Gallery
+                          </h5>
+                        </div>
+                      </div>
+                      <div class="swiper-slide">
+                        <div class="text-center px-2">
+                          <div>
+                            <input id="audiofile-input" type="file" class="d-none" accept="audio/*" multiple="" />
+                            <label for="audiofile-input" class="avatar-sm mx-auto stretched-link">
+                              <span class="avatar-title fs-18 rounded-circle">
+                                <i class="fa fa-headphones"></i>
+                              </span>
+                            </label>
+                          </div>
+                          <h5 class="fs-11 text-uppercase text-truncate mt-3 mb-0">
+                            Audio
+                          </h5>
+                        </div>
+                      </div>
+                      <div class="swiper-slide">
+                        <div class="text-center px-2">
+                          <div class="avatar-sm mx-auto">
+                            <div class="avatar-title fs-18 rounded-circle">
+                              <i class="fa fa-map-marker"></i>
+                            </div>
+                          </div>
+
+                          <h5 class="fs-11 text-uppercase text-truncate mt-3 mb-0">
+                            <a class="text-body stretched-link" onclick="getLocation()">Location</a>
+                          </h5>
+                        </div>
+                      </div>
+                      <div class="swiper-slide d-block d-sm-none">
+                        <div class="text-center px-2">
+                          <div class="avatar-sm mx-auto">
+                            <div class="avatar-title fs-18 rounded-circle">
+                              <i class="fa fa-microphone"></i>
+                            </div>
+                          </div>
+                          <h5 class="fs-11 text-uppercase text-truncate mt-3 mb-0">
+                            <a href="#" class="text-body stretched-link">Audio</a>
+                          </h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="replyCard">
+            <div class="card mb-0">
+              <div class="card-body py-3">
+                <div class="replymessage-block mb-0 d-flex align-items-start">
+                  <div class="flex-grow-1">
+                    <h5 class="conversation-name"></h5>
+                    <p class="mb-0"></p>
+                  </div>
+                  <div class="flex-shrink-0">
+                    <button type="button" id="close_toggle" class="btn btn-sm btn-link mt-n2 me-n3 fs-18">
+                      <i class="fa fa-x align-middle"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+</div>

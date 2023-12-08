@@ -1,0 +1,132 @@
+.general-container {
+  padding: 20px;
+}
+
+.general-container h4 {
+  font-size: 1.5em;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 10px;
+}
+
+.general-container form {
+  margin: 20px;
+}
+
+.general-container form .form-group {
+  margin-bottom: 20px;
+}
+
+.general-container form .form-group label {
+  font-size: 1em;
+  font-weight: 300;
+  margin: 10px 0;
+}
+
+.general-container form .form-group input {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  width: 100%;
+}
+
+.general-container form .form-group input.form-input:focus  {
+  outline: none !important;
+  border-color: #aaa !important;
+}
+
+.general-container form .form-group input[type="submit"] {
+  padding: 0;
+}
+
+.general-container form .form-group select.form-input {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    width: 100%;
+  }
+
+.general-container form .form-group select.form-input:focus {
+    outline: none !important;
+    border-color: #aaa !important;
+}
+
+.general-container form .btn {
+  background: #dbb2ff;
+  border: 1px solid #dbb2ff;
+  border-radius: 4px;
+  color: #fff;
+  padding: 10px;
+  float: right;
+  margin: 20px 0;
+  cursor: pointer;
+}
+
+.general-container form .btn:hover {
+  background-color: #cf9efa;
+  border-color: #d3a6fa;
+}
+
+.general-container form .btn:active {
+  background-color: #d3a6fa;
+  border-color: #cf9efa;
+}
+
+.general-container form  .btn:focus {
+  box-shadow: 0 0 0 0.25rem rgb(219 178 255 / 50%);
+}
+
+.general-container form  .btn:disabled {
+  background-color: #dbb2ff;
+  border-color: #dbb2ff;
+}
+
+.general-container form  .btn-primary {
+  background-color: #dbb2ff;
+  border-color: #dbb2ff;
+}
+
+.general-container form  .btn-primary:hover {
+  background-color: #cf9efa;
+  border-color: #d3a6fa;
+}
+
+.general-container form .btn-primary:active {
+  background-color: #d3a6fa;
+  border-color: #cf9efa;
+}
+
+.general-container form  .btn-primary:focus {
+  box-shadow: 0 0 0 0.25rem rgb(219 178 255 / 50%);
+}
+
+.general-container form .btn-primary:disabled {
+  background-color: #dbb2ff;
+  border-color: #dbb2ff;
+}
+
+.general-container form  .btn-primary:not(:disabled):not(.disabled):active{
+  background-color: #d3a6fa;
+  border-color: #cf9efa;
+}
+
+.general-container form  .btn-primary:not(:disabled):not(.disabled):active:focus{
+  box-shadow: 0 0 0 0.25rem rgb(219 178 255 / 50%);
+}
+
+.general-container form  .btn-primary:not(:disabled):not(.disabled):active:hover{
+  background-color: #cf9efa;
+  border-color: #d3a6fa;
+}
+
+.general-container form .btn-primary:not(:disabled):not(.disabled):focus{
+  box-shadow: 0 0 0 0.25rem rgb(219 178 255 / 50%);
+}
+
+.general-container form .btn-primary:not(:disabled):not(.disabled):hover{
+  background-color: #cf9efa;
+  border-color: #d3a6fa;
+}
+

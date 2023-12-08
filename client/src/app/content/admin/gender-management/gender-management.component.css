@@ -1,0 +1,182 @@
+.btn-info {
+    background: linear-gradient(120deg,#f093fb 0%,#4396e4 100%);
+    border: 2px solid #fff;
+    border-radius: 8px;
+    padding: 10px;
+    margin: 5px;
+}
+
+.btn-danger {
+    background: linear-gradient(to top,#ff0844 0%,#ffb199 100%);
+    border: 2px solid #fff;
+    border-radius: 50%;
+    margin: 5px;
+}
+
+.btn-default{
+    background: #00C2AD;
+    color: #fff;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    margin: 5px;
+}
+
+.new_genders{
+    display: inline-flex;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 10px;
+}
+
+.modal-body{
+    background: linear-gradient(#fff, #fff) padding-box,
+                linear-gradient(145deg, transparent 35%,#e81cff, #40c9ff) border-box;
+    border: 2px solid transparent;
+    padding: 32px 24px;
+    font-size: 14px;
+    font-family: inherit;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-sizing: border-box;
+    border-radius: 8px;
+}
+  
+  .modal-body button:active {
+    scale: 0.95;
+  }
+  
+  .modal-body .form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .modal-body .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+  }
+  
+  .modal-body .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #717171;
+    font-weight: 600;
+    font-size: 12px;
+  }
+  
+  .modal-body .form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 8px;
+    color: #000;
+    font-family: inherit;
+    background-color: transparent;
+    border: 1px solid #414141;
+  }
+  
+  
+  .modal-body .form-group input::placeholder {
+    opacity: 0.5;
+  }
+  
+  .modal-body .form-group input:focus {
+    outline: none;
+    border-color: #e81cff;
+  }
+  
+  
+  .modal-body .form-submit-btn {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    align-self: flex-end;
+    font-family: inherit;
+    color: #fff;
+    font-weight: 600;
+    width: 30%;
+    background: linear-gradient(to top,#a18cd1 0%,#fbc2eb 100%);
+    border: 1px solid #fff;
+    padding: 12px 16px;
+    font-size: inherit;
+    gap: 8px;
+    margin: 8px 20px 0 0;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+  
+  .modal-body .form-submit-btn:hover {
+    background-color: #fff;
+    border-color: #fff;
+  }
+
+  h4{
+    color: #717171;
+  }
+
+  .delete-submit-btn{
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    align-self: flex-end;
+    font-family: inherit;
+    color: #fff;
+    font-weight: 600;
+    width: 50%;
+    background: linear-gradient(to top,#ff0844 0%,#ffb199 100%);
+    border: 1px solid #fff;
+    padding: 12px 16px;
+    font-size: inherit;
+    gap: 8px;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+
+  .delete-deny-btn{
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    align-self: flex-end;
+    font-family: inherit;
+    color: #fff;
+    font-weight: 600;
+    width: 50%;
+    background: linear-gradient(to top,#1e3c72 0%,#194189 1%,#7697d2 100%);
+    border: 1px solid #fff;
+    padding: 12px 16px;
+    font-size: inherit;
+    gap: 8px;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+
+  .form-create-btn{
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    align-self: flex-end;
+    font-family: inherit;
+    color: #fff;
+    font-weight: 600;
+    width: 30%;
+    background: linear-gradient(to top,#a18cd1 0%,#fbc2eb 100%);
+    border: 1px solid #fff;
+    padding: 12px 16px;
+    font-size: inherit;
+    gap: 8px;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+
+  .modal-body .btn-close{
+    display: flex;
+    align-self: flex-end;
+  }
+
+ 
+  
+  
+  

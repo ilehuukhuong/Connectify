@@ -1,0 +1,48 @@
+<div class="form-create-btn">
+  <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+    <div class="InputContainer">
+        <input type="text" class="input" id="name" formControlName="name" placeholder="Search interest..">
+        <button  type="submit" class="search__button">
+        <svg viewBox="0 0 24 24" class="search__icon">
+          <g>
+            <path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z">
+            </path>
+          </g>
+        </svg>
+      </button>
+      </div>
+  </form>
+  <button class="btn btn-create" (click)="openCreateModal(createLookingForTemplate)">Create New</button>
+</div>
+
+<div *ngFor="let item of interests" class="interest-lists">
+  <i>{{item.name}}</i>
+  <div class="interest-btn">
+    <button class="update-btn" (click)="openUpdateModal(item, updateLookingForTemplate)">Update</button>
+    <button class="delete-btn" (click)="onDelete(item.id)">Delete</button>
+  </div>
+</div>
+<ng-template #updateLookingForTemplate>
+  <div class="modal-body">
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
+    <form class="form" [formGroup]="updateForm" (ngSubmit)="updateInterest()">
+      <div class="form-group">
+        <label for="updateName">Name</label>
+        <input type="text" id="updateName" class="form-input" formControlName="name" required>
+      </div>
+      <button type="submit" class="form-update-btn">Update</button>
+    </form>
+  </div>
+</ng-template>
+<ng-template #createLookingForTemplate>
+  <div class="modal-body">
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
+    <form class="form" [formGroup]="createForm" (ngSubmit)="createInterest()">
+      <div class="form-group">
+        <label for="createName">Name</label>
+        <input type="text" id="createName" class="form-input" formControlName="name" required>
+      </div>
+      <button type="submit" class="form-create-btn">Create</button>
+    </form>
+  </div>
+</ng-template>

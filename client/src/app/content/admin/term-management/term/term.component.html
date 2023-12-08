@@ -1,0 +1,35 @@
+<div class="add-term-form">
+  <form class="term-container" (ngSubmit)="addTerm(newTerm)">
+    <div class="form-group">
+      <div class="InputContainer">
+        <input type="text" class="input" id="newTerm" [(ngModel)]="newTerm" name="newTerm" required placeholder="Add new term..">
+      </div>
+    </div>
+    <button type="submit" class="btn btn-add-term">
+      Add term
+      <i class="fa fa-plus"></i>
+    </button>
+  </form>
+  <button (click)="refereshIndex(listId)" class="btn btn-apply">Apply</button>
+</div>
+
+<div class="card w-75 mx-auto my-5">
+  <div class="table-responsive">
+    <table class="align-middle mb-0 table table-sm table-borderless ">
+        <thead>
+            <tr>
+                <th class="text-start ps-5" style="width: 50%;">Terms</th>
+                <th class="text-center">Remove</th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let termItem of term">
+                <td class="text-start ps-5">{{ termItem.Term }}</td>
+                <td class="text-center">
+                  <button class="btn btn-danger" (click)="deleteTerm(termItem.Term)"><i class="fa fa-trash-o"></i></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+  </div>
+</div>

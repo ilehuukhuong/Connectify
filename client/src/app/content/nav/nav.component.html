@@ -1,0 +1,271 @@
+<!-- <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
+  <div class="container">
+    <div class="logo-brand">
+    <img class="logo-img" src="../favicon.ico" alt="logo">
+    <a class="navbar-brand" routerLink="/" routerLinkActive="active">Connectify</a>
+    </div>
+
+      <div class="profile" *ngIf="(accountService.currentUser$  | async) as user" dropdown>
+          <div class="profile_image">
+            <img class="avatar" src="{{user.photoUrl || './assets/user.png'}}" alt="user photo">
+          </div>
+          <div class="profile_name">
+            <a class="dropdown-toggle text-light username" dropdownToggle>{{user.username | titlecase}}
+            <div class="dropdown-menu" *dropdownMenu>
+              <a class="dropdown-item" routerLink="/member/edit">Edit Profile</a>
+              <a class="dropdown-item" (click)="logout()">Logout</a>
+            </div>
+            </a>
+            <form *ngIf="!(accountService.currentUser$ | async)" #loginForm="ngForm" class="d-flex" (ngSubmit)="login()" autocomplete="on">
+      <input 
+      name="username" 
+      [(ngModel)]="model.username" 
+      class="form-control me-2" 
+      type="text" 
+      placeholder="Username">
+      <input 
+      name="password" 
+      [(ngModel)]="model.password"
+      class="form-control me-2" 
+      type="password" 
+      placeholder="Password">
+      <button class="btn btn-success" type="submit">Login</button>
+    </form>
+      </div>  
+    </div>-->
+
+<div class="header">
+  <nav
+    class="navbar-classic navbar navbar-expand-lg navbar navbar-expand navbar-light"
+  >
+    <div class="d-flex justify-content-between w-100">
+      <div class="d-flex align-items-start" style="height: 50px;
+      width: 50px;">
+        <input type="checkbox" id="check" />
+        <label for="check">
+          <i class="fa fa-bars" id="btn"></i>
+          <i class="fa fa-times" id="cancel"></i>
+        </label>
+        <div class="sidebar">
+          <header>Menu          
+            <img class="logo-img" src="../favicon.ico" alt="logo" />
+          </header>
+          <a routerLink="/" routerLinkActive="active">
+            <svg
+              class="icons"
+              width="30px"
+              height="30px"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              stroke="#ffffff"
+              stroke-width="0.00024000000000000003"
+            >
+              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g
+                id="SVGRepo_tracerCarrier"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></g>
+              <g id="SVGRepo_iconCarrier">
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M16.25 3.75V5.43953L18.25 7.03953V3.75H16.25ZM19.75 8.23953V3.5C19.75 2.80964 19.1904 2.25 18.5 2.25H16C15.3097 2.25 14.75 2.80964 14.75 3.5V4.23953L14.3426 3.91362C12.9731 2.81796 11.027 2.81796 9.65742 3.91362L1.53151 10.4143C1.20806 10.6731 1.15562 11.1451 1.41438 11.4685C1.67313 11.792 2.1451 11.8444 2.46855 11.5857L3.25003 10.9605V21.25H2.00003C1.58581 21.25 1.25003 21.5858 1.25003 22C1.25003 22.4142 1.58581 22.75 2.00003 22.75H22C22.4142 22.75 22.75 22.4142 22.75 22C22.75 21.5858 22.4142 21.25 22 21.25H20.75V10.9605L21.5315 11.5857C21.855 11.8444 22.3269 11.792 22.5857 11.4685C22.8444 11.1451 22.792 10.6731 22.4685 10.4143L19.75 8.23953ZM19.25 9.76047L13.4056 5.08492C12.5838 4.42753 11.4162 4.42753 10.5945 5.08492L4.75003 9.76047V21.25H8.25003L8.25003 16.9506C8.24999 16.2858 8.24996 15.7129 8.31163 15.2542C8.37773 14.7625 8.52679 14.2913 8.90904 13.909C9.29128 13.5268 9.76255 13.3777 10.2542 13.3116C10.7129 13.2499 11.2858 13.25 11.9507 13.25H12.0494C12.7143 13.25 13.2871 13.2499 13.7459 13.3116C14.2375 13.3777 14.7088 13.5268 15.091 13.909C15.4733 14.2913 15.6223 14.7625 15.6884 15.2542C15.7501 15.7129 15.7501 16.2858 15.75 16.9506L15.75 21.25H19.25V9.76047ZM14.25 21.25V17C14.25 16.2717 14.2484 15.8009 14.2018 15.454C14.1581 15.1287 14.0875 15.0268 14.0304 14.9697C13.9733 14.9126 13.8713 14.842 13.546 14.7982C13.1991 14.7516 12.7283 14.75 12 14.75C11.2717 14.75 10.8009 14.7516 10.4541 14.7982C10.1288 14.842 10.0268 14.9126 9.9697 14.9697C9.9126 15.0268 9.84199 15.1287 9.79826 15.454C9.75162 15.8009 9.75003 16.2717 9.75003 17V21.25H14.25ZM12 8.25C11.3097 8.25 10.75 8.80964 10.75 9.5C10.75 10.1904 11.3097 10.75 12 10.75C12.6904 10.75 13.25 10.1904 13.25 9.5C13.25 8.80964 12.6904 8.25 12 8.25ZM9.25003 9.5C9.25003 7.98122 10.4812 6.75 12 6.75C13.5188 6.75 14.75 7.98122 14.75 9.5C14.75 11.0188 13.5188 12.25 12 12.25C10.4812 12.25 9.25003 11.0188 9.25003 9.5Z"
+                  fill="#00C5A3"
+                ></path>
+              </g>
+            </svg>
+            <span>Dashboard</span>
+          </a>
+          <ng-container *ngIf="accountService.currentUser$ | async">
+            <a routerLink="/messages" routerLinkActive="active">
+              <svg
+                class="icons"
+                width="30px"
+                height="30px"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                stroke="#ffffff"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    d="M4.99951 16.55V19.9C4.99922 20.3102 5.11905 20.7114 5.34418 21.0542C5.56931 21.397 5.88994 21.6665 6.26642 21.8292C6.6429 21.9919 7.05875 22.0408 7.46271 21.9698C7.86666 21.8989 8.24103 21.7113 8.53955 21.4301L11.1495 18.9701H12.0195C17.5395 18.9701 22.0195 15.1701 22.0195 10.4701C22.0195 5.77009 17.5395 1.97009 12.0195 1.97009C6.49953 1.97009 2.01953 5.78009 2.01953 10.4701C2.042 11.6389 2.32261 12.7882 2.84125 13.8358C3.35989 14.8835 4.10373 15.8035 5.01953 16.53L4.99951 16.55Z"
+                    stroke="#00C5A3"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                  <path
+                    d="M17 9.5H7"
+                    stroke="#00C5A3"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                  <path
+                    d="M13 12.5H7"
+                    stroke="#00C5A3"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                </g>
+              </svg>
+              <span>Messages</span>
+            </a>
+            <a routerLink="/lists" routerLinkActive="active">
+              <svg
+                class="icons"
+                width="30px"
+                height="30px"
+                viewBox="0 -0.5 21 21"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                fill="#000000"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <title>list [#00C5A3]</title>
+                  <desc>Created with Sketch.</desc>
+                  <defs></defs>
+                  <g
+                    id="Page-1"
+                    stroke="none"
+                    stroke-width="1"
+                    fill="none"
+                    fill-rule="evenodd"
+                  >
+                    <g
+                      id="Dribbble-Light-Preview"
+                      transform="translate(-59.000000, -160.000000)"
+                      fill="#00C5A3"
+                    >
+                      <g
+                        id="icons"
+                        transform="translate(56.000000, 160.000000)"
+                      >
+                        <path
+                          d="M6.15,14 C7.88985,14 9.3,15.343 9.3,17 C9.3,18.657 7.88985,20 6.15,20 C4.41015,20 3,18.657 3,17 C3,15.343 4.41015,14 6.15,14 L6.15,14 Z M6.15,16 C5.57145,16 5.1,16.449 5.1,17 C5.1,17.551 5.57145,18 6.15,18 C6.72855,18 7.2,17.551 7.2,17 C7.2,16.449 6.72855,16 6.15,16 L6.15,16 Z M6.15,0 C7.88985,0 9.3,1.343 9.3,3 C9.3,4.657 7.88985,6 6.15,6 C4.41015,6 3,4.657 3,3 C3,1.343 4.41015,0 6.15,0 L6.15,0 Z M6.15,2 C5.57145,2 5.1,2.449 5.1,3 C5.1,3.551 5.57145,4 6.15,4 C6.72855,4 7.2,3.551 7.2,3 C7.2,2.449 6.72855,2 6.15,2 L6.15,2 Z M6.15,7 C7.88985,7 9.3,8.343 9.3,10 C9.3,11.657 7.88985,13 6.15,13 C4.41015,13 3,11.657 3,10 C3,8.343 4.41015,7 6.15,7 L6.15,7 Z M6.15,9 C5.57145,9 5.1,9.449 5.1,10 C5.1,10.551 5.57145,11 6.15,11 C6.72855,11 7.2,10.551 7.2,10 C7.2,9.449 6.72855,9 6.15,9 L6.15,9 Z M11.4,18 L24,18 L24,16 L11.4,16 L11.4,18 Z M11.4,4 L24,4 L24,2 L11.4,2 L11.4,4 Z M11.4,11 L24,11 L24,9 L11.4,9 L11.4,11 Z"
+                          id="list-[#00C5A3]"
+                        ></path>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </svg>
+              <span>Lists</span>
+            </a>
+            <a
+              routerLink="/admin"
+              routerLinkActive="active"
+              *appHasRole="['Admin', 'Moderator']"
+            >
+              <svg
+                class="icons"
+                fill="#00C5A3"
+                width="30px"
+                height="30px"
+                viewBox="0 0 1000 1000"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke="#CCCCCC"
+                  stroke-width="12"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    d="M925 687q-31-8-52-19-35-18-35-42 0-6-5-10.5t-12-3.5q-29 4-62-31-20-22-37-53-1-3-4-3t-4 3q-17 31-37 53-33 35-62 31-7-1-12 3.5t-5 10.5q1 24-34 42-22 11-52 19-3 0-4 2.5t1 4.5q22 26 35 50 22 41 14 65-2 5 .5 10.5t7.5 7.5q18 8 25 42 5 21 5 47 0 3 2.5 4.5t4.5.5q26-13 50-16 37-6 54 15 4 5 11 5t11-5q17-21 55-15 23 3 49 15 3 2 5 .5t2-4.5q0-26 5-48 8-33 25-41 5-2 7.5-7t.5-10q-8-25 14-65 13-25 35-51 2-2 1-4.5t-3-2.5zm-97 34l-5 7q-33 42-32 95v4q0 4-3 6.5t-7 2.5h-2l-11-3q-50-15-100 0l-11 3h-2q-4 0-7-2.5t-3-6.5v-4q1-53-32-95l-5-7q-3-3-1.5-7.5t6.5-5.5q29-8 54-24t42-40l1-1q3-4 8-4t8 4l1 1q17 24 41.5 40t54.5 24q5 1 6.5 5.5T828 721zM533 885q-1-4-5-6-21-10-30.5-31.5T495 804q4-14-2-27-13-24-31-45-10-12-13.5-28t1-32 17-27.5 30-15.5 34.5-11q4-3 5-8 0-4-3-7l-34-52q-6-8-14-15-2-2-1.5-4t2.5-4q60-28 98-83 39-58 39-124 0-63-31-116t-84-84-115.5-31T277 121t-84 84-31 116q0 66 39 124 38 54 98 83 2 1 2 3.5t-1 4.5q-8 7-14 15-88 131-132 205-18 32-18 52 0 28 34.5 51.5t93.5 37T393 910q72 0 134-15 3-1 4.5-3.5t1.5-6.5z"
+                  ></path>
+                </g>
+              </svg>
+              <span>Admin</span>
+            </a>
+          </ng-container>
+        </div>
+      </div>
+      <div class="ms-lg-5 d-lg-block">
+        <div class="d-flex align-items-center nav-item">
+          <a class="navbar-brand" routerLink="/" routerLinkActive="active"
+            >Connectify</a
+          >
+        </div>
+      </div>
+      <div class="navbar-right-wrap ms-2 d-flex nav-top-wrap navbar-nav">
+        <ul class="navbar-right-wrap ms-auto d-flex nav-top-wrap navbar-nav">
+          <li
+            class="ms-2 dropdown"
+            *ngIf="accountService.currentUser$ | async as user"
+          >
+            <a
+              class="rounded-circle"
+              id="dropdownUser"
+              aria-expanded="true"
+              (click)="toggleDropdown()"
+            >
+              <div class="avatar avatar-md">
+                <img
+                  alt="avatar"
+                  src="{{ user.photoUrl || './assets/user.png' }}"
+                  class="rounded-circle"
+                /></div
+            ></a>
+            <div
+              *ngIf="isDropdownVisible"
+              aria-labelledby="dropdownUser"
+              data-bs-popper="static"
+              class="dropdown-menu dropdown-menu-end dropdown-menu show dropdown-menu-end dropdownUser"
+            >
+              <div data-rr-ui-dropdown-item="" class="px-4 pb-0 pt-2">
+                <div class="lh-1">
+                  <h6 class="mb-1">Hello, {{ user.username | titlecase }}</h6>
+                </div>
+                <div class="dropdown-divider mt-3 mb-2"></div>
+              </div>
+              <a
+                aria-selected="false"
+                data-rr-ui-dropdown-item=""
+                class="dropdown-item"
+                role="button"
+                tabindex="0"
+                routerLink="/member/edit"
+                ><i class="fa fa-user-o items-2"></i> Edit Profile</a
+              ><a
+                data-rr-ui-dropdown-item=""
+                class="dropdown-item"
+                role="button"
+                tabindex="0"
+                routerLink="/account-settings"
+                ><i class="fa fa-cog items-2"></i> Account Settings</a
+              ><a
+                data-rr-ui-dropdown-item=""
+                class="dropdown-item"
+                role="button"
+                tabindex="0"
+                (click)="logout()"
+                ><i class="fa fa-power-off items-2"></i>Sign Out</a
+              >
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</div>

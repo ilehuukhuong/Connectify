@@ -1,0 +1,13 @@
+<div>
+    <form class="form" [formGroup]="searchinterestForm" (ngSubmit)="onSearchInterest()">
+        <div class="form-group">
+            <label for="name">Search Interests:</label>
+            <input type="text" id="name" class="form-control" formControlName="name">
+        </div>
+        <button type="submit" class="btn btn-primary btn-search">Search</button>
+    </form>
+    <div class="interest-detail" *ngFor="let interest of interests">
+        <span>{{interest.name}}</span>
+        <button class="add-btn" (click)="addInterest(interest.id)">Add</button>
+    </div>
+</div>

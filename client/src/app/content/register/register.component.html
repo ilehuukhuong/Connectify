@@ -1,0 +1,35 @@
+<div class="register-container">
+
+
+<form [formGroup]="registerForm" (ngSubmit)="registerForm.valid && register()" autocomplete="off">
+    <h1 class="text-center text-primary">Welcome!</h1>
+    <hr>
+    <div class="register-form">
+    <app-text-input [formControl]="$any(registerForm.controls['firstname'])" [label]="'Firstname'" class="input"></app-text-input>
+    <app-text-input [formControl]="$any(registerForm.controls['lastname'])" [label]="'Lastname'" class="input"></app-text-input>
+    <app-text-input [formControl]="$any(registerForm.controls['knownAs'])" [label]="'Nickname'" class="input"></app-text-input>
+    <app-date-picker [formControl]="$any(registerForm.controls['dateOfBirth'])" [label]="'Date of Birth'"
+    [maxDate]="maxDate" class="input"></app-date-picker>
+    <select [formControl]="$any(registerForm.controls['genderId'])" class="form-control gender">
+        <option style="display: none; color: rgb(134 142 150);"[value]="null" disabled selected>Gender</option>
+        <option *ngFor="let gender of genders" [value]="gender.id">{{ gender.name }}</option>
+    </select>
+    <app-text-input [formControl]="$any(registerForm.controls['email'])" [label]="'Email'" class="input"></app-text-input>
+    <app-text-input [formControl]="$any(registerForm.controls['username'])" [label]="'Username'" class="input"></app-text-input>
+    <app-text-input [formControl]="$any(registerForm.controls['password'])" [label]="'Password'" [type]="'password'" class="input">
+    </app-text-input>
+    <app-text-input [formControl]="$any(registerForm.controls['confirmPassword'])" [label]="'Confirm Password'"
+        [type]="'password'" class="input"></app-text-input>
+    </div>
+    <re-captcha (resolved)="resolved($event)" siteKey="6LeNw5UnAAAAAMbsWoPK8OYInESDb7MeloepV_FS"></re-captcha>
+    <div class="alternative-login">
+      <p>Already a member?<span routerLink="/login" routerLinkActive="active">Login</span></p>
+    </div>
+    <div class="text-center" style="margin-bottom: 15px;">
+        <button [disabled]="!registerForm.valid" class="btn me-2 registerbtn" type="submit">Register</button>
+        <button class="btn btn-default cancelbtn" type="button" routerLink="/" routerLinkActive="active">Back to Home</button>
+    </div>
+</form>
+</div>
+
+

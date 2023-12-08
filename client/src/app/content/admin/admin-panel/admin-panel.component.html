@@ -1,0 +1,38 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="main-card mb-3 card"> 
+            <div class="card-header">
+                Admin Panel
+            </div>
+            <div class="tab-panel">
+                <tabset class="member-tabset">
+                    <tab heading="User management" *appHasRole="['Admin']">
+                        <div class="container">
+                            <app-user-management></app-user-management>
+                        </div>
+                    </tab>
+                    <tab heading="Gender management" *appHasRole="['Admin', 'Moderator']">
+                        <div class="container">
+                            <app-gender-management></app-gender-management>
+                        </div>
+                    </tab>
+                    <tab heading="Looking-for management" *appHasRole="['Admin', 'Moderator']">
+                        <div class="container">
+                            <app-lookingfor-management></app-lookingfor-management>
+                        </div>
+                    </tab>
+                    <tab heading="Interests management" *appHasRole="['Admin', 'Moderator']">
+                        <div class="container">
+                            <app-interest-management></app-interest-management>
+                        </div>
+                    </tab>
+                    <tab heading="Terms management" *appHasRole="['Admin', 'Moderator']">
+                        <div class="container">
+                            <app-term-management></app-term-management>
+                        </div>
+                    </tab>
+                </tabset>
+            </div>
+        </div>
+    </div>
+</div>

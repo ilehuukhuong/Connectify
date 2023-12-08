@@ -1,0 +1,202 @@
+<!-- <div class="container">
+      <div class="col col-lg-12 col-xl-12">
+        <section class="h-100 gradient-custom-2">
+          <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+              <div class="col col-lg-12 col-xl-12">
+                <div class="card">
+                  <div class="p-4 text-black" style="background-color: #f8f9fa;">
+                      <div class="profile">
+                        <div class="profile-info">
+                          <img src="{{member.photoUrl || './assets/user.png'}}" alt="{{member.knownAs}}"
+                                class="img-fluid img-thumbnail mb-3">
+                          <div class="profile-name">
+                            <h4>{{member.userName}}</h4>
+                            <p style="margin: 5px;">{{member.knownAs}}</p>
+                            <div class="members-online"  *ngIf="(presenceService.onlineUsers$ | async)?.includes(member.userName)">
+                                <i class="class fa fa-user-circle text-success"></i> Online now
+                            </div>
+                            </div>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="card-body p-4 text-black">
+                    <div class="mb-5">
+                        <tabset class="member-tabset" #memberTabs>
+                            <tab heading="About {{member.knownAs}}" (selectTab)="onTabActivated($event)" >
+                                <strong>Introduction</strong>
+                                <p>{{member.introduction}}</p>
+                                <strong>Location</strong>
+                                <p>{{member.city}}</p>
+                                <strong>Age:</strong>
+                                <p>{{member.age}}</p>
+                                <strong>Last active:</strong>
+                                <p>{{member.lastActive | timeago}}</p>
+                                <strong>Member since:</strong>
+                                <p>{{member.created | date: 'dd MMM yyyy'}}</p>
+                                <strong>Looking for</strong>
+                                <ul>
+                                    <li *ngFor="let lookingFor of member.lookingFors">{{lookingFor.name}}</li>
+                                </ul>
+                            </tab>
+                            <tab heading="Interests" (selectTab)="onTabActivated($event)" >
+                                <h4>Interests</h4>
+                                <p>{{member.interests}}</p>
+                            </tab>
+                            <tab heading="Photos" (selectTab)="onTabActivated($event)" >
+                                <ngx-gallery [options]="galleryOptions" [images]="galleryImages" class="ngx-gallery"></ngx-gallery>
+                            </tab>
+                        </tabset>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+  </div> -->
+
+   <div class="container">
+    <div class="team-single mt-5">
+        <div class="row">
+            <div class="col-lg-4 col-md-5" style="margin-bottom:30px;">
+                <div class="team-single-img">
+                    <img src="{{member.photoUrl || './assets/user.png'}}" alt="{{member.knownAs}}">
+                </div>
+                <div class="members-online text-center mt-3" style="margin-bottom: 16px;" *ngIf="(presenceService.onlineUsers$ | async)?.includes(member.userName)">
+                    <i class="class fa fa-user-circle text-success"></i> Online now
+                </div>
+
+                <div class="members-online text-center mt-3" style="margin-bottom: 16px;"  *ngIf="!(presenceService.onlineUsers$ | async)?.includes(member.userName)">
+                    <i class="class fa fa-user-circle"></i> Active {{member.lastActive | timeago}}
+                </div>
+                <div class="bg-light-gray padding-30px-all md-padding-25px-all sm-padding-20px-all justify">
+                    <h4 class="text-center" style=" text-transform: uppercase; font-weight: 700; font-style: italic;">
+                      {{member.fullName}} ({{member.knownAs}})
+                    </h4>
+                    <p class="sm-width-95 sm-margin-auto" style="text-align: justify;">{{member.introduction}}</p>
+                </div>
+            </div>
+
+            <div class="col-lg-8 col-md-7">
+                <div class="team-single-text padding-50px-left sm-no-padding-left">
+                  <tabset class="member-tabset" #memberTabs>
+                    <tab heading="About {{member.knownAs}}" (selectTab)="onTabActivated($event)" >
+                      <div class="contact-info-section" >
+                          <ul class="list-style9 no-margin">
+                            <li>
+                                <div class="row">
+                                    <div class="col-md-5 col-5">
+                                        <i class="fa fa-venus-mars fa-lg text-pink"></i>
+                                        <strong class=" text-pink" style="margin-left: 10px;">Gender:</strong>
+                                    </div>
+                                    <div class="col-md-7 col-7">
+                                        <p>{{member.gender}}</p>
+                                    </div>
+                                </div>
+                            </li>
+                              <li>
+                                  <div class="row">
+                                      <div class="col-md-5 col-5">
+                                          <i class="fa fa-map-marker fa-lg text-orange"></i>
+                                          <strong class=" text-orange" style="margin-left: 10px;">Location:</strong>
+                                      </div>
+                                      <div class="col-md-7 col-7">
+                                          <p>{{member.city}}</p>
+                                      </div>
+                                  </div>
+
+                              </li>
+                              <li>
+                                <div class="row">
+                                    <div class="col-md-5 col-5">
+                                        <i class="fa fa-road fa-lg text-blue"></i>
+                                        <strong class="text-blue" style="margin-left: 10px;">Distance:</strong>
+                                    </div>
+                                    <div class="col-md-7 col-7">
+                                        <p>{{member.distance}} km</p>
+                                    </div>
+                                </div>
+                            </li>
+                              <li>
+
+                                  <div class="row">
+                                      <div class="col-md-5 col-5">
+                                          <i class="fa fa-birthday-cake text-yellow"></i>
+                                          <strong class="text-yellow" style="margin-left: 10px;">Age:</strong>
+                                      </div>
+                                      <div class="col-md-7 col-7">
+                                          <p>{{member.age}}</p>
+                                      </div>
+                                  </div>
+
+                              </li>
+                              <!-- <li>
+
+                                  <div class="row">
+                                      <div class="col-md-5 col-5">
+                                        <i class="fa fa-clock-o fa-lg text-lightred"></i>
+                                          <strong class="text-lightred" style="margin-left: 10px;">Last active:</strong>
+                                      </div>
+                                      <div class="col-md-7 col-7">
+                                          <p>{{member.lastActive | timeago}}</p>
+                                      </div>
+                                  </div>
+
+                              </li> -->
+                              <li>
+
+                                  <div class="row">
+                                      <div class="col-md-5 col-5">
+                                          <i class="fa fa-calendar fa-lg text-green"></i>
+                                          <strong class="text-green" style="margin-left: 10px;">Member since:</strong>
+                                      </div>
+                                      <div class="col-md-7 col-7">
+                                          <p>{{member.created | date: 'dd MMM yyyy'}}</p>
+                                      </div>
+                                  </div>
+
+                              </li>
+                              <li>
+
+                                  <div class="row">
+                                      <div class="col-md-5 col-5">
+                                          <i class="fa fa-search text-purple"></i>
+                                          <strong class=" text-purple" style="margin-left: 10px;">Looking for:</strong>
+                                      </div>
+                                      <div class="col-md-7 col-7">
+                                        <ul>
+                                          <li *ngFor="let lookingFor of member.lookingFors">{{lookingFor.name}}</li>
+                                        </ul>
+                                      </div>
+                                  </div>
+
+                              </li>
+                              <li>
+                                  <div class="row">
+                                      <div class="col-md-5 col-5">
+                                          <i class="fa fa-smile-o fa-lg text-pink"></i>
+                                          <strong class="text-pink" style="margin-left: 10px;">Interests:</strong>
+                                      </div>
+                                      <div class="col-md-7 col-7">
+                                        <ul>
+                                            <li *ngFor="let interests of member.interests">{{interests.name}}</li>
+                                        </ul>
+                                      </div>
+                                  </div>
+                              </li>
+                          </ul>
+                      </div>   
+                  </tab>
+                  <tab heading="Photos" (selectTab)="onTabActivated($event)" style="justify-content: center;">
+                    <div class="col-auto">
+                        <ngx-gallery [options]="galleryOptions" [images]="galleryImages" class="ngx-gallery"></ngx-gallery>
+                    </div>
+                  </tab>
+                </tabset>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

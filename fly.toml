@@ -1,0 +1,38 @@
+# fly.toml app configuration file generated for connectify on 2023-12-09T02:20:58+07:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "connectify"
+primary_region = "sin"
+
+[build]
+  image = "ikhuong/connectify:latest"
+
+[env]
+  ASPNETCORE_URLS="http://+:8080"
+  CloudinarySettings__CloudName="dykw0zaln"
+  CloudinarySettings__ApiKey="721266228711646"
+  OutlookMailSettings__UserName="Connectify@connectify.io.vn"
+  OutlookMailSettings__SmtpServer="smtp.office365.com"
+  OutlookMailSettings__SmtpPort="587"
+  OutlookMailSettings__EnableSsl="true"
+  OneDriveSettings__UserId="cbf7a51b-d7b6-4dd9-897c-ce67dbae77f0"
+  OneDriveSettings__TenantId="524a3ab0-9180-4a73-8e64-ff85791e3e68"
+  OneDriveSettings__Scope="https://graph.microsoft.com/.default"
+  OneDriveSettings__ClientId="86505fe2-3b20-477c-b7d4-bfd6b07400c5"
+  ContentModeratorSettings__Endpoint="https://southeastasiaconnectify.cognitiveservices.azure.com/"
+  ComputervisionSettings__Endpoint="https://connectifycomputervision.cognitiveservices.azure.com/"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 256

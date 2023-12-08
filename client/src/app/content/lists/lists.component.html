@@ -1,0 +1,47 @@
+<div>
+<div class="container container-lists">
+    <div class="text-center mt-3">
+        <h2>Member Management</h2>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-center tab-menus">
+        <div class="manage-choose">
+            <div class="btn-group">
+                <button class="btn btn-primary btn-likes" btnRadio="liked" [(ngModel)]="predicate"
+                    (click)="loadLikes()">Members I
+                    like</button>
+                <button class="btn btn-primary btn-likes" btnRadio="likedBy" [(ngModel)]="predicate"
+                    (click)="loadLikes()">Members
+                    who like me</button>
+                <button class="btn btn-primary btn-likes" btnRadio="recommend" [(ngModel)]="predicate"
+                    (click)="loadRecommendedMembers()">Members
+                    recommended</button>
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-center" *ngIf="showRecommendedFilters">
+            <div class="d-flex location-bars" *ngIf="userParams">
+                <form #form="ngForm" autocomplete="on">
+                    <div class="d-flex location-bars">
+                        <label class="col-form-label">Similarity: </label>
+                        <ngx-slider [(value)]="userParams.similarity" [options]="similaritySliderOptions"
+                        (userChange)="loadRecommendedMembers()">
+                        </ngx-slider>
+                    </div> 
+                </form>
+            </div>
+        </div>
+        <div class="row member-card-container mt-3">
+            <div class="member-card" *ngFor="let member of members">
+                <app-member-card [member]="member"></app-member-card>
+            </div>
+        </div>
+    </div>
+
+    <div class="pagination-container d-flex justify-content-center mt-5"*ngIf="pagination && members && members.length > 0" >
+        <pagination [boundaryLinks]="true" [totalItems]="pagination.totalItems" [itemsPerPage]="pagination.itemsPerPage"
+            [maxSize]="10" [(ngModel)]="pagination.currentPage" (pageChanged)="pageChanged($event)"
+            previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+        </pagination>
+    </div>
+</div>
+</div>

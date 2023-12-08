@@ -1,0 +1,35 @@
+.card {
+    background-clip: padding-box;
+    box-shadow: 0 1px 4px rgba(24,28,33,0.012);
+    margin-bottom: 50px;
+}
+
+.row-bordered {
+    overflow: hidden;
+}
+
+.title-namepage {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-top: 1rem;
+    color: #3a3f51;
+    text-align: center;
+}
+
+.account-settings-links .list-group-item.active {
+    font-weight: bold !important;
+}
+.account-settings-links .list-group-item {
+    padding: 0.85rem 1.5rem;
+    border-color: rgba(24, 28, 33, 0.03) !important;
+}
+.account-settings-links .list-group-item.active {
+    color: #fff;
+    background: #DBB2FF ;
+}
+.account-settings-links .list-group-item {
+    padding: 0.85rem 1.5rem;
+    border-color: rgba(24,28,33,0.03) !important;
+}
+

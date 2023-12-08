@@ -1,0 +1,391 @@
+.nv-file-over {
+    border: dotted 3px red;
+}
+
+input[type=file] {
+    color: transparent;
+}
+
+.photo-users{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 33%;
+    height: auto;
+}
+
+.btn-group {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn-group-2 {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+
+
+.main-photo {
+    border: 4px solid #00de7c !important;
+}
+
+.not-main-photo {
+    border: none;
+}
+
+.set-main-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(to top, #ff8008, #ffc837);
+    border: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 0px 20px linear-gradient(to right, #1cd8d2, #93edc7);
+    cursor: pointer;
+    transition-duration: .3s;
+    overflow: hidden;
+    position: relative;
+    margin: 5px;
+  }
+  
+  .svgIcon-star{
+    width: 50px;
+    transition-duration: .3s;
+  }
+  
+  .svgIcon-star path {
+    fill: white;
+  }
+  
+
+  .set-main-btn:hover {
+    width: 80px;
+    border-radius: 50px;
+    transition-duration: .3s;
+    background-color: rgb(26, 201, 134);
+    align-items: center;
+  }
+  
+  .set-main-btn:hover .svgIcon-star {
+    width: 50px;
+    transition-duration: .3s;
+    transform: translateY(40%);
+    color: rgb(255, 255, 91);
+  }
+  
+  .set-main-btn::before {
+    position: absolute;
+    top: -20px;
+    content: "Set Main";
+    color: white;
+    transition-duration: .3s;
+    font-size: 2px;
+  }
+  
+  .set-main-btn:hover::before {
+    font-size: 12px;
+    opacity: 1;
+    transform: translateY(20px);
+    transition-duration: .3s;
+  }
+
+.delete-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(to right, #e43a15, #e65245);;
+    border: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 0px 20px linear-gradient(to right, #e43a15, #e65245);;
+    cursor: pointer;
+    transition-duration: .3s;
+    overflow: hidden;
+    position: relative;
+    margin: 5px;
+  }
+  
+  .svgIcon {
+    width: 12px;
+    transition-duration: .3s;
+  }
+  
+  .svgIcon path {
+    fill: white;
+  }
+  
+  .delete-btn:hover {
+    width: 80px;
+    border-radius: 50px;
+    transition-duration: .3s;
+    background-color: linear-gradient(to right, #e43a15, #e65245);;
+    align-items: center;
+  }
+  
+  .delete-btn:hover .svgIcon {
+    width: 30px;
+    transition-duration: .3s;
+    transform: translateY(50%);
+  }
+  
+  .delete-btn::before {
+    position: absolute;
+    top: -20px;
+    content: "Delete";
+    color: white;
+    transition-duration: .3s;
+    font-size: 2px;
+  }
+  
+  .delete-btn:hover::before {
+    font-size: 12px;
+    opacity: 1;
+    transform: translateY(20px);
+    transition-duration: .3s;
+  }
+
+.my-drop-zone{
+ border: 2px dashed #555;
+}
+
+.my-drop-zone i{
+    font-size: 70px;
+}
+
+
+.file-btn {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    height: auto;
+    flex-wrap: nowrap;
+}
+
+.file-choose {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 50%;
+    height: auto;
+}
+
+.upload-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 6px 12px;
+    gap: 8px;
+    height: 40px;
+    width: 140px;
+    border: none;
+    background: #5e41de33;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  
+  .label {
+    line-height: 20px;
+    font-size: 17px;
+    color: #5D41DE;
+    font-family: sans-serif;
+    letter-spacing: 1px;
+  }
+  
+  .upload-btn:hover {
+    background: #5e41de4d;
+  }
+  
+  .upload-btn:hover .svg-icon {
+    animation: upload 2s linear infinite;
+  }
+  
+  @keyframes upload  {
+    0% {
+      -webkit-transform: translateY(0);
+              transform: translateY(0);
+    }
+    100% {
+      -webkit-transform: translateY(-4px);
+              transform: translateY(-4px);
+    }
+  }
+
+  [type="file"] {
+    height: 0;
+    overflow: hidden;
+    width: 0;
+  }
+  
+  [type="file"] + label {
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: 'Rubik', sans-serif;
+    font-size: inherit;
+    font-weight: 500;
+    margin: 0.2rem;
+    outline: none;
+    border-radius: 20px;
+    padding: 0.5rem 30px;
+    position: relative;
+    transition: all 0.3s;
+    vertical-align: middle;
+    letter-spacing: 1.2px;
+  }
+  
+
+  .upload-file {
+    background-color: #00C2AE;
+    border-radius: 50px;
+    overflow: hidden;
+  }
+  
+  .upload-file:hover {
+    background-color: #008B79; 
+  }
+
+  .remove-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 6px 12px;
+    gap: 8px;
+    height: 40px;
+    width: 150px;
+    border: none;
+    background: #ffb5b5;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  
+  .remove-text {
+    line-height: 20px;
+    font-size: 14px;
+    color: #ff0000;
+    font-family: sans-serif;
+    letter-spacing: 1px;
+  }
+  
+  .remove-btn:hover {
+    background: #f3a0a0;
+  }
+  
+  .remove-btn:hover .remove {
+    animation: trash 2s linear infinite;
+  }
+  
+  @keyframes trash {
+    0% {
+      -webkit-transform: translateY(0);
+              transform: translateY(0);
+    }
+    100% {
+      -webkit-transform: translateY(5px);
+              transform: translateY(5px);
+    }
+  }
+
+  /* Mobile */
+
+  @media only screen and (max-width: 480px) {
+    .photo-users {
+      width: 33%;
+      flex-direction: column;
+      gap: 20px;
+    }
+  
+    .btn-group{
+      flex-direction: row;
+      margin-top: 10px;
+    }
+
+    .btn-group-2 {
+        flex-direction: row;
+        gap: 20px;
+    }
+  
+    .set-main-btn, .delete-btn {
+      width: 30px;
+      height: 30px;
+    }
+
+    .file-choose{
+        width: 100%;
+    }
+  
+    .upload-btn, .remove-btn {
+      width: 150px;
+    }
+  
+    .upload-file, [type="file"] + label {
+      padding: 0.5rem 15px;
+    }
+  }
+
+  /* Tablet */
+  @media only screen and (min-width: 481px) and (max-width: 768px) {
+    .photo-users {
+      width: 33%;
+    }
+  
+    .btn-group, .btn-group-2 {
+      flex-wrap: nowrap;
+    }
+  
+    .file-choose{
+      width: 80%;
+    }
+
+    .upload-btn, .remove-btn{
+        width: 35%;
+    }
+  
+    .set-main-btn, .delete-btn {
+      width: 40px;
+      height: 40px;
+    }
+  }
+
+  /* TV 4k */
+  @media only screen and (min-width: 3890px) {
+    .photo-users {
+      width: 25%;
+    }
+  
+    .btn-group, .btn-group-2 {
+      justify-content: flex-start;
+    }
+  
+    .set-main-btn, .delete-btn {
+      width: 40px;
+      height: 40px;
+    }
+  
+    .file-choose, .upload-btn, .cancel-btn, .remove-btn {
+      width: 40%;
+    }
+  
+    .upload-file, [type="file"] + label {
+      padding: 0.5rem 40px;
+    }
+  }
+  
+  
+  
+  
+  
+  
+  
+  

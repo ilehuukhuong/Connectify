@@ -1,0 +1,42 @@
+<td class="new_genders">
+  <button class="btn btn-info" (click)="openModal(createTermListTemplate)">Create New Term List</button>
+</td>
+<div class="table-responsive">
+  <table class="align-middle mb-0 table table-borderless table-hover">
+      <thead>
+          <tr>
+              <th class="text-center">ID</th>
+              <th class="text-center" style="width: 50%;">Name</th>
+              <th class="text-center">Description</th>
+              <th class="text-center">Term management</th>
+          </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let terms of termList">
+              <td class="text-center">{{terms.Id}}</td>
+              <td class="text-center">{{ terms.Name }}</td>
+              <td class="text-center">{{ terms.Description }}</td>
+
+              <td class="text-center">
+                <button class="btn btn-default" [routerLink]="['/term', terms.Id]"><i class="fa fa-pencil"></i></button>
+                <button class="btn btn-danger" (click)="onDelete(terms.Id)"><i class="fa fa-trash-o"></i></button>
+              </td>
+          </tr>
+      </tbody>
+  </table>
+</div>
+<ng-template #createTermListTemplate>
+  <div class="modal-body">
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
+    <form class="form" [formGroup]="createForm" (ngSubmit)="createTermList()">
+      <div class="form-group">
+        <label for="createName">Name</label>
+        <input type="text" id="createName" class="form-input" formControlName="name" required>
+        <label for="createDescription">Description</label>
+        <input type="text" id="createDescription" class="form-input" formControlName="description" required>
+      </div>
+      <button type="submit" class="form-create-btn">Create</button>
+    </form>
+  </div>
+</ng-template>
+

@@ -1,0 +1,256 @@
+<!-- <div class="main-box" *ngIf="member">
+  <div class="row">
+    <div class="col col-lg-12 col-xl-12">
+      <section class="h-100 gradient-custom-2">
+        <div class="container py-5 h-100" *ngIf="member">
+          <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col col-lg-12 col-xl-12">
+              <div class="card">
+                <div class="p-4 text-black" style="background-color: #f8f9fa;">
+                  <div class="profile">
+                    <div class="profile-info">
+                      <img src="{{member.photoUrl || './assets/user.png'}}" alt="{{member.knownAs}}"
+                        class="img-fluid img-thumbnail mb-3">
+                      <div class="profile-name">
+                        <h4>{{member.userName}}</h4>
+                        <p>{{member.fullName}}</p>
+                      </div>
+                    </div>
+                    <div class="edit-profile">
+                      <button class="btn btn-outline-dark edit-btn" data-mdb-ripple-color="dark"
+                        (click)="openEditModal(editModal)">
+                        Edit Profile
+                      </button>
+                      
+                      <ng-template #editModal #updateIntroTemplate>
+
+                        <div class="modal-body">
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                            (click)="modalRef.hide()"></button>
+                          <tabset class="member-tabset">
+
+                            <tab heading="Edit Introduction">
+                              <form class="form" [formGroup]="updateIntroForm" (ngSubmit)="updateIntroduction()">
+                                <div class="form-group">
+                                  <label for="introduction">Introduction</label>
+                                  <div class="alert alert-info pb-0" *ngIf="updateIntroForm.dirty">
+                                    <p><strong>Information: </strong>You have made changes. Any unsaved changes will
+                                      be lost</p>
+                                  </div>
+                                  <textarea id="introduction" class="form-control" formControlName="introduction"
+                                    required></textarea>
+                                </div>
+                                <button type="submit" class="btn-update"
+                                  [disabled]="!updateIntroForm.valid || !updateIntroForm.dirty">
+                                  Update
+                                </button>
+                              </form>
+                            </tab>
+                            <tab heading="Edit Looking For">
+                              <app-edit-lookingfor (interestAdded)="reloadData()"></app-edit-lookingfor>
+                            </tab>
+                            <tab heading="Edit Interest">
+                              <app-edit-interest (interestAdded)="reloadData()"></app-edit-interest>
+                            </tab>
+                            <tab heading="Edit Photos">
+                              <app-photo-editor [member]="member"></app-photo-editor>
+                            </tab>
+                          </tabset>
+                        </div>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body p-4 text-black">
+                  <div class="mb-5">
+                    <p class="lead fw-normal mb-1">About</p>
+                    <div class="p-4" style="background-color: #f8f9fa;">
+                      <div class="profile-detail">
+                        <strong><span class="icon">🙍</span>Nickname:</strong>
+                        <p>{{member.knownAs}}</p>
+                      </div>
+                      <div class="profile-detail">
+                        <strong><span class="icon">💬</span>Introduction:</strong>
+                        <p style="text-align: justify; text-justify: inter-word;">{{member.introduction}}</p>
+                      </div>
+                      <div class="profile-detail">
+                        <strong><span class="icon">📍</span>Location:</strong>
+                        <p>{{member.city}}</p>
+                      </div>
+                      <div class="profile-detail">
+                        <strong><span class="icon">🎂</span>Age:</strong>
+                        <p>{{member.age}}</p>
+                      </div>
+                      <div class="profile-detail">
+                        <strong><span class="icon">⚧️</span>Gender:</strong>
+                        <p>{{member.gender}}</p>
+                      </div>
+                      <div class="profile-detail">
+                        <strong><span class="icon">📅</span>Member since:</strong>
+                        <p>{{member.created | date: 'dd MMM yyyy'}}</p>
+                      </div>
+                      <div class="profile-detail">
+                        <strong><span class="icon">🕰️</span>Last active:</strong>
+                        <p>{{member.lastActive | timeago}}</p>
+                      </div>
+                      <div class="profile-detail hobbies">
+                        <strong><span class="icon">🔍</span>Looking fors:</strong>
+                        <div class="hobbies-items" *ngFor="let lookingFor of member.lookingFors">
+                          <li>
+                            {{lookingFor.name}}
+                          </li>
+                          <button class="delete-btn" (click)="deleteLookingFor(lookingFor.id)">
+                            <svg viewBox="0 0 448 512" class="svgIcon">
+                              <path
+                                d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z">
+                              </path>
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                      
+                      
+                      <div class="profile-detail hobbies">
+                        <strong><span class="icon">🌟</span>Interests:</strong>
+                        <div class="hobbies-items" *ngFor="let interest of member.interests">
+                          <li>{{interest.name}}</li>
+                          <button class="delete-btn" (click)="deleteInterest(interest.id)">
+                            <svg viewBox="0 0 448 512" class="svgIcon">
+                              <path
+                                d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z">
+                              </path>
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </section>
+    </div>
+  </div>
+</div> -->
+
+<section class="bg-light">
+  <div class="container" *ngIf="member">
+      <div class="row">
+          <div class="col-lg-12 mb-4 mb-sm-5">
+              <div class="card card-style1 border-0">
+                  <div class="card-body p-1-9 p-sm-2-3 p-md-6 p-lg-7">
+                      <div class="row align-items-center">
+                          <div class="col-lg-6 mb-4 mb-lg-0">
+                              <img src="{{member.photoUrl || './assets/user.png'}}" alt="{{member.knownAs}}" 
+                              style="width: 80%;
+                              height: auto;
+                              border-radius: 20px;">
+                          </div>
+                          
+                      <ng-template #editModal #updateIntroTemplate>
+
+                        <div class="modal-body">
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                            (click)="modalRef.hide()"></button>
+                          <tabset class="member-tabset">
+
+                            <tab heading="Edit Introduction">
+                              <form class="form" [formGroup]="updateIntroForm" (ngSubmit)="updateIntroduction()">
+                                <div class="form-group">
+                                  <label for="introduction">Introduction</label>
+                                  <div class="alert alert-info pb-0" *ngIf="updateIntroForm.dirty">
+                                    <p><strong>Information: </strong>You have made changes. Any unsaved changes will
+                                      be lost</p>
+                                  </div>
+                                  <textarea id="introduction" class="form-control" formControlName="introduction"
+                                    required></textarea>
+                                </div>
+                                <button type="submit" class="btn-update"
+                                  [disabled]="!updateIntroForm.valid || !updateIntroForm.dirty">
+                                  Update
+                                </button>
+                              </form>
+                            </tab>
+                            <tab heading="Edit Looking For">
+                              <app-edit-lookingfor (interestAdded)="reloadData()"></app-edit-lookingfor>
+                            </tab>
+                            <tab heading="Edit Interest">
+                              <app-edit-interest (interestAdded)="reloadData()"></app-edit-interest>
+                            </tab>
+                            <tab heading="Edit Photos">
+                              <app-photo-editor [member]="member"></app-photo-editor>
+                            </tab>
+                          </tabset>
+                        </div>
+                      </ng-template>
+                          <div class="col-lg-6 px-xl-10">
+                              <div class="bg-secondary d-lg-inline-block py-1-9 px-1-9 px-sm-6 mb-1-9 rounded" style="width: 100%;">
+                                  <h3 class="h2 text-white mb-0" >{{member.fullName}}</h3>
+                                  <span class="text-primary">{{member.userName}}</span>
+                              </div>
+                              <ul class="list-unstyled mb-1-9">
+                                  <li class="mb-2 mb-xl-3 display-28"><span class="display-26 text-secondary me-2 font-weight-600">Gender:</span> {{member.gender}}</li>
+                                  <li class="mb-2 mb-xl-3 display-28"><span class="display-26 text-secondary me-2 font-weight-600">Position:</span> {{member.city}}</li>
+                                  <li class="mb-2 mb-xl-3 display-28"><span class="display-26 text-secondary me-2 font-weight-600">Age:</span> {{member.age}}</li>
+                                  <li class="mb-2 mb-xl-3 display-28"><span class="display-26 text-secondary me-2 font-weight-600">Nickname:</span> {{member.knownAs}}</li>
+                                  <li class="display-28"><span class="display-26 text-secondary me-2 font-weight-600">Member since:</span> {{member.created | date: 'dd MMM yyyy'}}</li>
+                              </ul>
+                              <div class="mb-2 mb-xl-3 display-28">
+                                <button class="edit-btn" (click)="openEditModal(editModal)">Edit 
+                                  <svg class="svg" viewBox="0 0 512 512">
+                                    <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path></svg>
+                                </button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="col-lg-12 mb-4 mb-sm-5">
+              <div>
+                  <span class="section-title text-primary mb-3 mb-sm-4">About Me</span>
+                  <p>{{member.introduction}}</p>
+              </div>
+          </div>
+          <div class="col-lg-12">
+              <div class="row">
+                  <div class="col-lg-12 mb-4 mb-sm-5">
+                      <div class="mb-4 mb-sm-5" >
+                          <span class="section-title text-primary mb-3 mb-sm-4">Looking For</span>
+                          <div class="d-flex progress-text" *ngFor="let lookingFor of member.lookingFors">
+                                <li>
+                                  {{lookingFor.name}}
+                                </li>
+                                <button class="delete-btn" (click)="deleteLookingFor(lookingFor.id)">
+                                  <svg viewBox="0 0 448 512" class="svgIcon">
+                                    <path
+                                      d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z">
+                                    </path>
+                                  </svg>
+                                </button>
+                          </div>
+                      </div>
+                      <div>
+                          <span class="section-title text-primary mb-3 mb-sm-4">Interests</span>
+                          <div class="d-flex progress-text" *ngFor="let interest of member.interests">
+                            <li>
+                              {{interest.name}}
+                            </li>
+                            <button class="delete-btn" (click)="deleteInterest(interest.id)">
+                              <svg viewBox="0 0 448 512" class="svgIcon">
+                                <path
+                                  d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z">
+                                </path>
+                              </svg>
+                            </button>
+                      </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</section>

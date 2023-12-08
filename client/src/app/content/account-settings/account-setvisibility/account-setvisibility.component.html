@@ -1,0 +1,24 @@
+<div class="container setVisibility-container">
+    <img src="assets/images/visibility.jpg" alt="visibility" class="visibility-img">
+  <h4 class="account-settings__title">Visibility Account</h4>
+  <div class="account-settings__subtitle">
+    <i class="fa fa-question-circle"></i>
+    <span>What would you like people to see 
+        when they visit you profile?</span>
+  </div>
+  <div class="d-flex setVisibility-wrapper">
+    <p class="check__label">Show my account</p>
+    <div class="checkbox-wrapper-5">
+      <div class="check">
+        <input
+          checked=""
+          id="visibilitySwitch"
+          type="checkbox"
+          [(ngModel)]="isVisible"
+          (ngModelChange)="setVisibility($event)"
+        />
+        <label for="visibilitySwitch"></label>
+      </div>
+    </div>
+  </div>
+</div>

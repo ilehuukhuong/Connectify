@@ -1,0 +1,58 @@
+<!-- <div class="login-container">
+    <form *ngIf="!(accountService.currentUser$ | async)" #loginForm="ngForm" class="d-flex" (ngSubmit)="login()"
+      autocomplete="on">
+      <h1>Login</h1>
+      <div class="login-form">
+        <h4>Username or email</h4>
+        <div class="username-input">
+          <input name="username" class="input" type="text" placeholder="Enter your username or email"
+            [(ngModel)]="model.username">
+        </div>
+        <h4>Password</h4>
+        <div class="password-input">
+          <input name="password" [(ngModel)]="model.password" class="input" type="password"
+            placeholder="Enter your password">
+        </div>
+        <a class="forgot" routerLink="/forgot-password" routerLinkActive="active">Forgot Password?</a>
+      </div>
+      <button class="login-btn" type="button" (click)="login()">
+        LOGIN
+      </button>
+      <div class="alternative-signup">
+        <p>Not a member? <span routerLink="/register" routerLinkActive="active">Signup</span></p>
+      </div>
+    </form>
+</div> -->
+<div class="login-container">
+  <div class="login-form">
+    <img src="../assets/images/login.png" alt="login" class="login-image" />
+    <div class="heading">Sign In</div>
+    <form
+      *ngIf="!(accountService.currentUser$ | async)"
+      #loginForm="ngForm"
+      class="form"
+      (ngSubmit)="login()"
+    >
+      <input
+        required=""
+        class="input"
+        name="username"
+        type="text"
+        placeholder="Enter your username or email"
+        [(ngModel)]="model.username"
+      />
+      <input
+        required=""
+        class="input"
+        type="password"
+        name="password"
+        id="password"
+        [(ngModel)]="model.password"
+        placeholder="Enter your password"
+      />
+      <span class="forgot-password"><a routerLink="/forgot-password" routerLinkActive="active">Forgot Password ?</a></span>
+      <input class="login-button" type="submit" value="Sign In" />
+    </form>
+    <span class="agreement"><a routerLink="/register" routerLinkActive="active"><span class="title">Not a member?</span> Signup</a></span>
+  </div>
+</div>

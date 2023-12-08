@@ -1,0 +1,104 @@
+<!-- <div class="fixed-container mt-5" *ngIf="!isLoggedIn" >
+    <div style="text-align: center;">
+        <h1>Find your match</h1>
+        <p class="lead">Come on in to view your matches... all you need to do is sign up!</p>
+        <div class="text-center">
+            <button routerLink="/register" routerLinkActive="active" class="btn btn-primary btn-lg me-2">Register</button>
+            <button routerLink="/login" routerLinkActive="active" class="btn btn-primary btn-info btn-lg">Login</button>
+        </div>
+    </div>
+</div>
+<div class="container mt-5" *ngIf="isLoggedIn">
+    <app-member-list></app-member-list>
+</div> -->
+<div class="home" *ngIf="!isLoggedIn">
+<section class="welcome-content h-100">
+    <div class="container h-100">
+        <div class="row d-flex align-items-center">
+            <div class="col-12 col-md-9 col-lg-7">
+            <div class="welcome__caption">
+                <h1
+                data-animation="fadeInLeft"
+                data-delay=".4s"
+                class=""
+                style="animation-delay: 0.4s"
+                >
+                We Collect<br />
+                High Quality Leads
+                </h1>
+                <p
+                data-animation="fadeInLeft"
+                data-delay=".6s"
+                class=""
+                style="animation-delay: 0.6s"
+                >
+                Come on in to view your matches and embark on exciting conversations!
+                <br/>
+                Signing up is all it takes to unlock a world of connections. 
+                
+                Join us today and discover meaningful friendships waiting just a click away!!
+                </p>
+                
+                <div class="d-flex">
+                    <a routerLink="/register" class="primary-btn header-btn text-uppercase" tabindex="0"
+                    >Try with us</a
+                >
+                <a routerLink="/login" class="primary-btn login-btn text-uppercase" tabindex="0"
+                    >Sign In</a
+                >
+                </div>
+            </div>
+            </div>
+            <div class="col-lg-5">
+            <div
+                class="welcome__img"
+                data-animation="fadeInRight"
+                data-delay="1s"
+                style="animation-delay: 1s"
+            >
+                <img src="../../../assets/images/logo.png" alt="" />
+            </div>
+            </div>
+        </div>
+</div>
+<div class="welcome-pattern">
+    <img src="../../../assets/background/welcome-pattern.png" alt="">
+  </div>
+</section>
+<section class="about-area section-gap">
+    <div class="container-fluid">
+        <div class="row d-flex justify-content-end align-items-center">
+            <div class="col-lg-6 col-md-12 about-left">
+                <img class="img-fluid" src="../../../assets/images/maps.png" alt="">
+            </div>
+            <div class="col-lg-6 col-md-12 about-right">
+                <h1>Welcome to Connectify</h1>
+                <p>With Connectify, you not only get the chance to meet and chat with new people from around the globe but also experience the profound sense of social bonding.
+                We provide a safe and friendly environment where you can find friends with similar interests, share stories, and learn from diverse cultures. 
+                Join Connectify today to open the door to new relationships, meaningful conversations, and memorable experiences!</p>
+                <a routerLink="/register" class="about-btn text-uppercase" tabindex="0"
+                    >See detail</a>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="contact-area section-gap h-100">
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-lg-9">
+                <h1 class="text-white">Seize the Moment: Dive into a Unique Chatting Experience</h1>
+                <p class="text-white pt-20 pb-20">Don't miss out! Sign up now to explore the unique experience. 
+                    <br/>
+                    If you already have an account, don't forget to log in and begin your fantastic chatting journey!</p>
+                <a routerLink="/login" class="primary-btn login-btn text-uppercase" tabindex="0">Sign In</a>
+            </div>
+        </div>
+    </div>
+    <div class="contact-pattern">
+        <img src="../../../assets/background/welcome-pattern.png" alt="">
+      </div>
+</section>
+</div>
+<div class="container mt-5" *ngIf="isLoggedIn">
+    <app-member-list></app-member-list>
+</div> 

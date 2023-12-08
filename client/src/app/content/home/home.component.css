@@ -1,0 +1,219 @@
+.section-gap {
+  padding: 50px 0;
+}
+
+.welcome-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  background: #ceb2fc;
+}
+ .welcome__caption {
+  position: relative;
+  margin-bottom: 130px;
+}
+
+.welcome__caption h1 {
+  font-size: 82px;
+  display: block;
+  margin-bottom: 30px;
+  color: #ffffff;
+}
+
+.welcome__caption p {
+  margin-bottom: 40px;
+  padding-right: 155px;
+  color: #fff;
+}
+
+.welcome__img img {
+  max-width: 584px;
+  max-height: 600px;
+  position: absolute;
+    top: 35%;
+    right: 5px;
+    z-index: 1;
+    transform: translateY(-50%);
+}
+
+.welcome-pattern {
+  position: relative;
+  width: 100%;
+  bottom: -10px;
+  left: 0;
+  right: 0;
+  z-index: 4;
+}
+
+.welcome-pattern img {
+  width: 100%;
+}
+
+.primary-btn {
+  padding-left: 30px;
+  padding-right: 30px;
+  background-color: #fff;
+  line-height: 42px;
+  border-radius: 25px;
+  border: none;
+  color: #ceb2fc;
+  display: inline-block;
+  font-weight: 500;
+  position: relative;
+  cursor: pointer;
+  text-transform: uppercase;
+  text-decoration: none;
+  outline: 0;
+  width: 160px; 
+  height: 42px;
+  margin-bottom: 30px;
+}
+
+.primary-btn:hover {
+  background-color: #ceb2fc;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+
+.welcome-content .login-btn {
+  
+  margin-left: 20px;
+  text-align: center;
+}
+
+.about-right {
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
+.about-right h1 {
+  color: #222;
+}
+
+.about-right p {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  text-align: justify;
+}
+
+.about-right .about-btn {
+  background-color: #ceb2fc;
+  color: #fff;
+  padding-left: 50px;
+  padding-right: 50px;
+  width: 200px;
+  text-align: center;
+  line-height: 42px;
+  border-radius: 25px;
+  border: none;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 500;
+  position: relative;
+  cursor: pointer;
+  margin-bottom: 30px;
+  right: 0;
+}
+
+.about-left img {
+  width: 100%;
+}
+
+.contact-area {
+  background-color: #D7BAFF;
+  text-align: center;
+  position: relative;
+  padding-top: 100px;
+  padding-bottom: 100px;
+}
+
+.contact-area h1 {
+  color: #fff;
+  font-size: 42px;
+  margin-bottom: 30px;
+}
+
+.contact-area p {
+  color: #fff;
+  margin-bottom: 30px;
+  font-size: 20px;
+}
+
+
+.contact-pattern {
+  position: relative;
+    width: 100%;
+    bottom: -108px;
+    left: 0;
+    right: 0;
+    z-index: 1;
+}
+
+.contact-pattern img {
+  width: 100%;
+}
+
+.login-btn{
+  margin-bottom: 30px;
+  margin: 0 20px;
+  text-align: center;
+
+}
+
+
+@media only screen and (min-width: 992px) and (max-width: 1199px){
+.welcome__img img {
+    max-width: 450px;
+}
+
+.welcome__caption h1{
+  font-size: 58px;
+}
+
+.about-right {
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
+.about-right h1 {
+  color: #222;
+}
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px){
+  .welcome__caption h1{
+    font-size: 45px;
+  }
+  .welcome__img img {
+    max-width: 350px;
+}
+}
+
+@media only screen and (max-width: 767px){
+  .welcome__caption{
+    margin-bottom: 50px;
+  }
+  .welcome__caption h1{
+    font-size: 35px;
+    text-align: center;
+  }
+  .welcome__caption p{
+    padding: 0 20px;
+    text-align: justify;
+  }
+  .welcome__img img {
+    display: none;
+}
+.welcome-content .login-btn{
+  margin-bottom: 30px;
+  margin: 0 20px;
+  text-align: center;
+}
+
+.welcome-content .primary-btn{
+  margin-bottom: 30px;
+  margin: 0 10px;
+  text-align: center;
+}
+}
