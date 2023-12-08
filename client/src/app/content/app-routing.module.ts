@@ -32,7 +32,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent, runGuardsAndResolvers: 'always' },
   { path: 'register', component: RegisterComponent, runGuardsAndResolvers: 'always' },
   { path: 'forgot-password', component: ForgotPasswordComponent, runGuardsAndResolvers: 'always' },
-  { path: 'reset-password/:token', component: ResetPasswordComponent, pathMatch: 'full' },
+  { path: 'reset-password', component: ResetPasswordComponent, pathMatch: 'full' },
   {
     path: '',
     runGuardsAndResolvers: 'always',

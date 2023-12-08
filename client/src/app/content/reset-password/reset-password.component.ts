@@ -31,7 +31,7 @@ export class ResetPasswordComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       const currentURL = this.location.path();
       // Tách thông tin email và token
-      const emailTokenArr = currentURL.split("/reset-password/email")[1].split("&token");
+      const emailTokenArr = currentURL.split("/reset-password?email=")[1].split("&token=");
       this.email = decodeURIComponent(emailTokenArr[0]);
       this.token = emailTokenArr[1];
     });
