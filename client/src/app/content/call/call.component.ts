@@ -84,26 +84,23 @@ export class CallComponent implements OnInit, OnDestroy {
   }
 
   async createLocalStream() {
-    try {
       const mediaConstraints = {
         video: this.enableVideo,
         audio: this.enableAudio
       };
       console.log(this.enableVideo);
       console.log(this.enableAudio);
+      try {
       this.stream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
-      // Thêm kiểm tra null trước khi gán cho localVideo.nativeElement.srcObject
       if (this.localVideo) {
         this.localVideo.nativeElement.srcObject = this.stream;
         this.localVideo.nativeElement.load();
-        this.localVideo.nativeElement.play();
-        this.enableOrDisableVideo();
+        await this.localVideo.nativeElement.play();
       }
     } catch (error) {
       console.error("Error getting user media:", error);
     }
   }
-
   enableOrDisableVideo() {
     this.enableVideo = !this.enableVideo;
     if (this.stream && this.stream.getVideoTracks().length > 0) {

@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
+import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs';
 import { Member } from 'src/app/common/_models/member';
 import { Photo } from 'src/app/common/_models/photo';
@@ -19,7 +20,7 @@ export class PhotoEditorComponent implements OnInit {
   hasBaseDropZoneOver = false;
   baseUrl = environment.apiUrl;
   user: User | undefined;
-  constructor(private accountService: AccountService, private memberService: MembersService) {
+  constructor(private accountService: AccountService, private memberService: MembersService, private toastr: ToastrService) {
     this.accountService.currentUser$.pipe(take(1)).subscribe({
       next: user => {
         if (user) this.user = user
@@ -44,7 +45,8 @@ export class PhotoEditorComponent implements OnInit {
             if (p.id === photo.id) p.isMain = true;
           })
         }
-      }
+      },
+      error: err => this.toastr.error(err)
     })
   }
   deletePhoto(photoId: number) {
@@ -53,7 +55,8 @@ export class PhotoEditorComponent implements OnInit {
         if (this.member) {
           this.member.photos = this.member.photos.filter(x => x.id !== photoId);
         }
-      }
+      },
+      error: err => this.toastr.error(err)
     })
   }
   initializeUploader() {
@@ -80,5 +83,9 @@ export class PhotoEditorComponent implements OnInit {
         }
       }
     }
+    this.uploader.onErrorItem = (item, response, status, headers) => {
+      // Xử lý lỗi ở đây, ví dụ hiển thị thông báo lỗi
+      this.toastr.error(response)
+    };
   }
 }
