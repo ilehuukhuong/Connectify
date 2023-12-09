@@ -452,6 +452,10 @@
   color: #9397ab;
 }
 
+.fa.fa-trash-o:hover {
+  color: #ffffff;
+}
+
 .chat-conversation .conversation-list {
   margin-bottom: 24px;
   display: -webkit-inline-box;
@@ -1065,6 +1069,28 @@ audio {
   background-color: #b1b1b1 !important ;
 }
 
+.delete-item {
+  transition: background-color 0.2s, color 0.2s; 
+}
+
+.delete-item:hover {
+  background-color: #deb8f8;
+  color: white; 
+}
+
+.delete-item:focus {
+  background-color: #deb8f8; 
+  color: white; 
+}
+
+.delete-item:active {
+  background-color: #deb8f8; 
+  color: white; 
+}
+
+.delete-item:hover i{
+  color: white !important; 
+}
 
 @media (max-width: 991.98px) {
   .side-menu, .side-menu .navbar-brand-box, .chat-leftsidebar  {

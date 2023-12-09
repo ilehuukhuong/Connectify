@@ -13,12 +13,6 @@
     <!-- Start the side-mess menu -->
     <div class="flex-lg-column my-0 sidemenu-navigation">
       <ul class="nav nav-pills side-menu-nav" role="tablist">
-        <li class="nav-item d-none d-lg-block" role="presentation">
-          <a class="nav-link" id="pills-user-tab" data-bs-toggle="pill" routerLink="/member/edit" routerLinkActive="active" role="tab"
-            aria-selected="false" tabindex="-1">
-            <i class="fa fa-user-o"></i>
-          </a>
-        </li>
         <li class="nav-item" role="presentation">
           <a class="nav-link active" (click)="setActiveTab('chat')" [class.active]="activeTab === 'chat'"
             href="javascript:void(0);" role="tab">
@@ -458,7 +452,7 @@
                                         (click)="$event.stopPropagation()"
                                         (click)="deleteMessage(message.id); toggleMessageBox(message.id)">Remove
                                         <i class="fa fa-trash-o text-muted ms-2"></i></a>
-                                      <a class="dropdown-item d-flex align-items-center justify-content-between"
+                                      <a class="dropdown-item d-flex align-items-center justify-content-between delete-item"
                                         *ngIf="message.senderUsername != username && (message.messageType !== 'Unsent' && message.messageType !== 'MissCall' && message.messageType !== 'Call' && message.messageType !== 'MissCall')"
                                         (click)="$event.stopPropagation()" (click)="unsendMessage(message.id)">Unsend
                                         <i class="fa fa-undo text-muted ms-2"></i></a>
