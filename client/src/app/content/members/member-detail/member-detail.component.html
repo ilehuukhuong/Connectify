@@ -191,7 +191,9 @@
                   </tab>
                   <tab heading="Photos" (selectTab)="onTabActivated($event)" style="justify-content: center;">
                     <div class="col-auto">
-                        <ngx-gallery [options]="galleryOptions" [images]="galleryImages" class="ngx-gallery"></ngx-gallery>
+                        <div class="d-flex justify-content-center">
+                            <ngx-gallery [options]="galleryOptions" [images]="galleryImages" class="ngx-gallery"></ngx-gallery>
+                        </div>
                     </div>
                   </tab>
                 </tabset>

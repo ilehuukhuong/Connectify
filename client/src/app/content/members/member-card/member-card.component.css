@@ -96,9 +96,11 @@
   }
   
   .circle img {
-	z-index: 1000;
+	z-index: 9;
 	transform: translateZ(0);
 	border-radius: 50%;
+	width: 130px;
+	height: 130px;
   }
 
   .card ul{
@@ -171,6 +173,8 @@
 	transition: transform 0.3s ease-out;
   }
 
+  
+
   @media screen and (min-width: 768px) and (max-width: 1023px) {
 	.card {
 		width: 100%;
@@ -236,13 +240,14 @@
 }
 
   .user-status {
-	width: 10px;
-	height: 10px;
-	background-color: #06d6a0;
-	border-radius: 50%;
-	border: 2px solid var(--bs-secondary-bg);
-	position: absolute;
-	right: 0;
-	left: auto;
-	bottom: 0;
+	width: 20px;
+    height: 20px;
+    background-color: #06d6a0;
+    border-radius: 50%;
+    border: 2px solid var(--bs-secondary-bg);
+    position: absolute;
+    right: 20px;
+    left: auto;
+    bottom: -4px;
+    z-index: 10;
   }

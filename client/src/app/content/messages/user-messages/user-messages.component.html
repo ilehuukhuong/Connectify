@@ -226,7 +226,7 @@
                   <div class="flex-grow-1 overflow-hidden">
                     <div class="d-flex align-items-center">
                       <div class="flex-shrink-0 chat-user-img online user-own-img align-self-center me-3 ms-0">
-                        <img src="{{member.photoUrl || './assets/user.png'}}" class="rounded-circle avatar-sm" routerLink="/members/{{member.userName}}" routerLinkActive="active" alt="image of user" />
+                        <img src="{{member.photoUrl || './assets/user.png'}}" class="rounded-circle avatar-sm" routerLink="/members/{{member.userName}}" routerLinkActive="active" alt="image of user" style="cursor: pointer;" />
                         <span class="user-status"
                           *ngIf="(presenceService.onlineUsers$ | async)?.includes(member.userName)"></span>
                       </div>
