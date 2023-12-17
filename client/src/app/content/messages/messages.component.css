@@ -874,7 +874,12 @@
   }
 
   .side-menu .navbar-brand-box {
-    display: none;
+    display: flex;
+    margin: 10px;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: auto;
   }
 
   .sidemenu-navigation {

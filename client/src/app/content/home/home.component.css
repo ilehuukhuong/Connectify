@@ -161,6 +161,10 @@
 
 }
 
+.welcome-content-button{
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
 
 @media only screen and (min-width: 992px) and (max-width: 1199px){
 .welcome__img img {
@@ -178,6 +182,10 @@
 
 .about-right h1 {
   color: #222;
+}
+.welcome-content-button{
+  justify-content: flex-start;
+  flex-wrap: wrap;
 }
 }
 
@@ -215,5 +223,9 @@
   margin-bottom: 30px;
   margin: 0 10px;
   text-align: center;
+}
+.welcome-content-button{
+  justify-content: center;
+  flex-wrap: wrap;
 }
 }

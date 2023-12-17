@@ -39,8 +39,8 @@
     class="navbar-classic navbar navbar-expand-lg navbar navbar-expand navbar-light"
   >
     <div class="d-flex justify-content-between w-100">
-      <div class="d-flex align-items-start" style="height: 50px;
-      width: 50px;">
+      <div class="d-flex align-items-start" style="height: 60px;
+      width: 60px;">
         <input type="checkbox" id="check" />
         <label for="check">
           <i class="fa fa-bars" id="btn"></i>
@@ -201,14 +201,14 @@
           </ng-container>
         </div>
       </div>
-      <div class="ms-lg-5 d-lg-block">
+      <div class="d-lg-flex">
         <div class="d-flex align-items-center nav-item">
           <a class="navbar-brand" routerLink="/" routerLinkActive="active"
             >
             <img
               class="logo"
               src="../../../assets/images/logo - 1.png"
-              alt="logo" style="height: 70px;">
+              alt="logo">
             </a
           >
         </div>
@@ -216,7 +216,7 @@
       <div class="navbar-right-wrap ms-2 d-flex nav-top-wrap navbar-nav">
         <ul class="navbar-right-wrap ms-auto d-flex nav-top-wrap navbar-nav">
           <li
-            class="ms-2 dropdown"
+            class="dropdown"
             *ngIf="accountService.currentUser$ | async as user"
           >
             <a

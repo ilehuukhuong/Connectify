@@ -23,11 +23,17 @@
 .navbar-expand .navbar-nav, .navbar-brand {
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     display: flex;
 }
 
 .navbar-brand {
   margin-right: auto; 
+}
+
+.navbar-right-wrap{
+    width: 60px;
+    height: auto;
 }
 
 .avatar-md {
@@ -58,6 +64,11 @@
 .logo-img {
     max-height: 40px;
     display: inline;
+}
+
+.logo{
+  height: 70px;
+  width: 70px;
 }
 
 .logo-brand {
@@ -213,28 +224,26 @@
     position: fixed;
     visibility: visible;
   }
-  .nav-item{
-    margin-right: 50px;
-  }
 
   .sidebar header {
     padding-left: 20px; 
 }
-  @media(max-width : 860px){
+@media screen and (min-width: 768px) and (max-width: 991px){
 
     label #btn,label #cancel{
-      height: 30px;
-      width: 30px;
+      height: 50px;
+      width: 50px;
       font-size: 20px;
-      line-height: 30px;
+      line-height: 50px;
+      margin: 15px 10px;
     }
 
     .avatar{
-      width: 2.5rem;
-      height: 2.5rem;
+      width: 3.5rem;
+      height: 3.5rem;
     }
   }
-  @media screen and (max-width: 480px) {
+  @media screen and (max-width: 767px) {
     .dropdown-menu-end[data-bs-popper]{
       right: -45px;
       left: auto;
@@ -252,8 +261,19 @@
     .navbar-brand {
       font-size: 1.8em;
       color: #fff;
+      width: 60px;
+      height: auto;
+      justify-content: center;
   }
-    
+
+  .logo{
+    height: 50px;
+    width: 50px;
+  }
+  .navbar-right-wrap{
+    width: 40px;
+    height: auto;
+}
   }
   
   .sidebar > a.active,.sidebar > a:hover:nth-child(even) {

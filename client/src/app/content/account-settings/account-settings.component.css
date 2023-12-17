@@ -17,6 +17,11 @@
     text-align: center;
 }
 
+.account-settings-links{
+    display: flex;
+    flex-direction: column;
+}
+
 .account-settings-links .list-group-item.active {
     font-weight: bold !important;
 }
@@ -31,5 +36,16 @@
 .account-settings-links .list-group-item {
     padding: 0.85rem 1.5rem;
     border-color: rgba(24,28,33,0.03) !important;
+}
+
+@media screen and (max-width: 767px) {
+    .account-settings-links{
+        display: flex;
+        flex-direction: row;
+    }
+    .account-settings-links .list-group-item {
+        padding: 0.5rem 0.5rem;
+        border-color: rgba(24,28,33,0.03) !important;
+    }
 }
 
