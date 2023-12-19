@@ -59,7 +59,11 @@ export class ListsComponent implements OnInit {
   pageChanged(event: any) {
     if (this.pageNumber !== event.page) {
       this.pageNumber = event.page;
-      this.ngOnInit();
+      if (this.showRecommendedFilters) {
+        this.loadRecommendedMembers();
+      } else {
+        this.loadLikes();
+      }
     }
   }
   onSimilarityChange(newValue: number) {
