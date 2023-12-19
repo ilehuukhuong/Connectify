@@ -14,7 +14,7 @@ export class ListsComponent implements OnInit {
   members: Member[] | undefined;
   predicate = 'liked';
   pageNumber = 1;
-  pageSize = 5;
+  pageSize = 8;
   pagination: Pagination | undefined;
   userParams: UserParams | undefined;
   search = '';
